@@ -1,0 +1,1 @@
+copy .stack-work\dist\x86_64-windows\Cabal-1.18.1.5\build\hask-anything-exe\hask-anything-exe.exe app\site.exe

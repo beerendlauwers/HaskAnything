@@ -1,0 +1,4 @@
+.stack-work/*
+app/_cache
+app/_site
+app/site.exe

@@ -1,0 +1,6 @@
+flags: {}
+packages:
+- '.'
+extra-deps:
+- Win32-notify-0.3.0.1
+resolver: lts-2.21
