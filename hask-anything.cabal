@@ -26,6 +26,7 @@ executable hask-anything-exe
   build-depends:       base
                      , hask-anything
                      , hakyll == 4.6.9.0
+                     , aeson == 0.8.0.2
                      , blaze-html
   default-language:    Haskell2010
 
