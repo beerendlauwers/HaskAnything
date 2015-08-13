@@ -38,6 +38,14 @@ main = hakyll $ do
             >>= loadAndApplyTemplate "templates/default.html" ctx
             >>= relativizeUrls
             
+    match "content/reddit-post/*" $ do
+        route $ setExtension ""
+        let ctx = addTags tags $ addCategories categories postCtx
+        compile $ pandocCompiler
+            >>= loadAndApplyTemplate "templates/content/reddit-post.html"    ctx
+            >>= loadAndApplyTemplate "templates/default.html" ctx
+            >>= relativizeUrls
+            
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
     tagsRules tags $ \tag pattern -> do
         let title = "Content tagged with " ++ tag
