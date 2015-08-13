@@ -1,0 +1,19 @@
+# This is the configuration file for circleci.com (CI which builds the site)
+
+# cf. https://gist.github.com/dbp/bef96402ea07001dfed2
+dependencies:
+  cache_directories:
+    - "~/.stack"
+  pre:
+    - wget https://github.com/commercialhaskell/stack/releases/download/v0.1.3.1/stack-0.1.3.1-x86_64-linux.gz -O /tmp/stack.gz
+    - gunzip /tmp/stack.gz && chmod +x /tmp/stack
+    - sudo mv /tmp/stack /usr/bin/stack
+  override:
+    - stack setup
+    - stack build
+
+# Compile pages during the test stage
+test:
+  post:
+    - "make"
+    - "make deploy"
