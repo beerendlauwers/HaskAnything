@@ -11,13 +11,19 @@ import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as A
 
 -- For the tag extraction stuff
-import           Data.List                       (nub)
+import           Data.List                       (nub,intersect)
+import           Data.Maybe                      (catMaybes)
+import           Data.String                     (fromString)
 import           Data.Aeson                      (encode)
 
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
     match "images/*" $ do
+        route   idRoute
+        compile copyFileCompiler
+        
+    match "js/*" $ do
         route   idRoute
         compile copyFileCompiler
 
@@ -82,6 +88,22 @@ main = hakyll $ do
         compile $ do
             makeItem (encode $ getUniqueTags' tags)
             
+    -- TODO: use this with library tags and such
+    create ["test.html"] $ do
+        route idRoute
+        compile $ do
+            let ctx =
+                    listField "categories" 
+                              (
+                               field "category" (return . fst . itemBody) <>
+                               listFieldWith "tags" (field "tag" (return . itemBody)) (sequence . map makeItem . snd . itemBody)
+                              ) 
+                              (sequence [makeItem ("test",["tag1","tag2"]), makeItem ("test2",["tag2","tag3"])]) <>
+                    defaultContext
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/testing.html" ctx
+                >>= loadAndApplyTemplate "templates/default.html" defaultContext
+                >>= relativizeUrls
                 
     create ["categories-overview"] $ do
         route idRoute
@@ -95,6 +117,13 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" indexContext
                 >>= relativizeUrls
                 
+    match "ui/submit/*" $ do
+        route idRoute
+        compile $ do
+            getResourceBody
+                >>= applyAsTemplate defaultContext
+                >>= loadAndApplyTemplate "templates/default.html" defaultContext
+                >>= relativizeUrls
 
     match "templates/**" $ compile templateCompiler
 
@@ -121,3 +150,14 @@ simpleRenderLink tag (Just filePath) =
 
 getUniqueTags' :: Tags -> [String]
 getUniqueTags' (Tags m _ _) = nub $ map fst m
+
+matchTagsWithCategories' (Tags tags _ _) (Tags cats _ _) = matchTagsWithCategories tags cats
+
+matchTagsWithCategories tags cats = 
+ map f cats
+  where 
+  f (cat,paths) = (cat, nub $ catMaybes $ concatMap (\c -> map (find c) tags ) cats)
+  find (cat,cpaths) (tag,tpaths) = 
+   if length (intersect cpaths tpaths) > 0
+    then Just tag
+    else Nothing                             
