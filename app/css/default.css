@@ -1,56 +1,36 @@
+/* TODO: Switch to LESS? https://github.com/duncansmart/less.js-windows + https://github.com/jaspervdj/hakyll/issues/282 */
+
 body {
-    color: black;
-    font-size: 16px;
-    margin: 0px auto 0px auto;
-    width: 600px;
+    font-family: sans-serif;
+    background-color: #efefef;
 }
 
-div#header {
-    border-bottom: 2px solid black;
-    margin-bottom: 30px;
-    padding: 12px 0px 12px 0px;
+.library .url {
+    font-size: 2em;
+    display: block;
 }
 
-div#logo a {
-    color: black;
-    float: left;
-    font-size: 18px;
-    font-weight: bold;
-    text-decoration: none;
+.library .tags .tag {
+    border: 1px solid gray;
+    background-color: #dfe2e5;
+    border-radius: 8px;
+    display: inline-block;
+    padding: 5px;
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
-div#header #navigation {
-    text-align: right;
+a:visited {
+
 }
 
-div#header #navigation a {
-    color: black;
-    font-size: 18px;
-    font-weight: bold;
-    margin-left: 12px;
-    text-decoration: none;
-    text-transform: uppercase;
+.library .tags {
+    display: block;
 }
 
-div#footer {
-    border-top: solid 2px black;
-    color: #555;
-    font-size: 12px;
-    margin-top: 30px;
-    padding: 12px 0px 12px 0px;
-    text-align: right;
-}
-
-h1 {
-    font-size: 24px;
-}
-
-h2 {
-    font-size: 20px;
-}
-
-div.info {
-    color: #555;
-    font-size: 14px;
-    font-style: italic;
+.library {
+    border: 1px dashed black;
+    min-height: 100px;
+    border-radius: 8px;
+    margin: 5px;
 }

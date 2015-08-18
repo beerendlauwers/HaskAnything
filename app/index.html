@@ -2,15 +2,20 @@
 title: Home
 ---
 
-<h2>Welcome</h2>
-
-<img src="/images/haskell-logo.png" style="float: right; margin: 10px;" />
-
-<p>Welcome to my blog!</p>
-
-<p>I've reproduced a list of recent posts here for your reading pleasure:</p>
-
-<h2>Posts</h2>
-$partial("templates/post-list.html")$
-
-<p>…or you can find more in the <a href="/archive.html">archives</a>.</p>
+<div class="col-md-12 col-sm-12">
+    <div class="col-md-12 col-sm-12">
+        <h2>Find content...</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <h3>By category:</h3>
+            $allcategories$
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <h3>By tags:</h3>
+        </div>
+        <div class="col-md-4 col-sm-4">
+            <h3>By library tags:</h3>
+        </div>
+    </div>
+</div>

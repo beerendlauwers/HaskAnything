@@ -1,6 +1,7 @@
 ---
-title: Rosa Rosa Rosam
+title: A snippet with a really long name that might break layout (part 2)
 author: Ovidius
+library-1: hi
 ---
 
 Suspendisse pharetra ullamcorper sem et auctor. Suspendisse vitae tellus eu

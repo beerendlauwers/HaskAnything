@@ -35,6 +35,10 @@ main = hakyll $ do
         route   idRoute
         compile compressCssCompiler
         
+    match "vendor/***" $ do
+        route   idRoute
+        compile copyFileCompiler
+        
     -- As explained at http://javran.github.io/posts/2014-03-01-add-tags-to-your-hakyll-blog.html
     tags <- buildTags "content/*/*" (fromCapture "tags/*")
     
@@ -90,7 +94,7 @@ main = hakyll $ do
                 >>= relativizeUrls
                
     tagsRules categories $ \category pattern -> do
-        let title = "Content category: " ++ category
+        let title = "Content in category " ++ category
 
         -- Copied from posts, need to refactor
         route idRoute
@@ -104,15 +108,22 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
                 
-    create ["tags.json"] $ do
+    create ["json/tags.json"] $ do
         route idRoute
         compile $ do
             makeItem (encode $ getUniqueTags' tags)
             
-    create ["libraries.json"] $ do
+    create ["json/libraries.json"] $ do
         route idRoute
         compile $ do
             makeItem (encode $ getUniqueTags' libraries)
+            
+    create ["json/categories.json"] $ do
+        route idRoute
+        compile $ do
+            makeItem (encode $ getUniqueTags' categories)
+            
+    --create ["json/content/snippets"]
             
     -- TODO: use this with library tags and such
     create ["test.html"] $ do
@@ -131,19 +142,19 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" defaultContext
                 >>= relativizeUrls
                 
-    create ["categories-overview"] $ do
+    match "ui/elements/*" $ compile templateCompiler
+    
+    match "index.html" $ do
         route idRoute
         compile $ do
             let indexContext =
                     field "allcategories" (\_ -> renderTagList categories) <>
                     defaultContext
 
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/categories-overview.html" indexContext
+            getResourceBody
+                >>= applyAsTemplate indexContext
                 >>= loadAndApplyTemplate "templates/default.html" indexContext
                 >>= relativizeUrls
-                
-    match "ui/elements/*" $ compile templateCompiler
                 
     match "ui/submit/*" $ do
         route idRoute

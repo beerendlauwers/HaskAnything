@@ -1,7 +1,12 @@
-<ul>
+<div class="col-md-24 col-sm-24">
+    <h2>$title$</h2>
+</div>
+<div class="libraries col-md-24 col-sm-24">
     $for(alllibraries)$
-        <li>
-            <a href="$url$">$title$</a> - $date$
-        </li>
+    <div class="library col-md-6 col-sm-6">
+        <a href="$url$" class="url">$title$</a>
+        <span class="data">$date$</span>
+        <span class="tags">$tags$</span>
+    </div>
     $endfor$
-</ul>
+</div>
