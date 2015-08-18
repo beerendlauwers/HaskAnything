@@ -12,9 +12,13 @@ import qualified Text.Blaze.Html5.Attributes     as A
 
 -- For the tag extraction stuff
 import           Data.List                       (nub,intersect)
-import           Data.Maybe                      (catMaybes)
+import           Data.Maybe                      (catMaybes,fromJust)
 import           Data.String                     (fromString)
 import           Data.Aeson                      (encode)
+
+-- For the library stuff
+import qualified Data.Map                        as M
+import           Control.Monad                   (liftM)
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -35,10 +39,12 @@ main = hakyll $ do
     tags <- buildTags "content/*/*" (fromCapture "tags/*")
     
     categories <- buildCategories "content/*/*" (fromCapture "categories/*")
+    
+    libraries <- buildLibraries "content/*/*" (fromCapture "libraries/*")
 
     match "content/snippets/*" $ do
         route $ setExtension ""
-        let ctx = addTags tags $ addCategories categories postCtx
+        let ctx = addTags tags $ addCategories categories $ addLibraries libraries $ postCtx
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/content/snippet.html"    ctx
             >>= loadAndApplyTemplate "templates/default.html" ctx
@@ -67,6 +73,21 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/tags.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
+                
+    tagsRules libraries $ \tag pattern -> do
+        let title = "Content tagged with library " ++ tag
+
+        -- Copied from posts, need to refactor
+        route idRoute
+        compile $ do
+            allLibraries <- recentFirst =<< loadAll pattern
+            let ctx = constField "title" title <>
+                        listField "alllibraries" (addTags tags postCtx) (return allLibraries) <>
+                        defaultContext
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/libraries.html" ctx
+                >>= loadAndApplyTemplate "templates/default.html" ctx
+                >>= relativizeUrls
                
     tagsRules categories $ \category pattern -> do
         let title = "Content category: " ++ category
@@ -87,6 +108,11 @@ main = hakyll $ do
         route idRoute
         compile $ do
             makeItem (encode $ getUniqueTags' tags)
+            
+    create ["libraries.json"] $ do
+        route idRoute
+        compile $ do
+            makeItem (encode $ getUniqueTags' libraries)
             
     -- TODO: use this with library tags and such
     create ["test.html"] $ do
@@ -135,10 +161,20 @@ postCtx =
     defaultContext
     
 addCategories :: Tags -> Context String -> Context String
-addCategories c = mappend (categoryField "category" c)
+addCategories = extend "category"
 
 addTags :: Tags -> Context String -> Context String
-addTags tags = mappend (contentTagsField "tags" tags)
+addTags = extend "tags"
+
+addLibraries :: Tags -> Context String -> Context String
+addLibraries = extendWith libraryTagsField "libraries"
+
+extend :: String -> Tags -> Context String -> Context String
+extend s tags = mappend (contentTagsField s tags)
+
+extendWith f s tags = mappend (f s tags)
+
+libraryTagsField = tagsFieldWith getLibraries simpleRenderLink mconcat
 
 contentTagsField = 
     tagsFieldWith getTags simpleRenderLink mconcat
@@ -160,4 +196,13 @@ matchTagsWithCategories tags cats =
   find (cat,cpaths) (tag,tpaths) = 
    if length (intersect cpaths tpaths) > 0
     then Just tag
-    else Nothing                             
+    else Nothing                       
+
+-- Library stuff
+getLibrary :: MonadMetadata m => Int -> Identifier -> m (Maybe String)
+getLibrary n identifier = getMetadataField identifier ("library-" ++ show n)
+
+getLibraries identifier = (liftM catMaybes) $ mapM (\(n,i) -> getLibrary n i) (zip [1..] (replicate 10 identifier))
+
+buildLibraries :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
+buildLibraries = buildTagsWith getLibraries

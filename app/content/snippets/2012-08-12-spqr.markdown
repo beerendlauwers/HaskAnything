@@ -1,5 +1,9 @@
 ---
 title: S.P.Q.R.
+library-1: pandoc
+library-tags-1: Testing 4, Testing 5, Testing 6
+library-11: notvisible
+library-9: hi
 tags: Testing, Testing 2, Testing 3
 ---
 
