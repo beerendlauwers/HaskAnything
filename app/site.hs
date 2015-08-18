@@ -143,6 +143,8 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" indexContext
                 >>= relativizeUrls
                 
+    match "ui/elements/*" $ compile templateCompiler
+                
     match "ui/submit/*" $ do
         route idRoute
         compile $ do

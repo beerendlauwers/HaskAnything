@@ -6,6 +6,7 @@ title: Submit a Reddit post
 <script src="/js/reddit-lookup.js"></script>
 
 <form>
+    $partial("ui/elements/metadata.html")$
     URL: <br/>
     <input id="url-input" type="text"/> <button type="button" onclick="lookupRedditPost();return false;">Preview</button>
     Preview: <br/>
