@@ -2,6 +2,40 @@
 title: Home
 ---
 
+<!-- ReactJS -->
+<script type="text/jsx">
+    var data = [ "tag1", "tag2" ];
+
+    var CommentList = React.createClass({
+      render: function() {
+        var commentNodes = this.props.data.map(function (tag) {
+          return (
+              {tag}
+          );
+        });
+        return (
+          <div className="tagList">
+            {commentNodes}
+          </div>
+        );
+      }
+    });
+
+    var CommentBox = React.createClass({
+      render: function() {
+        return (
+          <div className="commentBox">
+            <CommentList data={this.props.data} />
+          </div>
+        );
+      }
+    });
+    React.render(
+      <CommentBox data={data} />,
+      document.getElementById('tags')
+    );
+</script>
+
 <div class="col-md-12 col-sm-12">
     <div class="col-md-12 col-sm-12">
         <h2>Find content...</h2>
@@ -13,6 +47,7 @@ title: Home
         </div>
         <div class="col-md-4 col-sm-4">
             <h3>By tags:</h3>
+            <span id="tags"></span>
         </div>
         <div class="col-md-4 col-sm-4">
             <h3>By library tags:</h3>
