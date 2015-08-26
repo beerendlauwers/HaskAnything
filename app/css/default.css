@@ -10,6 +10,7 @@ body {
     display: block;
 }
 
+.tagList > .tag, 
 .library .tags .tag {
     border: 1px solid gray;
     background-color: #dfe2e5;

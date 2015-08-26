@@ -29,6 +29,8 @@ executable hask-anything-exe
                      , aeson == 0.8.0.2
                      , blaze-html
                      , containers
+                     , bytestring
+                     , text == 1.2.0.6
   default-language:    Haskell2010
 
 test-suite hask-anything-test

@@ -4,53 +4,42 @@ title: Home
 
 <!-- ReactJS -->
 <script type="text/jsx">
-    var data = [ "tag1", "tag2" ];
-
-    var CommentList = React.createClass({
-      render: function() {
-        var commentNodes = this.props.data.map(function (tag) {
-          return (
-              {tag}
-          );
+    function renderTag( data, facetPath, facetName ) {
+        var TagList = React.createClass({
+          render: function() {
+            var tagNodes = this.props.data.map(function (tag) {
+              var path = facetPath + "/" + tag;
+              return (
+              <div className="tag">
+              <a href={path}>
+                  {tag}
+              </a>
+              </div>
+              );
+            });
+            return (
+              <div className="tagList">
+                {tagNodes}
+              </div>
+            );
+          }
         });
-        return (
-          <div className="tagList">
-            {commentNodes}
-          </div>
-        );
-      }
-    });
 
-    var CommentBox = React.createClass({
-      render: function() {
-        return (
-          <div className="commentBox">
-            <CommentList data={this.props.data} />
-          </div>
+        React.render(
+          <TagList data={data} />,
+          document.getElementById(facetName)
         );
-      }
-    });
-    React.render(
-      <CommentBox data={data} />,
-      document.getElementById('tags')
-    );
+    }
+    
 </script>
 
 <div class="col-md-12 col-sm-12">
     <div class="col-md-12 col-sm-12">
-        <h2>Find content...</h2>
+        <h2>Find knowledge...</h2>
     </div>
     <div class="row">
-        <div class="col-md-4 col-sm-4">
-            <h3>By category:</h3>
-            $allcategories$
-        </div>
-        <div class="col-md-4 col-sm-4">
-            <h3>By tags:</h3>
-            <span id="tags"></span>
-        </div>
-        <div class="col-md-4 col-sm-4">
-            <h3>By library tags:</h3>
-        </div>
+    $for(facetList)$
+        $partial("templates/tags/taglist.html")$
+    $endfor$
     </div>
 </div>

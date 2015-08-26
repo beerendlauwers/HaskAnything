@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, DeriveDataTypeable #-} -- DeriveDataTypeable is for facet stuff
 import           Data.Monoid (mconcat,mappend,(<>))
 import           Hakyll
 import           Hakyll.Web.Tags
@@ -14,11 +14,16 @@ import qualified Text.Blaze.Html5.Attributes     as A
 import           Data.List                       (nub,intersect)
 import           Data.Maybe                      (catMaybes,fromJust)
 import           Data.String                     (fromString)
+import           Data.Char                       (chr,toLower)
 import           Data.Aeson                      (encode)
+import           Data.ByteString.Lazy            (unpack,ByteString)
 
 -- For the library stuff
 import qualified Data.Map                        as M
 import           Control.Monad                   (liftM)
+
+-- For facet stuff
+import           Data.Data
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -121,7 +126,7 @@ main = hakyll $ do
     create ["json/categories.json"] $ do
         route idRoute
         compile $ do
-            makeItem (encode $ getUniqueTags' categories)
+            makeItem (encode $ getUniqueTags' categories) -- The show is introducing stuff we don't want.
             
     --create ["json/content/snippets"]
             
@@ -149,7 +154,18 @@ main = hakyll $ do
         compile $ do
             let indexContext =
                     field "allcategories" (\_ -> renderTagList categories) <>
-                    defaultContext
+                    field "tags" (\_ -> fmap toString (loadBodyLBS "json/categories.json")) <>
+                   -- field "path" (\_ -> fmap fromJust (getRoute "categories/*")) <> -- fix the fromJust -- TODO: find out how we can get that.
+                    listField "facetList"
+                                (
+                                    field "facetName" (return . facetName . itemBody) <>
+                                    field "facetList" (return . facetList . itemBody) <>
+                                    field "facetPrettyName" (return . facetPrettyName . itemBody) <>
+                                    field "facetPath" (return . facetPath . itemBody)
+                                )
+                                (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","/categories",categories),("Libraries","/libraries",libraries)]) <>
+                   defaultContext
+                                    
 
             getResourceBody
                 >>= applyAsTemplate indexContext
@@ -219,3 +235,27 @@ getLibraries identifier = (liftM catMaybes) $ mapM (\(n,i) -> getLibrary n i) (z
 
 buildLibraries :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
 buildLibraries = buildTagsWith getLibraries
+
+-- Lazy bytestring stuff
+loadBodyLBS :: Identifier -> Compiler ByteString
+loadBodyLBS = loadBody
+
+toString :: ByteString -> String
+toString = map (chr . fromEnum) . unpack
+
+-- Facet stuff
+
+data ContentFacet = 
+ ContentFacet { facetList :: String
+              , facetPath :: String
+              , facetName :: String
+              , facetPrettyName :: String
+              } deriving (Show,Data,Typeable)
+              
+generateFacetList :: String -> String -> Tags -> ContentFacet
+generateFacetList nm p t = 
+ ContentFacet { facetList = toString $ encode $ getUniqueTags' t
+              , facetPath = p -- TODO: something nicer?
+              , facetName = (map toLower nm)
+              , facetPrettyName = nm
+              }
