@@ -51,7 +51,7 @@ main = hakyll $ do
     
     libraries <- buildLibraries "content/*/*" (fromCapture "libraries/*")
 
-    match "content/snippets/*" $ do
+    match "content/snippet/*" $ do
         route $ setExtension ""
         let ctx = addTags tags $ addCategories categories $ addLibraries libraries $ postCtx
         compile $ pandocCompiler
@@ -109,6 +109,7 @@ main = hakyll $ do
                         listField "allcategories" (addTags tags $ addCategories categories $ postCtx) (return allCategories) <>
                         defaultContext
             makeItem ""
+                >>= addCategoryText category ctx
                 >>= loadAndApplyTemplate "templates/categories.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
@@ -240,3 +241,10 @@ generateFacetList nm p t =
               , facetName = (map toLower nm)
               , facetPrettyName = nm
               }
+              
+-- category stuff
+addCategoryText category = loadAndApplyTemplate (getTpl category)
+ where 
+    getTpl "snippet" = "templates/categories/snippet.html"
+    getTpl "reddit-post" = "templates/categories/reddit-post.html"
+    getTpl x = error ("No template available for " ++ show x)
