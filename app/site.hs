@@ -127,23 +127,6 @@ main = hakyll $ do
         route idRoute
         compile $ do
             makeItem (encode $ getUniqueTags' categories)
-
-    -- TODO: use this with library tags and such
-    create ["test.html"] $ do
-        route idRoute
-        compile $ do
-            let ctx =
-                    listField "categories" 
-                              (
-                               field "category" (return . fst . itemBody) <>
-                               listFieldWith "tags" (field "tag" (return . itemBody)) (sequence . map makeItem . snd . itemBody)
-                              ) 
-                              (sequence [makeItem ("test",["tag1","tag2"]), makeItem ("test2",["tag2","tag3"])]) <>
-                    defaultContext
-            makeItem ""
-                >>= loadAndApplyTemplate "templates/testing.html" ctx
-                >>= loadAndApplyTemplate "templates/default.html" defaultContext
-                >>= relativizeUrls
                 
     match "ui/elements/*" $ compile templateCompiler
     
@@ -161,7 +144,7 @@ main = hakyll $ do
                                     field "facetPrettyName" (return . facetPrettyName . itemBody) <>
                                     field "facetPath" (return . facetPath . itemBody)
                                 )
-                                (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","/categories",categories),("Libraries","/libraries",libraries)]) <>
+                                (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","categories",categories),("Libraries","libraries",libraries)]) <>
                    defaultContext
                                     
 
