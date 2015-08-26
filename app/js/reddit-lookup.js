@@ -4,6 +4,7 @@
 function lookupRedditPost() {
 
     $('#feedback').html('');
+    $('#post-preview > .contents').html('');
 
     var url = $('#url-input').val();
     
@@ -18,17 +19,16 @@ function lookupRedditPost() {
                 var body = msg.data.children[0].data.body;
                 var converter = new showdown.Converter(),
                     html      = converter.makeHtml(body);
-                $('#post-preview').html( html );
+                $('#post-preview > .contents').hide().html(html).fadeIn();
             }
             else {
-                $('#feedback').html("Message was invalid. See your browser's JavaScript log for the message.");
+                $('#feedback').hide().html("Message was invalid. See your browser's JavaScript log for the message.").fadeIn();
                 console.log("message:");
                 console.log(msg);
-                // TODO: some message
             }
         })
         .fail( function( jqXHR, textStatus, errorThrown ) {
-            $('#feedback').html("Something went wrong. See your browser's JavaScript log for the message.");
+            $('#feedback').hide().html("Something went wrong. See your browser's JavaScript log for the message.").fadeIn();
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);

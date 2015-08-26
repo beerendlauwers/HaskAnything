@@ -6,6 +6,10 @@
     padding: 10px;
 }
 
+#post-preview .contents {
+    display: block;
+}
+
 button.preview {
     background-color: #337ab7;
     color: #fff;
