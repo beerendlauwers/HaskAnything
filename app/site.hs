@@ -126,10 +126,8 @@ main = hakyll $ do
     create ["json/categories.json"] $ do
         route idRoute
         compile $ do
-            makeItem (encode $ getUniqueTags' categories) -- The show is introducing stuff we don't want.
-            
-    --create ["json/content/snippets"]
-            
+            makeItem (encode $ getUniqueTags' categories)
+
     -- TODO: use this with library tags and such
     create ["test.html"] $ do
         route idRoute
