@@ -3,9 +3,16 @@
 
 function lookupRedditPost() {
 
-    var url = $('#url-input').val();
+    $('#feedback').html('');
 
-    $.ajax( url )
+    var url = $('#url-input').val();
+    
+    // Extract last part of the URL.
+    var last = R.last( R.split('/')(url) );
+    
+    var redditApiCall = "https://www.reddit.com/api/info/.json?id=t1_" + last;
+
+    $.ajax( redditApiCall )
         .done( function(msg) {
             if (messageIsValid(msg)) {
                 var body = msg.data.children[0].data.body;
@@ -14,12 +21,17 @@ function lookupRedditPost() {
                 $('#post-preview').html( html );
             }
             else {
-                console.log("message was invalid");
+                $('#feedback').html("Message was invalid. See your browser's JavaScript log for the message.");
+                console.log("message:");
+                console.log(msg);
                 // TODO: some message
             }
         })
-        .fail( function() {
-            console.log("something failed.");
+        .fail( function( jqXHR, textStatus, errorThrown ) {
+            $('#feedback').html("Something went wrong. See your browser's JavaScript log for the message.");
+            console.log(jqXHR);
+            console.log(textStatus);
+            console.log(errorThrown);
         });
 }
 

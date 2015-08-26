@@ -1,0 +1,12 @@
+
+#post-preview {
+    background-color: white;
+    border: 1px dashed black;
+    min-height: 300px;
+    padding: 10px;
+}
+
+button.preview {
+    background-color: #337ab7;
+    color: #fff;
+}

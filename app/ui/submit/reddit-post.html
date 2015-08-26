@@ -4,14 +4,43 @@ title: Submit a Reddit post
 
 <script src="https://cdn.rawgit.com/showdownjs/showdown/1.2.2/dist/showdown.min.js"></script>
 <script src="/js/reddit-lookup.js"></script>
+<link href="/css/ui/submit/reddit-post.css" rel="stylesheet"/>
 
+<!-- Sliders? http://tympanus.net/codrops/2010/06/07/fancy-sliding-form-with-jquery/ -->
+
+<!-- Ooh this looks nice http://jformslider.com/#demo -->
+
+<div class="col-sm-12">
 <form>
-    $partial("ui/elements/metadata.html")$
-    URL: <br/>
-    <input id="url-input" type="text"/> <button type="button" onclick="lookupRedditPost();return false;">Preview</button>
-    Preview: <br/>
-    <div id="post-preview"></div>
+    <div class="row col-sm-12">
+        $partial("ui/elements/metadata.html")$
+    </div>
+    <div class="row col-sm-12">
+        <div class="col-sm-3">
+            <label for="url-input">URL:</label>
+        </div>
+       <div class="col-sm-9">
+            <input id="url-input" type="text"/>
+        </div>
+    </div>
+    <div class="row col-sm-12">
+       <div class="col-sm-9 col-sm-push-3">
+            <button type="button" class="preview" onclick="lookupRedditPost();return false;">Preview</button>
+            <span id="feedback"></span>
+       </div>
+    </div>
+    <div class="row col-sm-12">
+        <div class="col-sm-3">
+            <span>Preview</span>
+        </div>
+       <div class="col-sm-9">
+            <div id="post-preview"></div>
+        </div>
+    </div>
+    
     <br/>
     <button type="button" onclick="displayTags();return false;">Yup, that's it.</button>
     <button type="button" onclick="resetForm();return false;">Reset</button>
 </form>
+</div>
+

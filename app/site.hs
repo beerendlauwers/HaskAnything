@@ -32,11 +32,11 @@ main = hakyll $ do
         route   idRoute
         compile copyFileCompiler
         
-    match "js/*" $ do
+    match "js/***" $ do
         route   idRoute
         compile copyFileCompiler
 
-    match "css/*" $ do
+    match "css/******" $ do
         route   idRoute
         compile compressCssCompiler
         
@@ -163,7 +163,12 @@ main = hakyll $ do
                 >>= relativizeUrls
 
     match "templates/**" $ compile templateCompiler
-
+    
+    match "templates/*/*" $ do
+        route idRoute
+        compile $ do
+            r <- templateCompiler
+            makeItem (show (itemBody r))
 
 --------------------------------------------------------------------------------
 postCtx :: Context String
