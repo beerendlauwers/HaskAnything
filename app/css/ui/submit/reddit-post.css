@@ -14,3 +14,11 @@ button.preview {
     background-color: #337ab7;
     color: #fff;
 }
+
+.info {
+    font-style: italic;
+}
+
+.permalink-example {
+    border-bottom: 1px dashed black;
+}

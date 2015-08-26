@@ -6,9 +6,24 @@ title: Submit a Reddit post
 <script src="/js/reddit-lookup.js"></script>
 <link href="/css/ui/submit/reddit-post.css" rel="stylesheet"/>
 
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery(".permalink-example").hover(function(){
+    jQuery('#permalink-example').slideDown(300);
+},function(){
+    jQuery('#permalink-example').slideUp(300);
+});
+});
+</script>
+
 <!-- Sliders? http://tympanus.net/codrops/2010/06/07/fancy-sliding-form-with-jquery/ -->
 
 <!-- Ooh this looks nice http://jformslider.com/#demo -->
+
+<div class="col-sm-12">
+    <h2> Submit a Reddit post</h2>
+</div>
+
 
 <div class="col-sm-12">
 <form>
@@ -21,6 +36,11 @@ title: Submit a Reddit post
         </div>
        <div class="col-sm-9">
             <input id="url-input" type="text"/>
+            <span class="info">Click on the <span class="permalink-example">permalink</span> button in the bottom left of a post and copy that URL in here.</span>
+            <div id="permalink-example">
+                Example:<br/>
+                <img src="/images/permalink.png"/>
+            </div>
         </div>
     </div>
     <div class="row col-sm-12">
