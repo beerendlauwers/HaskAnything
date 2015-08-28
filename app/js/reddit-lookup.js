@@ -20,6 +20,7 @@ function lookupRedditPost() {
                 var converter = new showdown.Converter(),
                     html      = converter.makeHtml(body);
                 $('#post-preview > .contents').hide().html(html).fadeIn();
+                $('#confirm').slideDown(300);
             }
             else {
                 $('#feedback').hide().html("Message was invalid. See your browser's JavaScript log for the message.").fadeIn();
@@ -47,6 +48,14 @@ function messageIsValid( msg ) {
     &&   typeof msg.data.children[0].data === 'object'
     &&   'body' in msg.data.children[0].data
         );
+}
+
+function displayTags() {
+    $('.metadata').slideDown(300);
+    $('#confirm').prop('disabled','disabled');
+    $('#confirmed').fadeIn();
+    loadDropdowns();
+    $('.row.url, .row.preview').slideUp(300);
 }
 
 /*
