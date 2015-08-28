@@ -1,0 +1,50 @@
+---
+title: Submit a Stack Exchange question
+---
+
+<script src="/vendor/showdown/showdown.min.js"></script>
+<script src="/js/stack-exchange-lookup.js"></script>
+<link href="/css/ui/submit/common.css" rel="stylesheet"/>
+
+<div class="col-sm-12">
+    <h2>$title$</h2>
+</div>
+
+
+<div class="col-sm-12">
+<form>
+    <div class="row url col-sm-12">
+        <div class="col-sm-3">
+            <label for="url-input">URL:</label>
+        </div>
+       <div class="col-sm-9">
+            <input id="url-input" type="text"/>
+            <span class="info">Copy the URL of the StackExchange question and paste it here.</span>
+        </div>
+    </div>
+    <div class="row preview col-sm-12">
+       <div class="col-sm-9 col-sm-push-3">
+            <button type="button" class="preview" onclick="lookupStackExchangePost();return false;">Preview</button>
+            <span id="feedback"></span>
+       </div>
+    </div>
+    <div class="row col-sm-12">
+        <div class="col-sm-3">
+            <span>Preview</span>
+        </div>
+       <div class="col-sm-9">
+            <div id="post-preview"><div class="contents"></div></div>
+        </div>
+    </div>
+    <div class="row col-sm-12">
+        <div class="col-sm-9 col-sm-push-3">
+            <button id="confirm" type="button" onclick="displayTags();return false;">Yup, that's it.</button>
+            <span id="confirmed">Great! Add some tags and libraries and press "Submit" when you're done.</span>
+        </div>
+    </div>
+    <div class="metadata">
+    $partial("ui/elements/metadata.html")$ 
+    </div>
+</form>
+</div>
+
