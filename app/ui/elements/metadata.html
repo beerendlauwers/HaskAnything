@@ -1,4 +1,27 @@
-<label for="libraries"> <select id="libraries"/>
-<label for="tags"> <select id="tags"/>
-
 <script src="/js/metadata.js"></script>
+<link rel="stylesheet" href="/vendor/chosen/chosen.min.css"/>
+<script src="/vendor/chosen/chosen.jquery.min.js"></script>
+
+<div class="row col-sm-12">
+    <div class="col-sm-9 col-sm-push-3">
+        <span class="info">You can add new tags by typing them and pressing <kbd class="dark">Tab</kbd>.</span>
+    </div>
+</div>
+
+<div class="row col-sm-12">
+    <div class="col-sm-3">
+        <label for="libraries">Libraries:</label>
+    </div>
+   <div class="col-sm-9">
+        <select multiple="" id="libraries"/>
+    </div>
+</div>
+
+<div class="row col-sm-12">
+    <div class="col-sm-3">
+        <label for="tags">Tags:</label>
+    </div>
+   <div class="col-sm-9">
+        <select multiple="" id="tags"/>
+    </div>
+</div>
