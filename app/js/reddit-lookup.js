@@ -1,39 +1,10 @@
-// Invalid call results in 
-// {"kind": "Listing", "data": {"modhash": "xvze5vcdorfabc7d16f02af6e0cb4485b83e52f2a9b96c3bad", "children": [], "after": null, "before": null}}
 
-function lookupRedditPost() {
+function inspectURL(url) {
+    return R.last( R.split('/')(url) );
+}
 
-    $('#feedback').html('');
-    $('#post-preview > .contents').html('');
-
-    var url = $('#url-input').val();
-    
-    // Extract last part of the URL.
-    var last = R.last( R.split('/')(url) );
-    
-    var redditApiCall = "https://www.reddit.com/api/info/.json?id=t1_" + last;
-
-    $.ajax( redditApiCall )
-        .done( function(msg) {
-            if (messageIsValid(msg)) {
-                var body = msg.data.children[0].data.body;
-                var converter = new showdown.Converter(),
-                    html      = converter.makeHtml(body);
-                $('#post-preview > .contents').hide().html(html).fadeIn();
-                $('#confirm').slideDown(300);
-            }
-            else {
-                $('#feedback').hide().html("Message was invalid. See your browser's JavaScript log for the message.").fadeIn();
-                console.log("message:");
-                console.log(msg);
-            }
-        })
-        .fail( function( jqXHR, textStatus, errorThrown ) {
-            $('#feedback').hide().html("Something went wrong. See your browser's JavaScript log for the message.").fadeIn();
-            console.log(jqXHR);
-            console.log(textStatus);
-            console.log(errorThrown);
-        });
+function constructURL(data) {
+    return "https://www.reddit.com/api/info/.json?id=t1_" + data;
 }
 
 function messageIsValid( msg ) {
@@ -50,6 +21,11 @@ function messageIsValid( msg ) {
         );
 }
 
+function accessMessage( msg ) {
+    return msg.data.children[0].data.body;
+}
+
+/*
 function displayTags() {
     $('.metadata').slideDown(300);
     $('#confirm').prop('disabled','disabled');
@@ -57,24 +33,10 @@ function displayTags() {
     loadDropdowns();
     $('.row.url, .row.preview').slideUp(300);
 }
+*/
 
-/*
+var redditLookup = new Lookup( inspectURL, constructURL, messageIsValid, accessMessage, undefined );
 
-// Invalid call results in 
-// {"kind": "Listing", "data": {"modhash": "yq76cl7zsrb0175ffc2ebd994b454e1113abe78826c8d9e190", "children": [], "after": null, "before": null}}
-
-$.ajax( "https://www.reddit.com/api/info/.json?id=t1_cu1bvto" ).done( function(msg) {
-console.log(msg);
-var body = msg.data.children[0].data.body;
-
-console.log(body);
-
-var converter = new showdown.Converter(),
-    html      = converter.makeHtml(body);
-
-$('body').html(html);
-
-});
-
-// NICE
-    */
+function lookupRedditPost() {
+    redditLookup.lookup();
+}
