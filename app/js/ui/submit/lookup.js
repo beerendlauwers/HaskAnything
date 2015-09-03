@@ -18,10 +18,13 @@ function Lookup(urlInspector, urlConstructor, messageValidator, messageAccessor,
     }    
 }
 
+var messageValid = false;
+
 // The default urlCaller is an AJAX request that fetches markdown from the received message and renders it.
 Lookup.prototype.urlCaller = function(url,onDone,onFail) {
     var validator = this.messageValidator;
     var accessor = this.messageAccessor;
+    console.log("AJAX to: " + url);
     $.ajax( url )
         .done( function(msg) {
 
@@ -42,11 +45,15 @@ Lookup.prototype.urlCaller = function(url,onDone,onFail) {
                 // Display it.
                 $('#post-preview > .contents').hide().html(html).fadeIn();
                 $('#confirm').slideDown(300);
+
+                messageValid = true;
             }
             else {
                 $('#feedback').hide().html("Message was invalid. See your browser's JavaScript log for the message.").fadeIn();
                 console.log("message:");
                 console.log(msg);
+
+                messageValid = false;
             }
         })
         .fail( function( jqXHR, textStatus, errorThrown ) {
@@ -57,6 +64,8 @@ Lookup.prototype.urlCaller = function(url,onDone,onFail) {
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
+
+            messageValid = false;
         }); 
 };
 
