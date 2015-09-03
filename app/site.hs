@@ -250,6 +250,4 @@ generateFacetList nm p t =
 -- category stuff
 addCategoryText category = loadAndApplyTemplate (getTpl category)
  where 
-    getTpl "snippet" = "templates/categories/snippet.html"
-    getTpl "reddit-post" = "templates/categories/reddit-post.html"
-    getTpl x = error ("No template available for " ++ show x)
+    getTpl x = fromFilePath ("templates/categories/" ++ x ++ ".html")
