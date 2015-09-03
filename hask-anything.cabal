@@ -15,8 +15,17 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
+  exposed-modules:     HaskAnything.Internal.Content
+                     , HaskAnything.Internal.Tags
+                     , HaskAnything.Internal.Facet
+                     , HaskAnything.Internal.JSON
+                     , HaskAnything.Internal.Extra
   build-depends:       base >= 4.7 && < 5
                      , hakyll == 4.6.9.0
+                     , blaze-html
+                     , containers
+                     , aeson == 0.8.0.2
+                     , bytestring
   default-language:    Haskell2010
 
 executable hask-anything-exe
@@ -26,10 +35,6 @@ executable hask-anything-exe
   build-depends:       base
                      , hask-anything
                      , hakyll == 4.6.9.0
-                     , aeson == 0.8.0.2
-                     , blaze-html
-                     , containers
-                     , bytestring
                      , text == 1.2.0.6
   default-language:    Haskell2010
 

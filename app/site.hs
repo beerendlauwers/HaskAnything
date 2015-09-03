@@ -1,29 +1,14 @@
 --------------------------------------------------------------------------------
-{-# LANGUAGE OverloadedStrings, DeriveDataTypeable #-} -- DeriveDataTypeable is for facet stuff
+{-# LANGUAGE OverloadedStrings #-}
 import           Data.Monoid (mconcat,mappend,(<>))
 import           Hakyll
 import           Hakyll.Web.Tags
 
--- For the custom tag / category stuff
-import           Text.Blaze.Html                 (toHtml, toValue, (!))
-import           Text.Blaze.Html.Renderer.String (renderHtml)
-import qualified Text.Blaze.Html5                as H
-import qualified Text.Blaze.Html5.Attributes     as A
-
--- For the tag extraction stuff
-import           Data.List                       (nub,intersect)
-import           Data.Maybe                      (catMaybes,fromJust)
-import           Data.String                     (fromString)
-import           Data.Char                       (chr,toLower)
-import           Data.Aeson                      (encode)
-import           Data.ByteString.Lazy            (unpack,ByteString)
-
--- For the library stuff
-import qualified Data.Map                        as M
-import           Control.Monad                   (liftM)
-
--- For facet stuff
-import           Data.Data
+import           HaskAnything.Internal.Content
+import           HaskAnything.Internal.Tags
+import           HaskAnything.Internal.Facet
+import           HaskAnything.Internal.JSON
+import           HaskAnything.Internal.Extra     (toString,loadBodyLBS)
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -50,22 +35,10 @@ main = hakyll $ do
     categories <- buildCategories "content/*/*" (fromCapture "categories/*")
     
     libraries <- buildLibraries "content/*/*" (fromCapture "libraries/*")
-
-    match "content/snippet/*" $ do
-        route $ setExtension ""
-        let ctx = addTags tags $ addCategories categories $ addLibraries libraries $ postCtx
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/content/snippet.html"    ctx
-            >>= loadAndApplyTemplate "templates/default.html" ctx
-            >>= relativizeUrls
-            
-    match "content/reddit-post/*" $ do
-        route $ setExtension ""
-        let ctx = addTags tags $ addCategories categories postCtx
-        compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/content/reddit-post.html"    ctx
-            >>= loadAndApplyTemplate "templates/default.html" ctx
-            >>= relativizeUrls
+    
+    matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx)
+    matchContent "reddit-post" (addTags tags $ addCategories categories postCtx)
+    matchContent "reddit-thread" (addTags tags $ addCategories categories postCtx)
             
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
     tagsRules tags $ \tag pattern -> do
@@ -113,21 +86,10 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/categories.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
-                
-    create ["json/tags.json"] $ do
-        route idRoute
-        compile $ do
-            makeItem (encode $ getUniqueTags' tags)
-            
-    create ["json/libraries.json"] $ do
-        route idRoute
-        compile $ do
-            makeItem (encode $ getUniqueTags' libraries)
-            
-    create ["json/categories.json"] $ do
-        route idRoute
-        compile $ do
-            makeItem (encode $ getUniqueTags' categories)
+    
+    tagsToJSON "tags" tags
+    tagsToJSON "libraries" libraries
+    tagsToJSON "categories" categories
                 
     match "ui/elements/*" $ compile templateCompiler
     
@@ -175,79 +137,4 @@ postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
     defaultContext
-    
-addCategories :: Tags -> Context String -> Context String
-addCategories = extend "category"
-
-addTags :: Tags -> Context String -> Context String
-addTags = extend "tags"
-
-addLibraries :: Tags -> Context String -> Context String
-addLibraries = extendWith libraryTagsField "libraries"
-
-extend :: String -> Tags -> Context String -> Context String
-extend s tags = mappend (contentTagsField s tags)
-
-extendWith f s tags = mappend (f s tags)
-
-libraryTagsField = tagsFieldWith getLibraries simpleRenderLink mconcat
-
-contentTagsField = 
-    tagsFieldWith getTags simpleRenderLink mconcat
-    
-simpleRenderLink :: String -> (Maybe FilePath) -> Maybe H.Html
-simpleRenderLink _   Nothing         = Nothing
-simpleRenderLink tag (Just filePath) =
-  Just $ H.a ! A.href (toValue $ toUrl filePath) ! A.class_ "tag" $ toHtml tag
-
-getUniqueTags' :: Tags -> [String]
-getUniqueTags' (Tags m _ _) = nub $ map fst m
-
-matchTagsWithCategories' (Tags tags _ _) (Tags cats _ _) = matchTagsWithCategories tags cats
-
-matchTagsWithCategories tags cats = 
- map f cats
-  where 
-  f (cat,paths) = (cat, nub $ catMaybes $ concatMap (\c -> map (find c) tags ) cats)
-  find (cat,cpaths) (tag,tpaths) = 
-   if length (intersect cpaths tpaths) > 0
-    then Just tag
-    else Nothing                       
-
--- Library stuff
-getLibrary :: MonadMetadata m => Int -> Identifier -> m (Maybe String)
-getLibrary n identifier = getMetadataField identifier ("library-" ++ show n)
-
-getLibraries identifier = (liftM catMaybes) $ mapM (\(n,i) -> getLibrary n i) (zip [1..] (replicate 10 identifier))
-
-buildLibraries :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
-buildLibraries = buildTagsWith getLibraries
-
--- Lazy bytestring stuff
-loadBodyLBS :: Identifier -> Compiler ByteString
-loadBodyLBS = loadBody
-
-toString :: ByteString -> String
-toString = map (chr . fromEnum) . unpack
-
--- Facet stuff
-
-data ContentFacet = 
- ContentFacet { facetList :: String
-              , facetPath :: String
-              , facetName :: String
-              , facetPrettyName :: String
-              } deriving (Show,Data,Typeable)
-              
-generateFacetList :: String -> String -> Tags -> ContentFacet
-generateFacetList nm p t = 
- ContentFacet { facetList = toString $ encode $ getUniqueTags' t
-              , facetPath = p -- TODO: something nicer?
-              , facetName = (map toLower nm)
-              , facetPrettyName = nm
-              }
-              
--- category stuff
-addCategoryText category = loadAndApplyTemplate (getTpl category)
- where 
-    getTpl x = fromFilePath ("templates/categories/" ++ x ++ ".html")
+                       
