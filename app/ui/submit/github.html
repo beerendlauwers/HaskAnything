@@ -1,41 +1,16 @@
 ---
-title: Submit a Reddit post
+title: Submit a Github repository
 ---
 
 <script src="/vendor/showdown/showdown.min.js"></script>
 <script src="/js/ui/submit/lookup.js"></script>
-<script src="/js/reddit-lookup.js"></script>
+<script src="/js/github-lookup.js"></script>
 <script src="/vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
 <link href="/css/ui/submit/common.css" rel="stylesheet"/>
 
 <script type="text/javascript">
     jQuery(document).ready(function () {
-
-        var validateNext = function(tab,navigation,index) {
-            // Validate
-            if (index == 1 && !messageValid) {
-                return false;
-            }
-
-            if (index == 1) {
-                loadDropdowns();
-            }
-        };
-
-        var validateTabClick = function(tab,navigation,index) {
-            // Validate
-            if (index == 0 && !messageValid) {
-                return false;
-            }
-        };
-
-        jQuery('#rootwizard').bootstrapWizard({
-            onNext: validateNext,
-            onTabClick: validateTabClick,
-            onTabShow: function (tab, navigation, index) {
-
-            }
-        });
+        jQuery('#rootwizard').bootstrapWizard();
     });
 </script>
 
@@ -48,7 +23,7 @@ title: Submit a Reddit post
         <div class="navbar-inner">
             <div class="container">
                 <ul>
-                    <li><a href="#tab1" data-toggle="tab">1. URL &amp; preview</a></li>
+                    <li><a href="#tab1" data-toggle="tab">1. Repository</a></li>
                     <li><a href="#tab2" data-toggle="tab">2. Metadata</a></li>
                     <li><a href="#tab3" data-toggle="tab">3. Submit</a></li>
                 </ul>
@@ -62,22 +37,19 @@ title: Submit a Reddit post
                     <label for="url-input">URL:</label>
                 </div>
                 <div class="col-sm-9">
-                    <input id="url-input" type="text"/>
-                    <span class="info">Click on the permalink button in the bottom left of a post and copy that URL in here. Example:</span>
-                    <div id="permalink-example">
-                        <img src="/images/permalink.png"/>
-                    </div>
+                    <input id="url-input" placeholder="https://www.github.com/example-user/example-repo" type="text"/>
+                    <span class="info">Copy and paste the Github repository URL here</span>
                 </div>
             </div>
             <div class="row preview col-sm-12">
                 <div class="col-sm-9 col-sm-push-3">
-                    <button type="button" class="preview" onclick="lookupRedditPost();return false;">Preview</button>
+                    <button type="button" class="preview" onclick="lookupGithubRepository();return false;">Fetch repository details</button>
                     <span id="feedback"></span>
                 </div>
             </div>
             <div class="row col-sm-12">
                 <div class="col-sm-3">
-                    <span>Preview</span>
+                    <span>Description</span>
                 </div>
                 <div class="col-sm-9">
                     <div id="post-preview"><div class="contents"></div></div>

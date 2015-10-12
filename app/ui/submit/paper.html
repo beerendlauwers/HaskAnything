@@ -1,0 +1,50 @@
+---
+title: Submit a paper
+---
+
+<script src="/vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+<link href="/css/ui/submit/common.css" rel="stylesheet"/>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery('#rootwizard').bootstrapWizard();
+    });
+</script>
+
+<div class="col-sm-12">
+    <h2>$title$</h2>
+</div>
+
+<div id="rootwizard">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul>
+                    <li><a href="#tab1" data-toggle="tab">1. Paper</a></li>
+                    <li><a href="#tab2" data-toggle="tab">2. Metadata</a></li>
+                    <li><a href="#tab3" data-toggle="tab">3. Submit</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane" id="tab1">
+            $partial("ui/elements/title-paper.html")$
+            $partial("ui/elements/url-paper.html")$
+            $partial("ui/elements/authors-paper.html")$
+            $partial("ui/elements/abstract-paper.html")$
+        </div>
+        <div class="tab-pane" id="tab2">
+            $partial("ui/elements/metadata.html")$
+        </div>
+        <div class="tab-pane" id="tab3">
+            3
+        </div>
+        <ul class="pager wizard">
+            <li class="previous first" style="display:none;"><a href="#">First</a></li>
+            <li class="previous"><a href="#">Previous</a></li>
+            <li class="next last" style="display:none;"><a href="#">Last</a></li>
+            <li class="next"><a href="#">Next</a></li>
+        </ul>
+    </div>
+</div>
