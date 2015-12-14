@@ -3,4 +3,4 @@ packages:
 - '.'
 extra-deps:
 - Win32-notify-0.3.0.1
-resolver: lts-2.21
+resolver: lts-3.18

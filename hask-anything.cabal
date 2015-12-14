@@ -20,12 +20,18 @@ library
                      , HaskAnything.Internal.Facet
                      , HaskAnything.Internal.JSON
                      , HaskAnything.Internal.Extra
+                     , HaskAnything.Internal.Field
+                     , HaskAnything.Internal.Po.Parse
+                     , HaskAnything.Internal.Po
   build-depends:       base >= 4.7 && < 5
-                     , hakyll == 4.6.9.0
+                     , hakyll == 4.7.4.0
                      , blaze-html
                      , containers
                      , aeson == 0.8.0.2
                      , bytestring
+                     , parsec
+                     , mtl
+                     , text
   default-language:    Haskell2010
 
 executable hask-anything-exe
@@ -34,8 +40,8 @@ executable hask-anything-exe
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , hask-anything
-                     , hakyll == 4.6.9.0
-                     , text == 1.2.0.6
+                     , hakyll == 4.7.4.0
+                     , text
   default-language:    Haskell2010
 
 test-suite hask-anything-test
