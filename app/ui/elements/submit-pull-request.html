@@ -1,0 +1,24 @@
+<script src="/vendor/handlebars/handlebars.js"></script>
+<script src="/js/generate-file-preview.js"></script>
+
+<div class="row col-sm-12">
+    <div class="col-sm-12">
+        <button type="button" onclick="generateFilePreview('$handlebar-template$');">Generate a preview of the generated file</button>
+    </div>
+</div>
+
+<div class="row col-sm-12">
+    <div class="col-sm-3">
+        <label for="submit-pull-request-preview">Preview:</label>
+    </div>
+   <div class="col-sm-9">
+        <textarea id="submit-pull-request-preview"/>
+        <span class="description">Preview of the generated file.</span>
+    </div>
+</div>
+
+<div class="row col-sm-12">
+    <div class="col-sm-12">
+        <button type="button" onclick="submitPullRequest()">Submit a pull request</button>
+    </div>
+</div>
