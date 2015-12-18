@@ -1,5 +1,6 @@
 ---
 title: Submit a presentation
+handlebar-template: presentation
 ---
 
 <script src="/vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
@@ -9,6 +10,10 @@ title: Submit a presentation
     jQuery(document).ready(function () {
         jQuery('#rootwizard').bootstrapWizard();
     });
+</script>
+
+<script id="handlebars-template" type="text/x-handlebars-template">
+$partial("templates/handlebars/presentation.handlebars")$
 </script>
 
 <div class="col-sm-12">
@@ -39,7 +44,7 @@ title: Submit a presentation
             $partial("ui/elements/metadata.html")$
         </div>
         <div class="tab-pane" id="tab3">
-            3
+            $partial("ui/elements/submit-pull-request.html")$
         </div>
         <ul class="pager wizard">
             <li class="previous first" style="display:none;"><a href="#">First</a></li>
