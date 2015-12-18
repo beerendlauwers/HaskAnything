@@ -1,0 +1,11 @@
+---
+title: Pandoc
+name: Pandoc
+tags: conversion
+hackage: https://hackage.haskell.org/package/pandoc
+stackage: https://www.stackage.org/package/pandoc
+source: https://github.com/jgm/pandoc
+authors: John MacFarlane
+---
+
+Test
