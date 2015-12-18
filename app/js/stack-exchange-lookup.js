@@ -34,7 +34,16 @@ function accessMessage( msg ) {
     return msg.items[0].body_markdown;
 }
 
-var stackExchangeLookup = new Lookup( inspectURL, constructURL, messageIsValid, accessMessage, undefined );
+function renderMessage( contents ) {
+    // Convert it to markdown.
+    var converter = new showdown.Converter(),
+        html      = converter.makeHtml(contents);
+        
+    // Display it.
+    jQuery('#post-preview > .contents').hide().html(html).fadeIn();
+}
+
+var stackExchangeLookup = new Lookup( inspectURL, constructURL, messageIsValid, accessMessage, undefined, renderMessage );
 
 function lookupStackExchangePost() {
     stackExchangeLookup.lookup();

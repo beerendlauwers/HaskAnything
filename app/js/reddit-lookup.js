@@ -25,17 +25,26 @@ function accessMessage( msg ) {
     return msg.data.children[0].data.body;
 }
 
+function renderMessage( contents ) {
+    // Convert it to markdown.
+    var converter = new showdown.Converter(),
+        html      = converter.makeHtml(contents);
+        
+    // Display it.
+    jQuery('#post-preview > .contents').hide().html(html).fadeIn();
+}
+
 /*
 function displayTags() {
-    $('.metadata').slideDown(300);
-    $('#confirm').prop('disabled','disabled');
-    $('#confirmed').fadeIn();
+    jQuery('.metadata').slideDown(300);
+    jQuery('#confirm').prop('disabled','disabled');
+    jQuery('#confirmed').fadeIn();
     loadDropdowns();
-    $('.row.url, .row.preview').slideUp(300);
+    jQuery('.row.url, .row.preview').slideUp(300);
 }
 */
 
-var redditLookup = new Lookup( inspectURL, constructURL, messageIsValid, accessMessage, undefined );
+var redditLookup = new Lookup( inspectURL, constructURL, messageIsValid, accessMessage, undefined, renderMessage );
 
 function lookupRedditPost() {
     redditLookup.lookup();

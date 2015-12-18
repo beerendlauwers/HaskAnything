@@ -8,17 +8,17 @@ var dropdowns = [
 }
 
 function loadMetaDataDropdown( url, id ) {
-    $.ajax( url ) // TODO: find a fix?
+    jQuery.ajax( url ) // TODO: find a fix?
         .done( function(data) {
             var options = R.map( function(item) { return '<option value="' + item + '">' + item + '</option>'; } )( data );
-            $(id).append(options);
-            $(id).chosen({ width: '100%' });
-            $(".chosen-container-multi").find("input").on('keydown', function (evt) {
+            jQuery(id).append(options);
+            jQuery(id).chosen({ width: '100%' });
+            jQuery(".chosen-container-multi").find("input").on('keydown', function (evt) {
                 var stroke;
                 stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
                 if (stroke == 9) { // 9 = tab key
-                    $(id).append('<option value="' + $(this).val() + '" selected="selected">' + $(this).val() + '</option>');
-                    $(id).trigger('chosen:updated');
+                    jQuery(id).append('<option value="' + jQuery(this).val() + '" selected="selected">' + jQuery(this).val() + '</option>');
+                    jQuery(id).trigger('chosen:updated');
                     evt.preventDefault();
                 }
             });

@@ -1,5 +1,5 @@
 function getJSONData( type ) {
-    $.getJSON("json/" + type + ".json", function (json) {
+    jQuery.getJSON("json/" + type + ".json", function (json) {
         // How do I get this back???
     });
 }

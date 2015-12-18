@@ -1,4 +1,4 @@
-function Lookup(urlInspector, urlConstructor, messageValidator, messageAccessor, urlCaller) {
+function Lookup(urlInspector, urlConstructor, messageValidator, messageAccessor, urlCaller, messageRenderer) {
 
     /* String -> a */
     this.urlInspector = urlInspector;
@@ -14,16 +14,21 @@ function Lookup(urlInspector, urlConstructor, messageValidator, messageAccessor,
     
     /* String -> JSON */
     if (typeof urlCaller === 'function') {
+        // If this isn't set, we use the default urlCaller defined below.
         this.urlCaller = urlCaller;
-    }    
+    }
+    
+    /* IO () */
+    this.messageRenderer = messageRenderer;
 }
 
 var messageValid = false;
 
-// The default urlCaller is an AJAX request that fetches markdown from the received message and renders it.
+// The default urlCaller is an AJAX request that fetches something from the received message and renders it.
 Lookup.prototype.urlCaller = function(url,onDone,onFail) {
     var validator = this.messageValidator;
     var accessor = this.messageAccessor;
+    var renderer = this.messageRenderer;
     console.log("AJAX to: " + url);
     $.ajax( url )
         .done( function(msg) {
@@ -36,15 +41,10 @@ Lookup.prototype.urlCaller = function(url,onDone,onFail) {
             if (validator(msg)) {
             
                 // It's valid! Let's fetch the interesting bits.
-                var body = accessor(msg);
+                var content = accessor(msg);
                 
-                // Convert it to markdown.
-                var converter = new showdown.Converter(),
-                    html      = converter.makeHtml(body);
-                    
-                // Display it.
-                $('#post-preview > .contents').hide().html(html).fadeIn();
-                $('#confirm').slideDown(300);
+                // Do something with the interesting bits so we get something on screen.
+                renderer( content );
 
                 messageValid = true;
             }
