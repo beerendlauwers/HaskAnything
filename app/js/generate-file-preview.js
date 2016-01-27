@@ -23,3 +23,7 @@ function generateFilePreview(templateName) {
     // Return
     return preview;
 }
+
+function displayFilePreview(templateName,selector) {
+    jQuery(selector).text( generateFilePreview(templateName) );
+}
