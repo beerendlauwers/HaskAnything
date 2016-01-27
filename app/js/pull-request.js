@@ -2,6 +2,17 @@ function writeToConsole( content ) {
     console.log(content);
 }
 
+function naiveHash(str) {
+  var hash = 0, i, chr, len;
+  if (str.length === 0) return hash;
+  for (i = 0, len = str.length; i < len; i++) {
+    chr   = str.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+}
+
 function submitHaskAnythingPullRequest( userToken, userName, data ) {
     // We'll use this as a simple log.
     var logWriter = writeToConsole;
@@ -15,9 +26,14 @@ function submitHaskAnythingPullRequest( userToken, userName, data ) {
     logWriter("Opened up a connection to Github.");
     
     // This is the repository that will be forked and a pull request submitted against.
-    var master = { username: "beerendlauwers", repo: "hask-anything" };
+    //var master = { username: "beerendlauwers", repo: "HaskAnything" };
+    var master = { username: "uitgeleend", repo: "testing" };
     
     var masterHaskAnything = github.getRepo(master.username, master.repo);
+    
+    // This is the branch that we will be working in for this particular document.
+    // We need a separate branch for each pull request, otherwise a single pull request would get polluted with a bunch of commits.
+    var forkBranchName = "document-" + userName + "-" + data.fileType + "-" + naiveHash(data.fileContents);
     
     // First, check if we've already forked it.
     var maybeFork = github.getRepo(userName, master.repo);
@@ -50,74 +66,121 @@ function submitHaskAnythingPullRequest( userToken, userName, data ) {
             
             var justFork = maybeFork;
             
-            logWriter("Checking if we've already written this data to this file...");
-            
-            // Check if we've already committed these *exact* file contents to this *exact* file name.
-            justFork.read('master', data.fileName, function( error, result ) {
-                var skipCommit = false;
-            
-                if (error && error !== "not found") {
-                    logWriter("Something went wrong during the writing of the commit. The error data follows:");
-                    logWriter('"' + error + '"');
-                    return;
-                }
-                else if (result && result === data.fileContents) {
-                    logWriter("File \"" + data.fileName + "\" already contains this data. Skipping the commit.");
-                    skipCommit = true;
-                }
+            // Check if we already have a fresh branch for this pull request.
+            justFork.listBranches( function(error,branches) {
                 
-                var doPullRequest = function() {
-                    // Ok, create a pull request for this commit.
-                    var pull = {
-                      title: data.pullRequestName,
-                      body: data.pullRequestBody,
-                      base: "master",
-                      head: userName + ":" + "master"
-                    };
-                    
-                    logWriter("Creating pull request \"" + pull.title + "\"...");
-                    
-                    masterHaskAnything.createPullRequest( pull, function(error, pullRequest) {
-                        if (error) {
-                            logWriter("Something went wrong during the creation of the pull request. The error data follows:");
-                            
-                            if (error.error == 422) {
-                                logWriter(error.request.responseText);
+                var commitAndPullRequestCode = function() {
+                    logWriter("Checking if we've already written this data to this file...");
+                        
+                        // Check if we've already committed these *exact* file contents to this *exact* file name.
+                        justFork.read(forkBranchName, data.fileName, function( error, result ) {
+                            var skipCommit = false;
+                        
+                            if (error && error !== "not found") {
+                                logWriter("Something went wrong during the writing of the commit. The error data follows:");
+                                logWriter('"' + error + '"');
+                                return;
+                            }
+                            else if (result && result === data.fileContents) {
+                                logWriter("File \"" + data.fileName + "\" already contains this data. Skipping the commit.");
+                                skipCommit = true;
                             }
                             
-                            logWriter(error); 
-                        }
-                        else {
-                            logWriter("Pull request \"" + pull.title + "\" created.");
-                            logWriter("Done!");
-                        }
-                    });
+                            var doPullRequest = function() {
+                                // Ok, create a pull request for this commit.
+                                var pull = {
+                                  title: data.pullRequestName,
+                                  body: data.pullRequestBody,
+                                  base: "master",
+                                  head: userName + ":" + forkBranchName
+                                };
+                                
+                                // See if there's already a pull request open for this branch.
+                                masterHaskAnything.listPulls('open', function(error, pullRequests) {
+                                   
+                                   if ( error === null) {
+                                       var f = function( pullRequestObj ) {
+                                           return pullRequestObj.head.ref === forkBranchName;
+                                       };
+                                       var results = R.filter(f, pullRequests);
+                                       
+                                       if ( results.length === 0 ) {
+                                        logWriter("Creating pull request \"" + pull.title + "\"...");
+                                        
+                                        masterHaskAnything.createPullRequest( pull, function(error, pullRequest) {
+                                            if (error) {
+                                                logWriter("Something went wrong during the creation of the pull request. The error data follows:");
+                                                
+                                                if (error.error == 422) {
+                                                    logWriter(error.request.responseText);
+                                                }
+                                                
+                                                logWriter(error); 
+                                            }
+                                            else {
+                                                logWriter("Pull request \"" + pull.title + "\" created.");
+                                                logWriter("Done!");
+                                            }
+                                        });
+                                       }
+                                       else {
+                                           logWriter("A pull request for branch " + forkBranchName + " already exists.");
+                                       }
+                                   }
+                                   else {
+                                       logWriter("Something went wrong while trying to get the list of pull requests. The error data follows:");
+                                       logWriter(error);
+                                   }
+                                });
+                                
+
+                            }
+                                
+                            if (!skipCommit) {
+                                // Let's write a commit to the forked repository now.
+                                logWriter("Writing the commit " + data.commitMessage + " to the " + forkBranchName + " branch of the fork...");
+                                
+                                justFork.write(forkBranchName, data.fileName, data.fileContents, data.commitMessage, function(err) {
+                                    if (error && error !== "not found") {
+                                        logWriter("Something went wrong during the writing of the commit. The error data follows:");
+                                        logWriter(error);
+                                        return;
+                                    }
+                                    else {
+                                        logWriter("Commit " + data.commitMessage + " written.");
+                                        doPullRequest();
+                                    }
+                                });
+                            }
+                            else {
+                                doPullRequest();
+                            }
+                        });
                 }
-                    
-                if (!skipCommit) {
-                    // Let's write a commit to the forked repository now.
-                    logWriter("Writing the commit " + data.commitMessage + " to the master branch of the fork...");
-                    
-                    justFork.write('master', data.fileName, data.fileContents, data.commitMessage, function(err) {
-                        if (error && error !== "not found") {
-                            logWriter("Something went wrong during the writing of the commit. The error data follows:");
+                
+                if ( R.contains(forkBranchName, branches) ) {
+                    // We already have a branch for this pull request.
+                    logWriter("Branch " + forkBranchName + " already exists.");
+                    commitAndPullRequestCode();
+                }
+                else {
+                    // Create a new branch for this document.
+                    justFork.branch("master",forkBranchName, function(error,something) {
+                        
+                        if ( error !== null ) {
+                            logWriter("Something went wrong during the branching of the master branch of the forked repository to a new branch called " + forkBranchName + ". The error data follows:");
                             logWriter(error);
                             return;
                         }
                         else {
-                            logWriter("Commit " + data.commitMessage + " written.");
-                            doPullRequest();
+                            commitAndPullRequestCode();
                         }
                     });
-                }
-                else {
-                    doPullRequest();
-                }
+                }              
             });
-            
         }
         else {
-            logWriter("Something went wrong during while checking if the " + msater.repo + " repository was forked. The error data follows:");
+            logWriter("Something went wrong during while checking if the " + master.repo + " repository was forked. The error data follows:");
             logWriter(error);
         }
     });
