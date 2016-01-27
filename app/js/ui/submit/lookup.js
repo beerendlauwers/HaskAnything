@@ -30,7 +30,7 @@ Lookup.prototype.urlCaller = function(url,onDone,onFail) {
     var accessor = this.messageAccessor;
     var renderer = this.messageRenderer;
     console.log("AJAX to: " + url);
-    $.ajax( url )
+    jQuery.ajax( url )
         .done( function(msg) {
 
             if (typeof onDone === 'function') {
@@ -49,7 +49,7 @@ Lookup.prototype.urlCaller = function(url,onDone,onFail) {
                 messageValid = true;
             }
             else {
-                $('#feedback').hide().html("Message was invalid. See your browser's JavaScript log for the message.").fadeIn();
+                jQuery('#feedback').hide().html("Message was invalid. See your browser's JavaScript log for the message.").fadeIn();
                 console.log("message:");
                 console.log(msg);
 
@@ -60,7 +60,7 @@ Lookup.prototype.urlCaller = function(url,onDone,onFail) {
             if (typeof onDone === 'function') {
                 onFail(jqXHR, textStatus, errorThrown);
             }
-            $('#feedback').hide().html("Something went wrong. See your browser's JavaScript log for the message.").fadeIn();
+            jQuery('#feedback').hide().html("Something went wrong. See your browser's JavaScript log for the message.").fadeIn();
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
@@ -70,10 +70,10 @@ Lookup.prototype.urlCaller = function(url,onDone,onFail) {
 };
 
 Lookup.prototype.lookup = function(onDone, onFail) {
-    $('#feedback').html('');
-    $('#post-preview > .contents').html('');
+    jQuery('#feedback').html('');
+    jQuery('#post-preview > .contents').html('');
 
-    var url = $('#url-input').val();
+    var url = jQuery('#url-input').val();
     
     // We typically extract a bunch of information from the URL the user gave us.
     var result = this.urlInspector( url );
