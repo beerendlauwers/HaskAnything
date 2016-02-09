@@ -3,24 +3,44 @@
 <script src="/vendor/github/github.js"></script>
 <script src="/js/pull-request.js"></script>
 
+<script>
+
+var testdata = { fileName:"a/folder/testing", fileContents:"testing dem flows", pullRequestName:"Pull Request Test", pullRequestBody:"Body of the pull request.", commitMessage:"adding this test commit.", fileType:"testerdoc" };
+
+</script>
+
 <div class="row col-sm-12">
     <div class="col-sm-12">
-        <button type="button" onclick="displayFilePreview('$handlebar-template$','#submit-pull-request-preview');">Generate a preview of the generated file</button>
+        <button type="button" onclick="displayFilePreview('$handlebar-template$','#submit-pull-request-preview','#title-proposed');">Generate a preview of the generated file</button>
     </div>
 </div>
 
 <div class="row col-sm-12">
     <div class="col-sm-3">
-        <label for="submit-pull-request-preview">Preview:</label>
+        <label for="title-proposed">Title suggestion:</label>
+    </div>
+    <div class="col-sm-9">
+        <input type="text" id="title-proposed"/>
+        <span class="description">Proposed title suggestion. You can change this, but only use lowercase letters and dashes.</span>
+    </div>
+    <div class="col-sm-3">
+        <label for="submit-pull-request-preview">File preview:</label>
     </div>
    <div class="col-sm-9">
         <textarea id="submit-pull-request-preview"/>
         <span class="description">Preview of the generated file.</span>
-    </div>
+   </div>
 </div>
 
 <div class="row col-sm-12">
     <div class="col-sm-12">
-        <button type="button" onclick="submitPullRequest()">Submit a pull request</button>
+        <button type="button" onclick="collectDataAndSubmitPullRequest('$handlebar-template$','#title-proposed')">Submit a pull request</button>
+    </div>
+</div>
+
+<div class="row col-sm-12">
+   <div class="col-sm-12">
+        <span class="feedback-github">Diagnostic information about the connection with Github will appear here.<span>
+        <textarea id="submit-pull-request-feedback"/>
     </div>
 </div>
