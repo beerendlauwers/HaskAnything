@@ -1,5 +1,27 @@
+
+
+
 function writeToConsole( content ) {
     console.log(content);
+}
+
+function writeToHtmlArea( content ) {
+    var selector = jQuery('#submit-pull-request-feedback');
+    
+    selector.val( selector.val() + '\n' + content );
+}
+
+function collectDataAndSubmitPullRequest(templateName,titleSelector) {
+    var data = {};
+    data.fileContents = generateFilePreview(templateName);
+    data.fileType = templateName;
+    data.commitMessage = "Commit via the Hask Anything web interface.";
+    data.fileName = getFinalFileTitle(templateName,titleSelector);
+    data.pullRequestName: "Automatic pull request for " + templateName + " " + jQuery(titleSelector).val();
+    data.pullRequestBody: "Created via the Hask Anything web interface. If this contains copyrighted material, please ask the author if we are allowed to replicate it here with attribution.";
+    
+    
+    submitHaskAnythingPullRequest('73028e572a3b8511e38b18f3003b8c8b9db06264','beerendlauwers',data, writeToHtmlArea);
 }
 
 function naiveHash(str) {
@@ -13,10 +35,7 @@ function naiveHash(str) {
   return hash;
 }
 
-function submitHaskAnythingPullRequest( userToken, userName, data ) {
-    // We'll use this as a simple log.
-    var logWriter = writeToConsole;
-
+function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
     // Open up the connection to Github.
     var github = new Github({
         token: userToken,
