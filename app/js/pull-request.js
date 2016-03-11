@@ -21,7 +21,7 @@ function collectDataAndSubmitPullRequest(templateName,titleSelector) {
     data.pullRequestBody: "Created via the Hask Anything web interface. If this contains copyrighted material, please ask the author if we are allowed to replicate it here with attribution.";
     
     
-    submitHaskAnythingPullRequest('73028e572a3b8511e38b18f3003b8c8b9db06264','beerendlauwers',data, writeToHtmlArea);
+    submitHaskAnythingPullRequest(globals.userToken,globals.userName,data, writeToHtmlArea);
 }
 
 function naiveHash(str) {
