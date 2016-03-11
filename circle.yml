@@ -1,5 +1,11 @@
 # This is the configuration file for circleci.com (CI which builds the site)
 
+cache:
+  directories:
+  - $HOME/.ghc
+  - $HOME/.cabal
+  - $HOME/.stack
+
 machine:
   # Bug with GCC caused reliable builds to break: http://stackoverflow.com/a/34811594
   pre:
