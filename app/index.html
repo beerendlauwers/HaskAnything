@@ -30,16 +30,39 @@ title: Home
           document.getElementById(facetName)
         );
     }
-    
 </script>
 
+
 <div class="col-md-12 col-sm-12">
+    <div class="col-md-12 col-sm-12 intro">
+        <h1>Hask Anything is a website aimed at collecting and organizing the collective knowledge of the Haskell community: papers, blog posts, code snippets, gists, StackOverflow answers, Reddit threads, presentations, videos, tutorials and so on.</h1>
+    </div>
     <div class="col-md-12 col-sm-12">
-        <h2>Find knowledge...</h2>
+        <h2 class="ubuntu-font center">Discover knowledge</h2>
     </div>
     <div class="row">
     $for(facetList)$
         $partial("templates/tags/taglist.html")$
     $endfor$
     </div>
+    <div class="col-md-12 col-sm-12">
+        <h2 class="ubuntu-font center">Add or improve knowledge</h2>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h3>Add new content via the website</h3>
+        <span>You can submit new entries for content directly via the website: $categories$</span>
+        <ul>
+            <li></li>
+        </ul>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h3>Improve existing content via the website</h3>
+        <span>Every piece of content has a link to its <a href="https://github.com/beerendlauwers/HaskAnything" target="_blank">Github source</a>. You can modify the plain-text version of the content directly and propose it as an improvement.</span>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h3>Contribute via Github</h3>
+        <span>The website-based submission process uses <a href="https://help.github.com/articles/using-pull-requests/">Github pull requests</a> behind the scenes. Of course, you can propose pull requests manually, too.</span>
+    </div>
+        
+        
 </div>
