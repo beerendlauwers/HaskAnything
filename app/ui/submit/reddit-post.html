@@ -40,6 +40,8 @@ handlebar-template: reddit-post
     });
 </script>
 
+<script id="handlebars-template" type="text/x-handlebars-template">$partial("templates/handlebars/reddit-post.handlebars")$</script>
+
 <div class="col-sm-12">
     <h2>$title$</h2>
 </div>
@@ -84,12 +86,17 @@ handlebar-template: reddit-post
                     <div id="post-preview"><div class="contents"></div></div>
                 </div>
             </div>
+            <input type="hidden" id="subreddit"/>
+            <input type="hidden" id="post-body"/>
+            <input type="hidden" id="author"/>
+            <input type="hidden" id="unique-id"/>
+            <input type="hidden" id="title"/>
         </div>
         <div class="tab-pane" id="tab2">
             $partial("ui/elements/metadata.html")$
         </div>
         <div class="tab-pane" id="tab3">
-            3
+            $partial("ui/elements/submit-pull-request.html")$
         </div>
         <ul class="pager wizard">
             <li class="previous first" style="display:none;"><a href="#">First</a></li>

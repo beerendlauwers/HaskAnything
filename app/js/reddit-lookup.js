@@ -21,17 +21,24 @@ function messageIsValid( msg ) {
         );
 }
 
-function accessMessage( msg ) {
-    return msg.data.children[0].data.body;
+function accessMessage( msg ) {   
+    return msg.data.children[0].data;
 }
 
 function renderMessage( contents ) {
     // Convert it to markdown.
     var converter = new showdown.Converter(),
-        html      = converter.makeHtml(contents);
+        html      = converter.makeHtml(contents.body);
         
     // Display it.
     jQuery('#post-preview > .contents').hide().html(html).fadeIn();
+    
+    // We'll also want to save a whole bunch of other data in hidden form fields.
+    jQuery('#subreddit').val( contents.subreddit );
+    jQuery('#post-body').val( contents.body );
+    jQuery('#author').val( contents.author );
+    jQuery('#unique-id').val( contents.name );
+    jQuery('#title').val( generateFileTitle( "reddit-post" ) );
 }
 
 /*
@@ -48,4 +55,14 @@ var redditLookup = new Lookup( inspectURL, constructURL, messageIsValid, accessM
 
 function lookupRedditPost() {
     redditLookup.lookup();
+}
+
+function generateFileTitle(templateName) {
+    var str = jQuery('#unique-id').val();
+    
+    if (!str) {
+        return;
+    }
+    
+    return templateName + "-" + str.replace(/\W+/g, '-').toLowerCase() + ".md";
 }
