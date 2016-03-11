@@ -5,6 +5,7 @@ import qualified Data.List                      as L
 import           Hakyll
 import           Hakyll.Web.Tags
 import           Control.Applicative           (empty)
+import           Data.List.Split               (splitOn)
 
 import           HaskAnything.Internal.Content
 import           HaskAnything.Internal.Tags
@@ -43,6 +44,7 @@ main = hakyll $ do
     matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx)
     matchContent "reddit-post" (addTags tags $ addCategories categories postCtx)
     matchContent "reddit-thread" (addTags tags $ addCategories categories postCtx)
+    matchContent "presentation" (addTags tags $ addCategories categories postCtx)
     matchContent "package" (addTags tags $ addCategories categories packageCtx)
 
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
@@ -52,7 +54,7 @@ main = hakyll $ do
         -- Copied from posts, need to refactor
         route idRoute
         compile $ do
-            alltags <- recentFirst =<< loadAll pattern
+            alltags <- loadAll pattern
             let ctx = constField "title" title <>
                         listField "alltags" (addTags tags postCtx) (return alltags) <>
                         defaultContext
@@ -67,7 +69,7 @@ main = hakyll $ do
         -- Copied from posts, need to refactor
         route idRoute
         compile $ do
-            allLibraries <- recentFirst =<< loadAll pattern
+            allLibraries <- loadAll pattern
             let ctx = constField "title" title <>
                         listField "alllibraries" (addTags tags postCtx) (return allLibraries) <>
                         defaultContext
@@ -82,7 +84,7 @@ main = hakyll $ do
         -- Copied from posts, need to refactor
         route idRoute
         compile $ do
-            allCategories <- recentFirst =<< loadAll pattern
+            allCategories <- loadAll pattern
             let ctx = constField "title" title <>
                         listField "allcategories" (addTags tags $ addCategories categories $ postCtx) (return allCategories) <>
                         defaultContext
@@ -152,8 +154,8 @@ main = hakyll $ do
 --------------------------------------------------------------------------------
 postCtx :: Context String
 postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
     githubUrl `mappend`
+    generateVideoEmbed `mappend`
     defaultContext
 
 getFieldFromMetadata :: String -> Context String
@@ -165,9 +167,29 @@ getManyFieldsFromMetaData keys = foldr1 mappend (map getFieldFromMetadata keys)
 packageCtx :: Context String
 packageCtx = getManyFieldsFromMetaData ["name","authors","source","hackage","stackage","synopsis"]  <> postCtx
 
+videoCtx :: Context String 
+videoCtx = getManyFieldsFromMetaData ["url-video","url-slides","authors","source"]  <> postCtx
+
 githubUrl :: Context String
 githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" ++) . toFilePath  . itemIdentifier
-                       
+            
+generateVideoEmbed :: Context String
+generateVideoEmbed = functionField "generateVideoEmbed" $ \args item -> 
+  case args of
+    [url] -> do return (selectType url)
+    [url,width,height] -> do return (selectTypeWidthHeight url width height)
+    _   -> fail "generateVideoEmbed expects either a single URL or a URL plus width and height"
+ where 
+  youtubeEmbedUrl url = (("https://www.youtube.com/embed/" ++) . head . drop 1 . splitOn "?v=") url
+  selectType url = 
+   if L.isInfixOf "youtube" url 
+   then ("<div class=\"youtube-fix\"><iframe width=\"100%\" src=\"" ++ youtubeEmbedUrl url ++ "\" frameborder=\"0\" class=\"video\" allowfullscreen></iframe></div>")
+   else ""
+  selectTypeWidthHeight url width height = 
+   if L.isInfixOf "youtube" url 
+   then  ("<iframe width=\"" ++ width ++ "\" height=\"" ++ height ++ "\" src=\"" ++ youtubeEmbedUrl url ++ "\" class=\"video\" frameborder=\"0\" allowfullscreen></iframe>")
+   else ""
+          
                        
 -- This is also in hakyll-extra, have to hook it up to this project.
 relativizeUrl :: Context a
