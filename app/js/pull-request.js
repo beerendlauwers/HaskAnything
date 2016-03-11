@@ -17,9 +17,8 @@ function collectDataAndSubmitPullRequest(templateName,titleSelector) {
     data.fileType = templateName;
     data.commitMessage = "Commit via the Hask Anything web interface.";
     data.fileName = getFinalFileTitle(templateName,titleSelector);
-    data.pullRequestName: "Automatic pull request for " + templateName + " " + jQuery(titleSelector).val();
-    data.pullRequestBody: "Created via the Hask Anything web interface. If this contains copyrighted material, please ask the author if we are allowed to replicate it here with attribution.";
-    
+    data.pullRequestName = "Automatic pull request for " + templateName + " " + jQuery(titleSelector).val();
+    data.pullRequestBody = "Created via the Hask Anything web interface. If this contains copyrighted material, please ask the author if we are allowed to replicate it here with attribution.";
     
     submitHaskAnythingPullRequest(globals.userToken,globals.userName,data, writeToHtmlArea);
 }
