@@ -2,18 +2,18 @@
 function generateFilePreview(templateName) {
     
     // Fetch elements
-    var inputSelector = jQuery(':input').not('#submit-pull-request-preview, #title-proposed, #submit-pull-request-feedback');
+    var inputSelector = jQuery(':input').not('button.preview, #submit-pull-request-preview, #title-proposed, #submit-pull-request-feedback');
     
     var allValues = inputSelector.map(function() { return jQuery(this).val(); } );
     var allNames = inputSelector.map(function() { return jQuery(this).attr('id'); } );
-    
+
     // Turn into an object
     var zipped = R.zip( allNames, allValues );
-    
+
     var objs = R.map( function(item) { var obj = {}; obj[item[0]] = item[1]; return obj; }, zipped);
     
     var context = R.reduce( jQuery.extend, {}, objs );
-    
+
     // Handlebars
     var source = jQuery("#handlebars-template").text();
     var template = Handlebars.compile(source);
@@ -29,10 +29,7 @@ function displayFilePreview(templateName,fileSelector,titleSelector) {
     jQuery(titleSelector).val( generateFileTitle(templateName) );
 }
 
-function generateFileTitle(templateName) {
-    var str = jQuery('.title-suggestion').val();
-    return templateName + "-" + str.replace(/\W+/g, '-').toLowerCase() + ".md";
-}
+
 
 function getFinalFileTitle(templateName, titleSelector) {
     var proposedTitle = generateFileTitle(templateName);

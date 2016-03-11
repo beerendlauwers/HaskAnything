@@ -19,8 +19,8 @@ dependencies:
     - gunzip /tmp/stack.gz && chmod +x /tmp/stack
     - sudo mv /tmp/stack /usr/bin/stack
   override:
-    - stack setup +RTS -M1024m -K1024m -RTS --only-dependencies
-    - stack build
+    - stack setup
+    - stack build --only-dependencies
 
 # Compile pages during the test stage
 test:
