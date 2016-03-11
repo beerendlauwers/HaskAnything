@@ -12,5 +12,6 @@ matchContent name ctx = do
         let template = fromFilePath ("templates/content/" ++ name ++ ".html")
         compile $ pandocCompiler
             >>= loadAndApplyTemplate template ctx
+            >>= loadAndApplyTemplate "templates/content.html" ctx
             >>= loadAndApplyTemplate "templates/default.html" ctx
             >>= relativizeUrls
