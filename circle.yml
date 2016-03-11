@@ -1,11 +1,5 @@
 # This is the configuration file for circleci.com (CI which builds the site)
 
-cache:
-  directories:
-  - $HOME/.ghc
-  - $HOME/.cabal
-  - $HOME/.stack
-
 machine:
   # Bug with GCC caused reliable builds to break: http://stackoverflow.com/a/34811594
   pre:
@@ -18,6 +12,8 @@ machine:
 dependencies:
   cache_directories:
     - "~/.stack"
+    - "~/.cabal"
+    - "~/.ghc"
   pre:
     - wget https://github.com/commercialhaskell/stack/releases/download/v0.1.3.1/stack-0.1.3.1-x86_64-linux.gz -O /tmp/stack.gz
     - gunzip /tmp/stack.gz && chmod +x /tmp/stack
