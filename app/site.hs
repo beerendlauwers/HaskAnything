@@ -4,6 +4,7 @@ import           Data.Monoid (mconcat,mappend,(<>))
 import qualified Data.List                      as L
 import           Hakyll
 import           Hakyll.Web.Tags
+import           Control.Applicative           (empty)
 
 import           HaskAnything.Internal.Content
 import           HaskAnything.Internal.Tags
@@ -42,7 +43,7 @@ main = hakyll $ do
     matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx)
     matchContent "reddit-post" (addTags tags $ addCategories categories postCtx)
     matchContent "reddit-thread" (addTags tags $ addCategories categories postCtx)
-    matchContent "package" (addTags tags $ addCategories categories postCtx)
+    matchContent "package" (addTags tags $ addCategories categories packageCtx)
 
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
     tagsRules tags $ \tag pattern -> do
@@ -152,7 +153,20 @@ main = hakyll $ do
 postCtx :: Context String
 postCtx =
     dateField "date" "%B %e, %Y" `mappend`
+    githubUrl `mappend`
     defaultContext
+
+getFieldFromMetadata :: String -> Context String
+getFieldFromMetadata key = field key (\i -> fmap (maybe empty id) (getMetadataField  (itemIdentifier i) key) )
+    
+getManyFieldsFromMetaData :: [String] -> Context String
+getManyFieldsFromMetaData keys = foldr1 mappend (map getFieldFromMetadata keys)
+    
+packageCtx :: Context String
+packageCtx = getManyFieldsFromMetaData ["name","authors","source","hackage","stackage","synopsis"]  <> postCtx
+
+githubUrl :: Context String
+githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" ++) . toFilePath  . itemIdentifier
                        
                        
 -- This is also in hakyll-extra, have to hook it up to this project.
