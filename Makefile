@@ -11,7 +11,7 @@ build:	${EXE}
 
 # Deploy _site to Github Pages
 deploy:
-    ls
+	ls
 	echo ${CNAME} > _site/CNAME
 	rm -rf _site/.git
 	cd _site && git init && git add .
