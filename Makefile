@@ -7,10 +7,12 @@ all:	build
 	@true
 
 build:	${EXE}
+	cd app
 	${EXE} build
 
 # Deploy _site to Github Pages
 deploy:
+	cd $HOME
 	ls
 	echo ${CNAME} > _site/CNAME
 	rm -rf _site/.git
