@@ -25,5 +25,4 @@ dependencies:
 # Compile pages during the test stage
 test:
   post:
-    - "make"
-    - "make deploy"
+    - "stack install"
