@@ -26,3 +26,5 @@ dependencies:
 test:
   post:
     - "stack install"
+    - "make build"
+    - "make deploy"

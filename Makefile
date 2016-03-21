@@ -1,23 +1,13 @@
 CNAME := haskanything.com
 REPO := git@github.com:beerendlauwers/HaskAnything.git
 
-EXE := dist/build/site/site
+EXE := /home/ubuntu/.local/bin/hask-anything-exe
 
 all:	build
 	@true
 
-${EXE}:	site.hs
-	cabal build
-	${EXE} clean
-
 build:	${EXE}
 	${EXE} build
-
-clean:
-	${EXE} clean
-
-run:	build
-	${EXE} watch
 
 # Deploy _site to Github Pages
 deploy:
