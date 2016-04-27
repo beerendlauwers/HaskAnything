@@ -75,6 +75,10 @@ textarea {
     font-style: italic;
 }
 
+.pager li>a:focus, .pager li>a:hover {
+    background-color: #fff;
+}
+
 #edit-on-github{
    position:absolute;
    top: 10px;
@@ -105,4 +109,8 @@ textarea {
 
 #logout-link {
     display: none;
+}
+
+#submit-pull-request-button[disabled] {
+    color: grey;
 }

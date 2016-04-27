@@ -2,11 +2,11 @@
 function generateFilePreview(templateName) {
     
     // Fetch elements
-    var inputSelector = jQuery(':input').not('button.preview, #submit-pull-request-preview, #title-proposed, #submit-pull-request-feedback');
+    var inputSelector = jQuery('.web-submit-element :input').not('button.preview, #submit-pull-request-preview, #title-proposed, #submit-pull-request-feedback');
     
-    var allValues = inputSelector.map(function() { return jQuery(this).val(); } );
+    var allValues = inputSelector.map(function() { var v = jQuery(this).val(); return v ? v : ""; } );
     var allNames = inputSelector.map(function() { return jQuery(this).attr('id'); } );
-
+    
     // Turn into an object
     var zipped = R.zip( allNames, allValues );
 
@@ -29,6 +29,9 @@ function displayFilePreview(templateName,fileSelector,titleSelector) {
     jQuery(titleSelector).val( generateFileTitle(templateName) );
 }
 
+function setAvailabilityPullRequest( value ) {
+    jQuery('#submit-pull-request-button').prop('disabled', !value );
+}
 
 
 function getFinalFileTitle(templateName, titleSelector) {

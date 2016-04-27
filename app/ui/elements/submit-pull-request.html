@@ -11,7 +11,7 @@ var testdata = { fileName:"a/folder/testing", fileContents:"testing dem flows", 
 
 <div class="row col-sm-12">
     <div class="col-sm-12">
-        <button type="button" onclick="displayFilePreview('$handlebar-template$','#submit-pull-request-preview','#title-proposed');">Generate a preview of the generated file</button>
+        <button type="button" onclick="displayFilePreview('$handlebar-template$','#submit-pull-request-preview','#title-proposed'); setAvailabilityPullRequest(true);">Generate a preview of the generated file</button>
     </div>
 </div>
 
@@ -27,20 +27,20 @@ var testdata = { fileName:"a/folder/testing", fileContents:"testing dem flows", 
         <label for="submit-pull-request-preview">File preview:</label>
     </div>
    <div class="col-sm-9">
-        <textarea id="submit-pull-request-preview"/>
+        <textarea readonly id="submit-pull-request-preview"/>
         <span class="description">Preview of the generated file.</span>
    </div>
 </div>
 
 <div class="row col-sm-12">
     <div class="col-sm-12">
-        <button type="button" onclick="collectDataAndSubmitPullRequest('$handlebar-template$','#title-proposed')">Submit a pull request</button>
+        <button type="button" disabled id="submit-pull-request-button" onclick="collectDataAndSubmitPullRequest('$handlebar-template$','#title-proposed')">Submit a pull request</button>
     </div>
 </div>
 
 <div class="row col-sm-12">
    <div class="col-sm-12">
         <span class="feedback-github">Diagnostic information about the connection with Github will appear here.<span>
-        <textarea id="submit-pull-request-feedback"/>
+        <textarea readonly id="submit-pull-request-feedback"/>
     </div>
 </div>
