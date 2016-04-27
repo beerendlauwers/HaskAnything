@@ -1,22 +1,20 @@
-<div class="info">
-
-    $if(author)$
-        by $author$
-    $endif$
+<div class="col-md-12 col-sm-12 intro">
+        <h1>$title$</h1>
+        <h2 class="authors">
+        $if(author)$
+            By $author$
+        $endif$
+        </h2>
 </div>
 
-library test: $libraries$
+<div class="col-md-12 col-sm-12">
+        <h1>Contents</h1>
+        $body$
+</div>
 
-<div class="info">
-    $if(tags)$ 
-        Tags: $tags$ 
-    $endif$ 
-</div> 
+<div class="col-md-12 col-sm-12">
+        <h1>Tagged with</h1>
+        $tags$ $category$ $libraries$
 
-<div class="info">
-    $if(category)$ 
-        Category: $category$ 
-    $endif$ 
-</div> 
 
-$body$
+
