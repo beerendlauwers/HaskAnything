@@ -12,6 +12,8 @@ handlebar-template: paper
     });
 </script>
 
+<script id="handlebars-template" type="text/x-handlebars-template">$partial("templates/handlebars/paper.handlebars")$</script>
+
 <div class="col-sm-12">
     <h2>$title$</h2>
 </div>
@@ -39,7 +41,7 @@ handlebar-template: paper
             $partial("ui/elements/metadata.html")$
         </div>
         <div class="tab-pane" id="tab3">
-            3
+            $partial("ui/elements/submit-pull-request.html")$
         </div>
         <ul class="pager wizard">
             <li class="previous first" style="display:none;"><a href="#">First</a></li>

@@ -43,6 +43,7 @@ main = hakyll $ do
     
     libraries <- buildLibraries "content/*/*" (fromCapture "libraries/*")
     
+    matchContent "paper" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx tags categories libraries)
     matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx tags categories libraries)
     matchContent "reddit-post" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
     matchContent "reddit-thread" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
