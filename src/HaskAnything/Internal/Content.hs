@@ -8,7 +8,7 @@ matchContent :: String -> Context String -> Rules ()
 matchContent name ctx = do
     let path = fromGlob ("content/" ++ name ++ "/*")
     match path $ do
-        route $ setExtension ""
+        route $ setExtension "html"
         let template = fromFilePath ("templates/content/" ++ name ++ ".html")
         compile $ pandocCompiler
             >>= loadAndApplyTemplate template ctx
