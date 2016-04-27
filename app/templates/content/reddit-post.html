@@ -1,20 +1,26 @@
-<div class="info">
-
-    $if(author)$
-        by $author$
-    $endif$
+<div class="col-md-12 col-sm-12 intro">
+        <h1>$title$</h1>
+        <h2 class="authors">By $author$</h2>
 </div>
 
-<div class="info">
-    $if(tags)$ 
-        Tags: $tags$ 
-    $endif$ 
-</div> 
+<div class="col-md-12 col-sm-12">
+        <h1>Contents</h1>
+        $body$
+</div>
 
-<div class="info">
-    $if(category)$ 
-        Category: $category$ 
-    $endif$ 
-</div> 
+<div class="col-md-12 col-sm-12">
+    <div class="col-md-6 col-sm-6">
+        <h1>Subreddit: <a href="https://reddit.com/r/$subreddit$" target="_blank">/r/$subreddit$</a></h1>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h1 class="source"><a href="$reddit-url$" target="_blank">Source</a></h1>
+    </div>
+</div>
 
-$body$
+<div class="col-md-12 col-sm-12">
+        <h1>Tagged with</h1>
+        $tags$
+</div>
+
+
+

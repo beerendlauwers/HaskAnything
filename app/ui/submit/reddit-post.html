@@ -64,7 +64,7 @@ handlebar-template: reddit-post
                 <div class="col-sm-3">
                     <label for="url-input">URL:</label>
                 </div>
-                <div class="col-sm-9">
+                <div class="col-sm-9 web-submit-element">
                     <input id="url-input" type="text"/>
                     <span class="info">Click on the permalink button in the bottom left of a post and copy that URL in here. Example:</span>
                     <div id="permalink-example">
@@ -86,11 +86,13 @@ handlebar-template: reddit-post
                     <div id="post-preview"><div class="contents"></div></div>
                 </div>
             </div>
-            <input type="hidden" id="subreddit"/>
-            <input type="hidden" id="post-body"/>
-            <input type="hidden" id="author"/>
-            <input type="hidden" id="unique-id"/>
-            <input type="hidden" id="title"/>
+            <div class="web-submit-element">
+                <input type="hidden" id="subreddit"/>
+                <input type="hidden" id="post-body"/>
+                <input type="hidden" id="author"/>
+                <input type="hidden" id="unique-id"/>
+                <input type="hidden" id="title"/>
+            </div>
         </div>
         <div class="tab-pane" id="tab2">
             $partial("ui/elements/metadata.html")$
