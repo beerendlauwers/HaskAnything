@@ -8,7 +8,7 @@ var dropdowns = [
 }
 
 function loadMetaDataDropdown( url, id ) {
-    jQuery.ajax( url ) // TODO: find a fix?
+    jQuery.ajax( url )
         .done( function(data) {
             var options = R.map( function(item) { return '<option value="' + item + '">' + item + '</option>'; } )( data );
             jQuery(id).append(options);
@@ -29,3 +29,5 @@ function loadMetaDataDropdown( url, id ) {
             console.log(thrownError);
         });
 }
+
+loadDropdowns();
