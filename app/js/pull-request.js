@@ -9,18 +9,31 @@ function writeToHtmlArea( content ) {
     var selector = jQuery('#submit-pull-request-feedback');
     
     selector.val( selector.val() + '\n' + content );
+    writeToConsole( content );
 }
 
 function collectDataAndSubmitPullRequest(templateName,titleSelector) {
+    
+    var github = OAuth.create('github');
+    
+    if (!github) {
+        writeToHtmlArea( "You're not logged into Github. Log in first at the top right of the page." );
+        return;
+    }
+    
+    var userToken = github.access_token;
+    var githubData = getGithubData();
+    var userName = githubData.alias;
+    
     var data = {};
     data.fileContents = generateFilePreview(templateName);
     data.fileType = templateName;
-    data.commitMessage = "Commit via the Hask Anything web interface.";
     data.fileName = getFinalFileTitle(templateName,titleSelector);
+    data.commitMessage = "Committed file '" + data.fileName + "' via the Hask Anything web interface.";
     data.pullRequestName = "Automatic pull request for " + templateName + " " + jQuery(titleSelector).val();
     data.pullRequestBody = "Created via the Hask Anything web interface. If this contains copyrighted material, please ask the author if we are allowed to replicate it here with attribution.";
     
-    submitHaskAnythingPullRequest(globals.userToken,globals.userName,data, writeToHtmlArea);
+    submitHaskAnythingPullRequest( userToken, userName, data, writeToHtmlArea );
 }
 
 function naiveHash(str) {
@@ -35,6 +48,9 @@ function naiveHash(str) {
 }
 
 function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
+    
+    console.log(userToken);
+    
     // Open up the connection to Github.
     var github = new Github({
         token: userToken,
@@ -56,7 +72,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
     // First, check if we've already forked it.
     var maybeFork = github.getRepo(userName, master.repo);
     
-    logWriter("Checking if we've already forked repository " + master.repo + " from " + master.username + " ...");
+    logWriter("Checking if we've already forked repository '" + master.repo + "' from " + master.username + " ...");
     
     maybeFork.show( function(error,repo) {
         if (error) {
@@ -65,17 +81,17 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
             
             masterHaskAnything.fork( function(error) {
                 if (error) {
-                    logWriter("Something went wrong during the forking of the " + master.repo + " repository. The error data follows:");
+                    logWriter("Something went wrong during the forking of the '" + master.repo + "' repository. The error data follows:");
                     logWriter(error);
                 }
             });
             
-            logWriter("Forked repository " + master.repo + " from " + master.username + ".");
+            logWriter("Forked repository '" + master.repo + "' from '" + master.username + "'.");
             logWriter("We'll start again from the top in three seconds.");
             logWriter("3..");
             setTimeout( function() { logWriter("2.."); }, 1000 );
             setTimeout( function() { logWriter("1.."); }, 2000 );
-            setTimeout( function() { submitHaskAnythingPullRequest( userToken, userName, data ); }, 3000 );
+            setTimeout( function() { submitHaskAnythingPullRequest( userToken, userName, data, logWriter ); }, 3000 );
             return;
         }
         else if (repo !== undefined) {
@@ -142,7 +158,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
                                         });
                                        }
                                        else {
-                                           logWriter("A pull request for branch " + forkBranchName + " already exists.");
+                                           logWriter("A pull request for branch '" + forkBranchName + "' already exists. Skipping.");
                                        }
                                    }
                                    else {
@@ -156,7 +172,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
                                 
                             if (!skipCommit) {
                                 // Let's write a commit to the forked repository now.
-                                logWriter("Writing the commit " + data.commitMessage + " to the " + forkBranchName + " branch of the fork...");
+                                logWriter("Writing the commit '" + data.commitMessage + "' to the '" + forkBranchName + "' branch of the fork...");
                                 
                                 justFork.write(forkBranchName, data.fileName, data.fileContents, data.commitMessage, function(err) {
                                     if (error && error !== "not found") {
@@ -165,7 +181,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
                                         return;
                                     }
                                     else {
-                                        logWriter("Commit " + data.commitMessage + " written.");
+                                        logWriter("Commit '" + data.commitMessage + "' written.");
                                         doPullRequest();
                                     }
                                 });
@@ -186,7 +202,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
                     justFork.branch("master",forkBranchName, function(error,something) {
                         
                         if ( error !== null ) {
-                            logWriter("Something went wrong during the branching of the master branch of the forked repository to a new branch called " + forkBranchName + ". The error data follows:");
+                            logWriter("Something went wrong during the branching of the master branch of the forked repository to a new branch called '" + forkBranchName + "'. The error data follows:");
                             logWriter(error);
                             return;
                         }
@@ -198,7 +214,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
             });
         }
         else {
-            logWriter("Something went wrong during while checking if the " + master.repo + " repository was forked. The error data follows:");
+            logWriter("Something went wrong during while checking if the '" + master.repo + "' repository was forked. The error data follows:");
             logWriter(error);
         }
     });
