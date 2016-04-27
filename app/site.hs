@@ -15,6 +15,8 @@ import           HaskAnything.Internal.Extra     (toString,loadBodyLBS)
 
 import           HaskAnything.Internal.Po
 
+import           Control.Monad                   (foldM, forM, forM_, mplus)
+
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
@@ -48,7 +50,7 @@ main = hakyll $ do
     matchContent "package" (addTags tags $ addCategories categories packageCtx)
 
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
-    tagsRules tags $ \tag pattern -> do
+    tagsRules' tags $ \tag pattern -> do
         let title = "Content tagged with " ++ tag
 
         -- Copied from posts, need to refactor
@@ -63,7 +65,7 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
                 
-    tagsRules libraries $ \tag pattern -> do
+    tagsRules' libraries $ \tag pattern -> do
         let title = "Content tagged with library " ++ tag
 
         -- Copied from posts, need to refactor
@@ -78,7 +80,7 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
                
-    tagsRules categories $ \category pattern -> do
+    tagsRules' categories $ \category pattern -> do
         let title = "Content in category " ++ category
 
         -- Copied from posts, need to refactor
@@ -158,6 +160,14 @@ postCtx =
     generateVideoEmbed `mappend`
     defaultContext
 
+-- The default tagsRules function doesn't allow me to set an extension on the created tag identifier, which is what I need.
+tagsRules' :: Tags -> (String -> Pattern -> Rules ()) -> Rules ()
+tagsRules' tags rules =
+    forM_ (tagsMap tags) $ \(tag, identifiers) ->
+        rulesExtraDependencies [tagsDependency tags] $
+            create [tagsMakeId tags (tag ++ ".html")] $ do
+                rules tag $ fromList identifiers
+    
 getFieldFromMetadata :: String -> Context String
 getFieldFromMetadata key = field key (\i -> fmap (maybe empty id) (getMetadataField  (itemIdentifier i) key) )
     
