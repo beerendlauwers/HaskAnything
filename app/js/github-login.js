@@ -38,7 +38,7 @@ function storeGithubData( githubData ) {
 }
 
 function getGithubData() {
-    if ( localStorage['githubData'] === "undefined" ) {
+    if ( localStorage['githubData'] === "undefined" || localStorage['githubData'] === undefined ) {
         return undefined;
     }
     
@@ -46,22 +46,23 @@ function getGithubData() {
 }
 
 function githubPopulateUsername(api) {
-    // Fetch from cache
+    // Ensure that our OAuth connection is still in order.
+    if (api === undefined) {
+        // Fetch from API connection cache.
+        api = OAuth.create('github');
+    }
+
+    if (!api) {
+        return;
+    }
+    
+    // Fetch Github credentials from browser cache.
     var githubData = getGithubData();
     
     if (githubData) {
         githubDisplayUsername(githubData);
     }
     else {
-        if (api === undefined) {
-            // Fetch from API connection cache.
-            api = OAuth.create('github');
-        }
-    
-        if (!api) {
-            return;
-        }
-        
         // Connect to API and get user data.
         api.me().done( function(response){
             storeGithubData( response );
