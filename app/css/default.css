@@ -98,3 +98,11 @@ textarea {
 .source {
     text-align: right;
 }
+
+#login-avatar img {
+    height: 20px;
+}
+
+#logout-link {
+    display: none;
+}
