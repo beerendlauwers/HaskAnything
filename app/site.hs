@@ -43,11 +43,11 @@ main = hakyll $ do
     
     libraries <- buildLibraries "content/*/*" (fromCapture "libraries/*")
     
-    matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx)
-    matchContent "reddit-post" (addTags tags $ addCategories categories postCtx)
-    matchContent "reddit-thread" (addTags tags $ addCategories categories postCtx)
-    matchContent "presentation" (addTags tags $ addCategories categories postCtx)
-    matchContent "package" (addTags tags $ addCategories categories packageCtx)
+    matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx tags categories libraries)
+    matchContent "reddit-post" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
+    matchContent "reddit-thread" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
+    matchContent "presentation" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
+    matchContent "package" (addTags tags $ addCategories categories $ packageCtx tags categories libraries) 
 
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
     tagsRules' tags $ \tag pattern -> do
@@ -58,8 +58,8 @@ main = hakyll $ do
         compile $ do
             alltags <- loadAll pattern
             let ctx = constField "title" title <>
-                        listField "alltags" (addTags tags postCtx) (return alltags) <>
-                        defaultContext
+                        listField "alltags" (addTags tags $ postCtx tags categories libraries) (return alltags) <>
+                        defaultContext' tags categories libraries
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tags.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
@@ -73,8 +73,8 @@ main = hakyll $ do
         compile $ do
             allLibraries <- loadAll pattern
             let ctx = constField "title" title <>
-                        listField "alllibraries" (addTags tags postCtx) (return allLibraries) <>
-                        defaultContext
+                        listField "alllibraries" (addTags tags $ postCtx tags categories libraries) (return allLibraries) <>
+                        defaultContext' tags categories libraries
             makeItem ""
                 >>= loadAndApplyTemplate "templates/libraries.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
@@ -88,8 +88,8 @@ main = hakyll $ do
         compile $ do
             allCategories <- loadAll pattern
             let ctx = constField "title" title <>
-                        listField "allcategories" (addTags tags $ addCategories categories $ postCtx) (return allCategories) <>
-                        defaultContext
+                        listField "allcategories" (addTags tags $ addCategories categories $ postCtx tags categories libraries) (return allCategories) <>
+                        defaultContext' tags categories libraries
             makeItem ""
                 >>= addCategoryText category ctx
                 >>= loadAndApplyTemplate "templates/categories.html" ctx
@@ -121,15 +121,7 @@ main = hakyll $ do
                     field "allcategories" (\_ -> renderTagList categories) <>
                     field "tags" (\_ -> fmap toString (loadBodyLBS "json/categories.json")) <>
                    -- field "path" (\_ -> fmap fromJust (getRoute "categories/*")) <> -- fix the fromJust -- TODO: find out how we can get that.
-                    listField "facetList"
-                                (
-                                    field "facetName" (return . facetName . itemBody) <>
-                                    field "facetList" (return . facetList . itemBody) <>
-                                    field "facetPrettyName" (return . facetPrettyName . itemBody) <>
-                                    field "facetPath" (return . facetPath . itemBody)
-                                )
-                                (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","categories",categories),("Libraries","libraries",libraries)]) <>
-                   defaultContext
+                   defaultContext' tags categories libraries
                                     
 
             getResourceBody
@@ -141,8 +133,8 @@ main = hakyll $ do
         route idRoute
         compile $ do
             getResourceBody
-                >>= applyAsTemplate defaultContext
-                >>= loadAndApplyTemplate "templates/default.html" defaultContext
+                >>= applyAsTemplate (defaultContext' tags categories libraries)
+                >>= loadAndApplyTemplate "templates/default.html" (defaultContext' tags categories libraries)
                 >>= relativizeUrls
 
     match "templates/**" $ compile templateCompiler
@@ -154,11 +146,34 @@ main = hakyll $ do
             makeItem (show (itemBody r))
 
 --------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx =
+postCtx :: Tags -> Tags -> Tags -> Context String
+postCtx t c l =
     githubUrl `mappend`
     generateVideoEmbed `mappend`
-    defaultContext
+    defaultContext' t c l
+    
+defaultContext' :: Tags -> Tags -> Tags -> Context String
+defaultContext' t c l = facetCtx  t c l <> categoryContext c <> defaultContext
+
+categoryContext :: Tags -> Context String
+categoryContext ts = 
+ listField "categoryContext"
+ (
+    field "categoryName" (return . itemBody )
+ )
+ (sequence $ map makeItem (map fst $ tagsMap ts))
+
+  
+facetCtx :: Tags -> Tags -> Tags -> Context String  
+facetCtx tags categories libraries = 
+ listField "facetList"
+ (
+     field "facetName" (return . facetName . itemBody) <>
+     field "facetList" (return . facetList . itemBody) <>
+     field "facetPrettyName" (return . facetPrettyName . itemBody) <>
+     field "facetPath" (return . facetPath . itemBody)
+ )
+ (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","categories",categories),("Libraries","libraries",libraries)])
 
 -- The default tagsRules function doesn't allow me to set an extension on the created tag identifier, which is what I need.
 tagsRules' :: Tags -> (String -> Pattern -> Rules ()) -> Rules ()
@@ -174,11 +189,11 @@ getFieldFromMetadata key = field key (\i -> fmap (maybe empty id) (getMetadataFi
 getManyFieldsFromMetaData :: [String] -> Context String
 getManyFieldsFromMetaData keys = foldr1 mappend (map getFieldFromMetadata keys)
     
-packageCtx :: Context String
-packageCtx = getManyFieldsFromMetaData ["name","authors","source","hackage","stackage","synopsis"]  <> postCtx
+packageCtx :: Tags -> Tags -> Tags -> Context String
+packageCtx t c l = getManyFieldsFromMetaData ["name","authors","source","hackage","stackage","synopsis"]  <> postCtx t c l
 
-videoCtx :: Context String 
-videoCtx = getManyFieldsFromMetaData ["url-video","url-slides","authors","source"]  <> postCtx
+videoCtx :: Tags -> Tags -> Tags -> Context String 
+videoCtx t c l = getManyFieldsFromMetaData ["url-video","url-slides","authors","source"]  <> postCtx t c l
 
 githubUrl :: Context String
 githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" ++) . toFilePath  . itemIdentifier
