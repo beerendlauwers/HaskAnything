@@ -2,9 +2,31 @@
 function generateFilePreview(templateName) {
     
     // Fetch elements
-    var inputSelector = jQuery('.web-submit-element :input').not('button.preview, #submit-pull-request-preview, #title-proposed, #submit-pull-request-feedback');
+    var inputSelector = jQuery('.web-submit-element :input').not('button.preview, #submit-pull-request-preview, #title-proposed, #submit-pull-request-feedback, .search-field > input');
     
-    var allValues = inputSelector.map(function() { var v = jQuery(this).val(); return v ? v : ""; } );
+    var selectors = jQuery(inputSelector).toArray();
+    
+    var getValue = function(selector) {
+        var v = jQuery(selector).val();
+        
+        // Magic necessary for the Chosen plugin.
+        if (jQuery(selector).siblings('.chosen-container-multi').length > 0) {
+            v = jQuery(selector).chosen().val();
+            
+            if ( v ) {
+                v= v.join(', ');
+            }
+        }
+        
+        return v ? v : "";
+    };
+    
+    var allValues = [];
+    jQuery(inputSelector).each( function( idx ) {
+        var v = getValue(this);
+        allValues.push( v );
+    });
+    
     var allNames = inputSelector.map(function() { return jQuery(this).attr('id'); } );
     
     // Turn into an object
