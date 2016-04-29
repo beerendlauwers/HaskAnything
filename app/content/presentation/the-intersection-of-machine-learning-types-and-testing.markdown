@@ -4,6 +4,7 @@ url-video: https://www.youtube.com/watch?v=czZ18YtZlaw
 url-slides: http://rleonid.github.io/slides/oml/compose2016/#/
 authors: Leonid Rozenberg
 source: http://www.composeconference.org/2016/program/
+conference: Compose2016
 tags: statistics, ml
 libraries: oml
 ---
