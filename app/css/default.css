@@ -101,6 +101,18 @@ textarea {
     text-align: right;
 }
 
+.nav-center {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.how-do-i-list {
+    font-size: 120%;
+}
+
 #login-avatar img {
     height: 20px;
 }

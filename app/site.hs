@@ -6,6 +6,8 @@ import           Hakyll
 import           Hakyll.Web.Tags
 import           Control.Applicative           (empty)
 import           Data.List.Split               (splitOn)
+import           Data.String.Utils             (replace)
+import           System.FilePath               (dropExtension) 
 
 import           HaskAnything.Internal.Content
 import           HaskAnything.Internal.Tags
@@ -15,7 +17,11 @@ import           HaskAnything.Internal.Extra     (toString,loadBodyLBS)
 
 import           HaskAnything.Internal.Po
 
-import           Control.Monad                   (foldM, forM, forM_, mplus)
+import           Control.Monad                   (foldM, forM, forM_, mplus, join)
+
+import           Data.Aeson                      (encode)
+import           Data.Maybe                      (fromMaybe)
+
 
 --------------------------------------------------------------------------------
 main :: IO ()
@@ -49,6 +55,8 @@ main = hakyll $ do
     matchContent "reddit-thread" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
     matchContent "presentation" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
     matchContent "package" (addTags tags $ addCategories categories $ packageCtx tags categories libraries) 
+    matchContent "how-do-i/simple" (addTags tags $ addCategories categories $ packageCtx tags categories libraries) 
+    matchContent "how-do-i/advanced" (addTags tags $ addCategories categories $ packageCtx tags categories libraries) 
 
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
     tagsRules' tags $ \tag pattern -> do
@@ -110,14 +118,23 @@ main = hakyll $ do
             let testContext = -}
             
             -- Interesting: https://github.com/yogsototh/yblog/blob/master/site.hs
-            
+    
+    
+    create [fromFilePath ("json/conferences.json")] $ do
+        route idRoute
+        compile $ do
+            allContent <- loadAll "content/*/*" :: Compiler [Item String]
+            allMetadata <- sequence ((map getMetadataFromItem) allContent)
+            makeItem (encode allMetadata)
                 
     match "ui/elements/*" $ compile templateCompiler
     
     match "index.html" $ do
         route idRoute
         compile $ do
+            howDoIPosts <- loadAll "content/how-do-i/*/*"
             let indexContext =
+                    listField "how-do-i-posts" (postCtx tags categories libraries) (return howDoIPosts) <>
                     field "categories" (\_ -> return $ toString $ tagsToJSON categories) <>
                     field "allcategories" (\_ -> renderTagList categories) <>
                     field "tags" (\_ -> fmap toString (loadBodyLBS "json/categories.json")) <>
@@ -135,6 +152,7 @@ main = hakyll $ do
         compile $ do
             getResourceBody
                 >>= applyAsTemplate (defaultContext' tags categories libraries)
+                >>= loadAndApplyTemplate "templates/submit.html" (defaultContext' tags categories libraries)
                 >>= loadAndApplyTemplate "templates/default.html" (defaultContext' tags categories libraries)
                 >>= relativizeUrls
 
@@ -149,9 +167,15 @@ main = hakyll $ do
 --------------------------------------------------------------------------------
 postCtx :: Tags -> Tags -> Tags -> Context String
 postCtx t c l =
+    urlPlainField `mappend`
     githubUrl `mappend`
     generateVideoEmbed `mappend`
     defaultContext' t c l
+    
+getMetadataFromItem :: Item a -> Compiler String
+getMetadataFromItem i = do
+ m <- getMetadataField (itemIdentifier i) "conference"
+ return $ maybe [] id m
     
 defaultContext' :: Tags -> Tags -> Tags -> Context String
 defaultContext' t c l = facetCtx  t c l <> categoryContext c <> defaultContext
@@ -198,7 +222,15 @@ videoCtx t c l = getManyFieldsFromMetaData ["url-video","url-slides","authors","
 
 githubUrl :: Context String
 githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" ++) . toFilePath  . itemIdentifier
-            
+      
+-- Many thanks to Jasper!      
+urlPlainField :: Context a 
+urlPlainField = field "url-plain" $ \item -> do 
+        mbFilePath <- getRoute (itemIdentifier item) 
+        case mbFilePath of 
+            Nothing       -> return "???" 
+            Just filePath -> return $ toUrl $ replace "/simple/" "/advanced/" $ dropExtension filePath 
+         
 generateVideoEmbed :: Context String
 generateVideoEmbed = functionField "generateVideoEmbed" $ \args item -> 
   case args of

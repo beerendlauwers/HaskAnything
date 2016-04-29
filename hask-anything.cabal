@@ -44,6 +44,9 @@ executable hask-anything-exe
                      , hakyll == 4.7.4.0
                      , text
                      , split
+                     , filepath
+                     , MissingH
+                     , aeson
   default-language:    Haskell2010
 
 test-suite hask-anything-test
