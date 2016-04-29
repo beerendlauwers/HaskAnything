@@ -6,14 +6,14 @@ import           Hakyll
 import           Hakyll.Web.Tags
 import           Control.Applicative           (empty)
 import           Data.List.Split               (splitOn)
-import           Data.String.Utils             (replace)
-import           System.FilePath               (dropExtension) 
+import           System.FilePath               (dropExtension, takeFileName) 
 
 import           HaskAnything.Internal.Content
 import           HaskAnything.Internal.Tags
 import           HaskAnything.Internal.Facet
 import           HaskAnything.Internal.JSON
 import           HaskAnything.Internal.Extra     (toString,loadBodyLBS)
+import           HaskAnything.Internal.Field     (urlReplaceField)
 
 import           HaskAnything.Internal.Po
 
@@ -55,8 +55,8 @@ main = hakyll $ do
     matchContent "reddit-thread" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
     matchContent "presentation" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
     matchContent "package" (addTags tags $ addCategories categories $ packageCtx tags categories libraries) 
-    matchContent "how-do-i/simple" (addTags tags $ addCategories categories $ packageCtx tags categories libraries) 
-    matchContent "how-do-i/advanced" (addTags tags $ addCategories categories $ packageCtx tags categories libraries) 
+    matchContent "how-do-i/simple" (addTags tags $ addCategories categories $ postCtx tags categories libraries) 
+    matchContent "how-do-i/advanced" (addTags tags $ addCategories categories $ postCtx tags categories libraries) 
 
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
     tagsRules' tags $ \tag pattern -> do
@@ -127,8 +127,10 @@ main = hakyll $ do
         route idRoute
         compile $ do
             howDoIPosts <- loadAll "content/how-do-i/*/*"
+            dedup <- deduplicateContentBy getRoute (withFilePath takeFileName) howDoIPosts -- It might actually be nice if we filtered this and had two "how-do-i-posts" columns, one advanced, one simple?
+            
             let indexContext =
-                    listField "how-do-i-posts" (postCtx tags categories libraries) (return howDoIPosts) <>
+                    listField "how-do-i-posts" (postCtx tags categories libraries) (return dedup ) <>
                     field "categories" (\_ -> return $ toString $ tagsToJSON categories) <>
                     field "allcategories" (\_ -> renderTagList categories) <>
                     field "tags" (\_ -> fmap toString (loadBodyLBS "json/categories.json")) <>
@@ -161,7 +163,8 @@ main = hakyll $ do
 --------------------------------------------------------------------------------
 postCtx :: Tags -> Tags -> Tags -> Context String
 postCtx t c l =
-    urlPlainField `mappend`
+    urlReplaceField "url-to-advanced" ("simple","advanced") `mappend`
+    urlReplaceField "url-to-simple"   ("advanced","simple") `mappend`
     githubUrl `mappend`
     generateVideoEmbed `mappend`
     defaultContext' t c l
@@ -211,14 +214,22 @@ videoCtx t c l = getManyFieldsFromMetaData ["url-video","url-slides","authors","
 
 githubUrl :: Context String
 githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" ++) . toFilePath  . itemIdentifier
-      
--- Many thanks to Jasper!      
-urlPlainField :: Context a 
-urlPlainField = field "url-plain" $ \item -> do 
-        mbFilePath <- getRoute (itemIdentifier item) 
-        case mbFilePath of 
-            Nothing       -> return "???" 
-            Just filePath -> return $ toUrl $ replace "/simple/" "/advanced/" $ dropExtension filePath 
+
+withFilePath :: (FilePath -> String) -> Maybe FilePath ->  String
+withFilePath pathTostr mbFilePath = 
+    case mbFilePath of 
+      Nothing       -> "withFilePath ???" 
+      Just filePath -> pathTostr filePath
+
+{- -- TODO: fix.
+deduplicatePosts ps = L.nubBy f
+ where
+  f i1 i2 = do
+   v1 <- cmp i1
+   v2 <- cmp i2
+   return v1 == v2
+  cmp = withFilePath takeFileName
+-}
          
 generateVideoEmbed :: Context String
 generateVideoEmbed = functionField "generateVideoEmbed" $ \args item -> 
