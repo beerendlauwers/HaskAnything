@@ -119,13 +119,7 @@ main = hakyll $ do
             
             -- Interesting: https://github.com/yogsototh/yblog/blob/master/site.hs
     
-    
-    create [fromFilePath ("json/conferences.json")] $ do
-        route idRoute
-        compile $ do
-            allContent <- loadAll "content/*/*" :: Compiler [Item String]
-            allMetadata <- sequence ((map getMetadataFromItem) allContent)
-            makeItem (encode allMetadata)
+    makeJSONFileFromMetadataInContent "content/*/*" "conference" "conferences"
                 
     match "ui/elements/*" $ compile templateCompiler
     
@@ -171,11 +165,6 @@ postCtx t c l =
     githubUrl `mappend`
     generateVideoEmbed `mappend`
     defaultContext' t c l
-    
-getMetadataFromItem :: Item a -> Compiler String
-getMetadataFromItem i = do
- m <- getMetadataField (itemIdentifier i) "conference"
- return $ maybe [] id m
     
 defaultContext' :: Tags -> Tags -> Tags -> Context String
 defaultContext' t c l = facetCtx  t c l <> categoryContext c <> defaultContext
