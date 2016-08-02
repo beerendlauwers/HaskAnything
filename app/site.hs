@@ -159,6 +159,13 @@ main = hakyll $ do
         compile $ do
             r <- templateCompiler
             makeItem (show (itemBody r))
+            
+    match "documentation.md" $ do
+        route   $ setExtension "html"
+        compile $ pandocCompiler
+            >>= loadAndApplyTemplate "templates/default.html" (defaultContext' tags categories libraries)
+            >>= relativizeUrls
+        
 
 --------------------------------------------------------------------------------
 postCtx :: Tags -> Tags -> Tags -> Context String
