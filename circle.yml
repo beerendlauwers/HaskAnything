@@ -24,7 +24,7 @@ dependencies:
 
 # Compile pages during the test stage
 test:
-  post:
+  override:
     - "stack install"
     - "make build"
     - "make deploy"
