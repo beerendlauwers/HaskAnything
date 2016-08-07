@@ -6,6 +6,7 @@ import           Hakyll
 
 import           Data.Aeson                      (encode)
 import           HaskAnything.Internal.Tags      (getUniqueTags')
+import           Data.List                       (nub)
 
 makeJSONFile name tags = do
     create [fromFilePath ("json/" ++ name ++ ".json")] $ do
@@ -22,7 +23,7 @@ makeJSONFileFromMetadataInContent pattern metadataField name = do
         compile $ do
             allContent <- loadAll pattern :: Compiler [Item String]
             allMetadata <- sequence ( (map (getMetadataFromItem metadataField)) allContent)
-            makeItem (encode $ filter (/="") allMetadata)
+            makeItem (encode $ nub $ filter (/="") allMetadata)
             
 getMetadataFromItem :: String -> Item a -> Compiler String
 getMetadataFromItem metadataField i = do
