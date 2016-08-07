@@ -60,8 +60,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
     logWriter("Opened up a connection to Github.");
     
     // This is the repository that will be forked and a pull request submitted against.
-    //var master = { username: "beerendlauwers", repo: "HaskAnything" };
-    var master = { username: "uitgeleend", repo: "testing" };
+    var master = { username: "beerendlauwers", repo: "HaskAnything" };
     
     var masterHaskAnything = github.getRepo(master.username, master.repo);
     
