@@ -36,6 +36,14 @@ function collectDataAndSubmitPullRequest(templateName,titleSelector) {
     submitHaskAnythingPullRequest( userToken, userName, data, writeToHtmlArea );
 }
 
+function onPullRequestSuccessful() {
+    // Disable the pull request button.
+    jQuery('#submit-pull-request-button').prop('disabled','disabled');
+    
+    // Make the "want to submit again?" button visible.
+    jQuery('#new-submit-request-button').show();
+}
+
 function naiveHash(str) {
   var hash = 0, i, chr, len;
   if (str.length === 0) return hash;
@@ -153,6 +161,7 @@ function submitHaskAnythingPullRequest( userToken, userName, data, logWriter ) {
                                             else {
                                                 logWriter("Pull request \"" + pull.title + "\" created.");
                                                 logWriter("Done!");
+                                                onPullRequestSuccessful();
                                             }
                                         });
                                        }

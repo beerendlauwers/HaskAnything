@@ -18,6 +18,7 @@ button.preview {
     font-style: italic;
 }
 
+#new-submit-request-button,
 #confirmed,
 #confirm {
     display: none;
