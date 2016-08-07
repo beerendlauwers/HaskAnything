@@ -30,6 +30,12 @@ The project uses [Stack](https://docs.haskellstack.org/en/stable/README/), so it
 
 If it's not, please open an issue over at [Github](https://github.com/beerendlauwers/HaskAnything/issues)!
 
+##Troubleshooting
+
+**Problem:** The CI system gives the following error message: `Hakyll.Web.readPandocWith: I don't know how to read a file of the type Binary for: <file name>`
+
+**Solution:** The file name isn't valid. Does it have the right extension? For Markdown files (which is what most content it) use `.md`.
+
 ## Technical info
 
 This Github repository serves as both the code repository that generates the website (branch `master`), as well as the host for the website itself (branch `gh-pages`).
