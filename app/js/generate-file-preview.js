@@ -62,8 +62,11 @@ function getFinalFileTitle(templateName, titleSelector) {
     var possiblyChangedTitle = jQuery(titleSelector).val();
     
     if (possiblyChangedTitle.trim() && possiblyChangedTitle !== proposedTitle) {
-        return possiblyChangedTitle;
+        proposedTitle = possiblyChangedTitle;
     }
+    
+    // Put it in the correct directory.
+    proposedTitle = "app/content/" + templateName + "/" + proposedTitle;
     
     return proposedTitle;
 }
