@@ -4,7 +4,7 @@ url-video: https://www.youtube.com/watch?v=jLj1QV11o9g
 url-slides: http://www.slideshare.net/oscon2007/os-peytonjones
 authors: Simon Peyton-Jones
 source: 
-conference: Compose2016
+conference: OSCON 2007
 tags: 
 libraries: 
 ---
