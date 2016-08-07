@@ -9,6 +9,8 @@ function generateFilePreview(templateName) {
     var getValue = function(selector) {
         var v = jQuery(selector).val();
         
+        console.log(v);
+        
         // Magic necessary for the Chosen plugin.
         if (jQuery(selector).siblings('.chosen-container-multi').length > 0) {
             v = jQuery(selector).chosen().val();

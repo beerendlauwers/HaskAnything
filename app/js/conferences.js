@@ -11,7 +11,14 @@ function loadSingleDropdown( url, id ) {
         .done( function(data) {
             var options = R.map( function(item) { return '<option value="' + item + '">' + item + '</option>'; } )( data );
             jQuery(id).append(options);
-            jQuery(id).chosen({ width: '100%' });
+            
+            // Initialize select2 plugin.
+            jQuery(id).select2({
+              tags: true,
+              tokenSeparators: [','],
+              maximumSelectionLength: 1
+            });
+            
         }).fail(function(xhr, ajaxOptions, thrownError) {
             console.log("failure");
             console.log(xhr);

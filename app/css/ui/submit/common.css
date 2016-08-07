@@ -23,6 +23,6 @@ button.preview {
     display: none;
 }
 
-.chosen-container-multi input {
+.select2-container {
     width: 100% !important;
 }

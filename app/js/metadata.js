@@ -12,15 +12,11 @@ function loadMetaDataDropdown( url, id ) {
         .done( function(data) {
             var options = R.map( function(item) { return '<option value="' + item + '">' + item + '</option>'; } )( data );
             jQuery(id).append(options);
-            jQuery(id).chosen({ width: '100%' });
-            jQuery(".chosen-container-multi").find("input").on('keydown', function (evt) {
-                var stroke;
-                stroke = (_ref = evt.which) != null ? _ref : evt.keyCode;
-                if (stroke == 9) { // 9 = tab key
-                    jQuery(id).append('<option value="' + jQuery(this).val() + '" selected="selected">' + jQuery(this).val() + '</option>');
-                    jQuery(id).trigger('chosen:updated');
-                    evt.preventDefault();
-                }
+            
+            // Initialize select2 plugin.
+            jQuery(id).select2({
+              tags: true,
+              tokenSeparators: [',']
             });
         }).fail(function(xhr, ajaxOptions, thrownError) {
             console.log("failure");
@@ -30,4 +26,4 @@ function loadMetaDataDropdown( url, id ) {
         });
 }
 
-loadDropdowns();
+jQuery(document).ready( loadDropdowns );
