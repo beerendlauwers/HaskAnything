@@ -1,9 +1,9 @@
 ---
 title: A Sensible Intro to FRP
 url-video: https://begriffs.com/posts/2016-07-27-tikhon-on-frp.html
-url-slides: 
+url-slides: http://jelv.is/talks/frp-2016/
 authors: Tikhon Jelvis
-source: 
+source: https://begriffs.com/posts/2016-07-27-tikhon-on-frp.html
 conference: 
 tags: reactive-banana,threepenny-gui,reflex
 libraries: 
