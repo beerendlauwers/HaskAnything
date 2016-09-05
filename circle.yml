@@ -15,9 +15,9 @@ dependencies:
     - "~/.cabal"
     - "~/.ghc"
   pre:
-    - wget https://github.com/commercialhaskell/stack/releases/download/v1.1.2/stack-1.1.2-linux-x86_64.tar.gz -O /tmp/stack.tar.gz
-    - tar -xvzf /tmp/stack.tar.gz && chmod +x /tmp/stack
-    - sudo mv /tmp/stack /usr/bin/stack
+    - wget -q -O- https://s3.amazonaws.com/download.fpcomplete.com/ubuntu/fpco.key | sudo apt-key add -
+    - echo 'deb http://download.fpcomplete.com/ubuntu/precise stable main'|sudo tee /etc/apt/sources.list.d/fpco.list
+    - sudo apt-get update && sudo apt-get -y install stack
   override:
     - stack setup +RTS -M1024m -K1024m 
     - stack build --only-dependencies -j1
