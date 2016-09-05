@@ -27,4 +27,4 @@ test:
   override:
     - "stack install"
     - "make build"
-    - "make deploy"
+    - if [ ! -z $CI_PULL_REQUEST ]; then make deploy; fi
