@@ -1,6 +1,5 @@
 ---
 title: S.P.Q.R.
-tags: Testing 5, Testing, Testing 3
 ---
 
 Mauris in lorem nisl. Maecenas tempus facilisis ante, eget viverra nisl
