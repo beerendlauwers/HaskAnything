@@ -2,23 +2,14 @@
 function generateFilePreview(templateName) {
     
     // Fetch elements
-    var inputSelector = jQuery('.web-submit-element :input').not('button.preview, #submit-pull-request-preview, #title-proposed, #submit-pull-request-feedback, .search-field > input');
+    var inputSelector = jQuery('.web-submit-element').find(':input').not('.select2-search__field');
     
     var selectors = jQuery(inputSelector).toArray();
     
     var getValue = function(selector) {
         var v = jQuery(selector).val();
         
-        console.log(v);
-        
-        // Magic necessary for the Chosen plugin.
-        if (jQuery(selector).siblings('.chosen-container-multi').length > 0) {
-            v = jQuery(selector).chosen().val();
-            
-            if ( v ) {
-                v= v.join(', ');
-            }
-        }
+        console.log("selector " + selector.id + ": " + v);
         
         return v ? v : "";
     };
