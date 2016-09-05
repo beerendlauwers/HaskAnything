@@ -1,6 +1,9 @@
 flags: {}
 packages:
 - '.'
+- location:
+    git: https://github.com/snoyberg/yaml.git
+    commit: e6ffcee39ab075ada8ba2b29c1f57af2f1448f91
 extra-deps:
 - Win32-notify-0.3.0.1
-resolver: lts-3.18
+resolver: lts-6.15

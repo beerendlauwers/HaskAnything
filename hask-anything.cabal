@@ -24,10 +24,10 @@ library
                      , HaskAnything.Internal.Po.Parse
                      , HaskAnything.Internal.Po
   build-depends:       base >= 4.7 && < 5
-                     , hakyll == 4.7.4.0
+                     , hakyll == 4.8.3.2
                      , blaze-html
                      , containers
-                     , aeson == 0.8.0.2
+                     , aeson == 0.11.2.1
                      , bytestring
                      , parsec
                      , mtl
@@ -42,7 +42,7 @@ executable hask-anything-exe
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , hask-anything
-                     , hakyll == 4.7.4.0
+                     , hakyll == 4.8.3.2
                      , text
                      , split
                      , filepath
