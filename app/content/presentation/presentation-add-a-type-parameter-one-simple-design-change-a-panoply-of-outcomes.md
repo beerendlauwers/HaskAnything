@@ -1,9 +1,9 @@
 ---
-title: Add a type parameter! One 'simple' design change, a panoply of outcomes
+title: "Add a type parameter! One 'simple' design change, a panoply of outcomes"
 url-video: https://www.youtube.com/watch?v=BHjIl81HgfE
 url-slides: http://nocandysw.com/add-a-type-parameter.pdf
 authors: Stephen Compall
-source: 
+source: http://www.composeconference.org/2016/speakers/
 conference: Compose2016
 tags: 
 libraries: 

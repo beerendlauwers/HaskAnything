@@ -3,7 +3,7 @@ title: A Taste of Haskell - Part 2
 url-video: https://www.youtube.com/watch?v=IqXTUbdLig0
 url-slides: http://www.slideshare.net/oscon2007/os-peytonjones
 authors: Simon Peyton-Jones
-source: 
+source: https://wiki.haskell.org/Video_presentations
 conference: OSCON 2007
 tags: 
 libraries: 

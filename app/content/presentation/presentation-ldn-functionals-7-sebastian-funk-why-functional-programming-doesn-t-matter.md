@@ -3,7 +3,7 @@ title: LDN Functionals #7 Sebastian Funk: Why Functional Programming doesn't mat
 url-video: https://www.youtube.com/watch?v=-5rFPvBA5Ig
 url-slides: about:blank
 authors: Sebastian Funk
-source: 
+source: http://blog.functionalworks.com/2015/09/18/firstfpmeetup/
 conference: LDN Functionals
 tags: 
 libraries: 

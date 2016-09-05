@@ -3,7 +3,7 @@ title: Dynamic Typing in GHC
 url-video: https://www.youtube.com/watch?v=asdABzBUoGM
 url-slides: about:blank
 authors: Stephanie Weirich
-source: 
+source: http://www.composeconference.org/2016/speakers/
 conference: Compose2016
 tags: 
 libraries: 

@@ -3,7 +3,7 @@ title: "How to Bake 'How to Bake Pi': Reflections on Making Abstract Math Palata
 url-video: https://www.youtube.com/watch?v=h2p68JjSUH0
 url-slides: about:blank
 authors: Eugenia Cheng
-source: 
+source: http://www.composeconference.org/2016/speakers/
 conference: Compose2016
 tags: 
 libraries: 
