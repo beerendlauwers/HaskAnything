@@ -1,5 +1,5 @@
 ---
-title: 'There and Back Again' and What Happened After
+title: "'There and Back Again' and What Happened After"
 url-video: https://www.youtube.com/watch?v=u_OsUlwkmBQ
 url-slides: https://github.com/kwf/TABA-AWHA
 authors: Kenneth Foner
