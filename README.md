@@ -42,4 +42,4 @@ If it's not, please open an issue over at [Github](https://github.com/beerendlau
 
 This Github repository serves as both the code repository that generates the website (branch `master`), as well as the host for the website itself (branch `gh-pages`).
 
-**Note:** Pushes are done automatically to `gh-pages` by CircleCI, which overwrites any changes, so never offer pull requests for that branch. 
+**Note:** Pushes are done automatically to `gh-pages` by CircleCI, which overwrites any changes, so never offer pull requests for that branch.
