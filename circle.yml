@@ -8,7 +8,6 @@ machine:
     - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10
     - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
 
-# cf. https://gist.github.com/dbp/bef96402ea07001dfed2
 dependencies:
   cache_directories:
     - "~/.stack"
@@ -27,4 +26,5 @@ test:
   override:
     - "stack install"
     - "make build"
-    - if [ ! -z $CI_PULL_REQUEST ]; then make deploy; fi
+    - echo $CI_PULL_REQUEST
+    - if [ -z $CI_PULL_REQUEST ]; then echo $CI_PULL_REQUEST; else make deploy; fi
