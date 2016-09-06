@@ -27,4 +27,4 @@ test:
     - "stack install"
     - "make build"
     - echo $CI_PULL_REQUEST
-    - if [ -z $CI_PULL_REQUEST ]; then echo $CI_PULL_REQUEST; else make deploy; fi
+    - if [ -z $CI_PULL_REQUEST ]; then make deploy; else echo "Pull request test, skipping push."; fi
