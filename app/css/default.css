@@ -124,3 +124,62 @@ textarea {
 #submit-pull-request-button[disabled] {
     color: grey;
 }
+
+#facets {
+    display: flex;
+}
+
+.facetsearch {
+    margin: 2em;
+}
+
+.facetsearch:first-of-type {
+    margin-left: 0;
+}
+
+.facetlist .facetitem {
+    cursor: pointer;
+}
+
+.facetlist .facetitem:hover {
+    text-decoration: underline;
+}
+
+.facetlist .activefacet {
+    font-weight: 600;
+}
+
+.item .item-header {
+    display: flex;
+}
+
+.item .item-category {
+    align-self: center;
+    margin-left: 0.5em;
+    font-style: italic;
+}
+
+.bottomline .facettotalcount {
+    display: none;
+}
+
+.bottomline .deselectstartover {
+    cursor: pointer;
+}
+
+.bottomline .orderby {
+    display: flex;
+}
+
+.bottomline .orderby ul {
+    list-style-type: none;
+}
+
+.bottomline .orderby ul li {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.bottomline .orderby .activeorderby {
+    font-weight: 600;
+}
