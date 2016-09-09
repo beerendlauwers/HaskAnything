@@ -5,7 +5,9 @@ url-slides: http://slides.com/emhoracek/web-dev-with-fn
 authors: Libby Horacek
 source: http://www.meetup.com/NY-Haskell/events/230142951/
 conference: 
-tags: fn,wai
+tags:
+ - fn
+ - wai
 libraries: 
 ---
 

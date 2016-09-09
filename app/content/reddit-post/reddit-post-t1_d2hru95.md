@@ -4,8 +4,8 @@ author: torstengrust
 unique_id: t1_d2hru95
 subreddit: haskell
 reddit-url: https://www.reddit.com/r/haskell/comments/4ght6b/%CE%BB_bubble_popa_simple_game_that_illustrates/d2hru95
-tags: conversion
-libraries: dap
+tags: game
+libraries:
 ---
 
 Looks (and sounds!) great.

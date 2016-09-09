@@ -5,8 +5,11 @@ url-slides: http://rleonid.github.io/slides/oml/compose2016/#/
 authors: Leonid Rozenberg
 source: http://www.composeconference.org/2016/program/
 conference: Compose2016
-tags: statistics, ml
-libraries: oml
+tags:
+ - statistics
+ - ml
+libraries:
+ - oml
 ---
 
 The proposed talk would have two broad themes. The first would be a quick survey of the Oml library that I helped to develop, that aims to provide mathematical, statistical and general machine learning capabilities for the OCaml programming environment. This would be a quick (and hopefully live) demo. The second part of the talk would be about my experiences. In particular, I’d like to discuss the difficulty of testing this library and what roles types can play. 

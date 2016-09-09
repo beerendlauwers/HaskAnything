@@ -3,7 +3,6 @@ title: GADTs Meet Their Match
 paper-url: http://research.microsoft.com/en-us/um/people/simonpj/papers/pattern-matching/gadtpm.pdf
 authors-paper: Georgios Karachalias, Tom Schrijvers, Dimitrios Vytiniotis and Simon Peyton Jones
 tags: gadts
-libraries: pandoc
 ---
 
 For ML and Haskell, accurate warnings when a function definition
