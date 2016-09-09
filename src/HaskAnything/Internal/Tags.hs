@@ -13,11 +13,11 @@ import qualified Text.Blaze.Html5.Attributes     as A
 
 -- For the library stuff
 import qualified Data.Map                        as M
-import           Control.Monad                   (liftM)
+import           Control.Monad                   (liftM,mplus)
 
 -- For the tag extraction stuff
 import           Data.List                       (nub,intersect)
-import           Data.Maybe                      (catMaybes,fromJust)
+import           Data.Maybe                      (fromMaybe,catMaybes,fromJust)
 
 -- |Adds the categories of a piece of content to the context.
 addCategories :: Tags -> Context String -> Context String
@@ -29,7 +29,7 @@ addTags = extend "tags"
 
 -- |Adds the libraries of a piece of content to the context.
 addLibraries :: Tags -> Context String -> Context String
-addLibraries = extendWith libraryTagsField "libraries"
+addLibraries = extend "libraries"
 
 -- |Helper function for extending a context with some tags.
 extend :: String -> Tags -> Context String -> Context String
@@ -38,8 +38,6 @@ extend s tags = mappend (contentTagsField s tags)
 -- |Helper function for extending a context with some tags. 
 -- |You can supply a custom $f$ to define where 
 extendWith f s tags = mappend (f s tags)
-
-libraryTagsField = tagsFieldWith getLibraries simpleRenderLink mconcat
 
 contentTagsField = 
     tagsFieldWith getTags simpleRenderLink mconcat
@@ -68,15 +66,13 @@ matchTagsWithCategories tags cats =
     then Just tag
     else Nothing    
     
--- |Extracts a library field from the metadata.
--- |Example: library-1
-getLibrary :: MonadMetadata m => Int -> Identifier -> m (Maybe String)
-getLibrary n identifier = getMetadataField identifier ("library-" ++ show n)
-
--- |Extracts all available libraries from the metadata: library-1, library-2, etc, until library-10.
+    
 getLibraries :: MonadMetadata m => Identifier -> m [String]
-getLibraries identifier = (liftM catMaybes) $ mapM (\(n,i) -> getLibrary n i) (zip [1..] (replicate 10 identifier))
-
--- |Puts all the libraries in a $Tags$ data type.
+getLibraries identifier = do
+    metadata <- getMetadata identifier
+    return $ fromMaybe [] $
+        (lookupStringList "libraries" metadata) `mplus`
+        (map trim . splitAll "," <$> lookupString "libraries" metadata)
+    
 buildLibraries :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
 buildLibraries = buildTagsWith getLibraries
