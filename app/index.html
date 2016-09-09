@@ -8,7 +8,7 @@ title: Home
         var TagList = React.createClass({
           render: function() {
             var tagNodes = this.props.data.map(function (tag) {
-              var path = facetPath + "/" + tag + '.html';
+              var path = "filter.html?" + facetName + "=" + tag;
               return (
               <div className="tag">
               <a href={path}>
