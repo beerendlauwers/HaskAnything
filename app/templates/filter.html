@@ -1,0 +1,94 @@
+<link rel="stylesheet" href="/vendor/select2/css/select2.min.css"/>
+<script src="/vendor/select2/js/select2.full.min.js"></script>
+<script src="/js/querystring.js"></script>
+<script src="/vendor/underscore/underscore.js"></script>
+<script src="/vendor/facetedsearch//facetedsearch.js"></script>
+<script type="text/javascript">
+
+// Try out this instead https://eikes.github.io/facetedsearch/
+
+jQuery(document).ready(function() {
+
+    // This contains the metadata for all content on the site. Auto-generated.
+    var items = [
+    $for(tagData)$
+        {
+          "title": "$title$",
+          "tags": $tags$,
+          "categories": $category$,
+          "libraries": $libraries$,
+          "url": "$url$"
+        }
+        $sep$,
+    $endfor$
+        ];
+
+    var item_template = 
+     '<div class="item col-md-6 col-sm-12">' +
+         '<div class="item-header">' + 
+         '<h4><a href="<%= obj.url %>"><%= obj.title %></a></h4>' + 
+         '<span class="item-category"><% if (obj.category) {  %><%= obj.category %><% } %></span>' +
+         '</div>' + 
+         '<% if (obj.tags && obj.tags.length) {  %><p class="tags">Tags: <%= obj.tags %></p><% } %>' + 
+         '<% if (obj.libraries && obj.libraries.length) {  %><p class="libraries">Libraries: <%= obj.libraries %></p><% } %>' + 
+       '</div>';
+      var settings = { 
+        items           : items,
+        facets          : { 
+                            'categories'     : 'Categories',
+                            'tags'         : 'Tags',
+                            'libraries'     : 'Libraries'
+        },  
+        resultSelector  : '#results',
+        facetSelector   : '#facets',
+        resultTemplate  : item_template,
+        orderByOptions  : {'title': 'Title', 'category': 'Categories', 'tags': 'Tags', 'libraries': 'Libraries'}
+      };
+
+     
+    // Add event handler 
+    jQuery('#facets').on("facetuicreated", function(){
+    
+      jQuery('.bottomline').insertAfter('#facets');
+       
+      setTimeout( function() {
+        // Read querystring for data.
+        var facets = ['categories','tags','libraries'];
+        
+        var readQuerystring = function(elem) {
+          if( getParameterByName(elem) ) {
+            var e = getParameterByName(elem);
+            jQuery('.facetitem:contains("' + e + '")').click();
+          }
+        };
+        
+        R.map( readQuerystring,facets);      
+          
+      }, 25 ); 
+      
+    });
+            
+     jQuery('#results').on("facetedsearchresultupdate", function(){
+      var resultCount = jQuery('#results > .item').length;
+      var resultText = (resultCount > 1 || resultCount == 0) ? "Results" : "Result";
+      jQuery('#resultsHeader').text( resultCount + " " + resultText );
+    });
+            
+
+    jQuery(function(){
+      jQuery.facetelize(settings);
+    });
+});
+</script>
+
+<h1>$title$</h1>
+
+<div class="row col-md-12 col-sm-12">
+<div id="facets"></div>
+</div>
+
+<div class="row col-md-12 col-sm-12">
+    <h2 id="resultsHeader">Results</h2>
+    <div id="results"></div>
+</div>
+
