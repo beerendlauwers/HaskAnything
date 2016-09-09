@@ -2,11 +2,12 @@
 {-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
 import           Data.Monoid (mconcat,mappend,(<>))
 import qualified Data.List                      as L
+import           Hakyll.Core.Metadata           (lookupString)
 import           Hakyll
 import           Hakyll.Web.Tags
 import           Control.Applicative           (empty)
 import           Data.List.Split               (splitOn)
-import           System.FilePath               (dropExtension, takeFileName) 
+import           System.FilePath               (dropExtension, takeFileName, takeBaseName, takeDirectory) 
 
 import           HaskAnything.Internal.Content
 import           HaskAnything.Internal.Tags
@@ -19,7 +20,10 @@ import           HaskAnything.Internal.Po
 
 import           Control.Monad                   (foldM, forM, forM_, mplus, join)
 
+import           Data.Tuple.Utils
+
 import           Data.Aeson                      (encode)
+import qualified Data.ByteString.Lazy.Char8 as BSL
 import           Data.Maybe                      (fromMaybe)
 
 
@@ -70,7 +74,7 @@ main = hakyll $ do
                         listField "alltags" (addTags tags $ postCtx tags categories libraries) (return alltags) <>
                         defaultContext' tags categories libraries
             makeItem ""
-                >>= loadAndApplyTemplate "templates/tags.html" ctx
+                >>= loadAndApplyTemplate "templates/tag.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
                 
@@ -105,9 +109,40 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
     
+    testJSONfile "content-tags" tags
     makeJSONFile "tags" tags
     makeJSONFile "libraries" libraries
     makeJSONFile "categories" categories
+    
+    create ["filter.html"] $ do
+        route idRoute
+        compile $ do 
+              
+            -- Load the identifiers from the Tags data structure and fetch their metadata.
+            let (Tags t _ _) = tags 
+            let idents = L.nub $ concatMap snd t
+            allCategories <- sequence (map getCategory idents)
+            allMetadata <- sequence (map getMetadata idents)
+            allRoutes <- sequence (map getRoute idents)
+            let zipped = zip3 allMetadata allRoutes allCategories
+            
+            let allIdents = 
+                      listField "tagData" 
+                        (
+                            field "title" (return . (\metadata -> fromMaybe "(no title)" $ lookupString "title" metadata) . fst3 . itemBody) <>
+                            field "tags" (return . (processList "tags") . fst3 . itemBody) <>
+                            field "libraries" (return . (processList "libraries") . fst3 . itemBody) <>
+                            field "url" (return . (\route -> fromMaybe "#" route) . snd3 . itemBody) <>
+                            field "category" (return . BSL.unpack . encode . thd3 . itemBody)
+                        ) 
+                        ( sequence (map makeItem zipped) )
+            
+            let ctx = allIdents <> constField "title" "Filter by facets" <> defaultContext' tags categories libraries
+            makeItem ""
+                >>= loadAndApplyTemplate "templates/filter.html" ctx
+                >>= loadAndApplyTemplate "templates/default.html" ctx
+                >>= relativizeUrls
+    
     {- WIP
     match "translations/*" $ do
         compile readPo
@@ -199,6 +234,14 @@ facetCtx tags categories libraries =
  )
  (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","categories",categories),("Libraries","libraries",libraries)])
 
+getCategory :: MonadMetadata m => Identifier -> m [String]
+getCategory = return . return . takeBaseName . takeDirectory . toFilePath
+
+processList nm metadata = (BSL.unpack . encode) $ 
+    case lookupString nm metadata of
+        (Just s) -> [s]
+        Nothing -> fromMaybe [] (lookupStringList nm metadata)
+ 
 -- The default tagsRules function doesn't allow me to set an extension on the created tag identifier, which is what I need.
 tagsRules' :: Tags -> (String -> Pattern -> Rules ()) -> Rules ()
 tagsRules' tags rules =
