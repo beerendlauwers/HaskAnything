@@ -108,8 +108,6 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/categories.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
-    
-    testJSONfile "content-tags" tags
     makeJSONFile "tags" tags
     makeJSONFile "libraries" libraries
     makeJSONFile "categories" categories
