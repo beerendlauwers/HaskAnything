@@ -1,5 +1,5 @@
 ---
-title: LDN Functionals #7 Sebastian Funk: Why Functional Programming doesn't matter
+title: "LDN Functionals #7 Sebastian Funk: Why Functional Programming doesn't matter"
 url-video: https://www.youtube.com/watch?v=-5rFPvBA5Ig
 url-slides: about:blank
 authors: Sebastian Funk

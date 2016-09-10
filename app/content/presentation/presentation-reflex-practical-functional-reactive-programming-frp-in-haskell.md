@@ -1,5 +1,5 @@
 ---
-title: Reflex: Practical Functional Reactive Programming (FRP) in Haskell
+title: "Reflex: Practical Functional Reactive Programming (FRP) in Haskell"
 url-video: https://www.youtube.com/watch?v=mYvkcskJbc4
 url-slides: https://obsidian.systems/reflex-nyhug/
 authors: Ryan Trinkle
