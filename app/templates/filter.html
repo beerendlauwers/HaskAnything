@@ -27,7 +27,7 @@ jQuery(document).ready(function() {
      '<div class="item col-md-6 col-sm-12">' +
          '<div class="item-header">' + 
          '<h4><a href="<%= obj.url %>"><%= obj.title %></a></h4>' + 
-         '<span class="item-category"><% if (obj.category) {  %><%= obj.category %><% } %></span>' +
+         '<span class="item-category"><% if (obj.categories) {  %><%= obj.categories %><% } %></span>' +
          '</div>' + 
          '<% if (obj.tags && obj.tags.length) {  %><p class="tags">Tags: <%= obj.tags %></p><% } %>' + 
          '<% if (obj.libraries && obj.libraries.length) {  %><p class="libraries">Libraries: <%= obj.libraries %></p><% } %>' + 
