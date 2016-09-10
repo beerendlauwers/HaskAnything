@@ -1,5 +1,5 @@
 --------------------------------------------------------------------------------
-{-# LANGUAGE OverloadedStrings, FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings, FlexibleContexts, ScopedTypeVariables #-}
 import           Data.Monoid (mconcat,mappend,(<>))
 import qualified Data.List                      as L
 import           Hakyll.Core.Metadata           (lookupString)
@@ -115,15 +115,19 @@ main = hakyll $ do
     create ["filter.html"] $ do
         route idRoute
         compile $ do 
-              
-            -- Load the identifiers from the Tags data structure and fetch their metadata.
-            let (Tags t _ _) = tags 
-            let idents = L.nub $ concatMap snd t
+            -- Load the content identifiers.
+            allContent::[Item String] <- loadAll "content/*/*"
+            let idents = map itemIdentifier allContent
+            
+            -- Get metadata from them.
             allCategories <- sequence (map getCategory idents)
             allMetadata <- sequence (map getMetadata idents)
             allRoutes <- sequence (map getRoute idents)
+            
+            -- Zip it up for easy access later on.
             let zipped = zip3 allMetadata allRoutes allCategories
             
+            -- Construct a data structure that Hakyll's templating system understands.
             let allIdents = 
                       listField "tagData" 
                         (
@@ -135,6 +139,7 @@ main = hakyll $ do
                         ) 
                         ( sequence (map makeItem zipped) )
             
+            -- Add that data structure to our local compilation context.
             let ctx = allIdents <> constField "title" "Filter by facets" <> defaultContext' tags categories libraries
             makeItem ""
                 >>= loadAndApplyTemplate "templates/filter.html" ctx
@@ -237,7 +242,7 @@ getCategory = return . return . takeBaseName . takeDirectory . toFilePath
 
 processList nm metadata = (BSL.unpack . encode) $ 
     case lookupString nm metadata of
-        (Just s) -> [s]
+        (Just s) -> (map trim . splitAll ",") s
         Nothing -> fromMaybe [] (lookupStringList nm metadata)
  
 -- The default tagsRules function doesn't allow me to set an extension on the created tag identifier, which is what I need.
