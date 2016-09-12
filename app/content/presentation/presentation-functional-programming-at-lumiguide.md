@@ -5,7 +5,7 @@ url-slides: https://github.com/meiersi/HaskellerZ/raw/master/meetups/20160722-Zu
 authors: Bas van Dijk
 source: https://www.reddit.com/r/haskell/comments/51uaxw/zurihac_2016_functional_programming_at_lumiguide/
 conference: ZuriHac 2016
-tags: GHCJS,Machine Learning,Nix
+tags: GHCJS,Machine Learning,Nix,Computer Vision
 libraries: haskell-opencv,blaze-react,inline-c
 ---
 
