@@ -1,0 +1,56 @@
+---
+title: Submit an article
+handlebar-template: article
+---
+
+<script src="/vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+<link href="/css/ui/submit/common.css" rel="stylesheet"/>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery('#rootwizard').bootstrapWizard();
+    });
+</script>
+
+<script id="handlebars-template" type="text/x-handlebars-template">$partial("templates/handlebars/presentation.handlebars")$</script>
+
+<div class="col-sm-12">
+    <h2>$title$</h2>
+</div>
+
+<div id="rootwizard">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul>
+                    <li><a href="#tab1" data-toggle="tab">1. Article</a></li>
+                    <li><a href="#tab2" data-toggle="tab">2. Metadata</a></li>
+                    <li><a href="#tab3" data-toggle="tab">3. Submit</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane" id="tab1">
+            $partial("ui/elements/title.html")$
+            $partial("ui/elements/date-published.html")$
+            $partial("ui/elements/url-article.html")$
+            $partial("ui/elements/url-slides-presentation.html")$
+            $partial("ui/elements/description-presentation.html")$
+            $partial("ui/elements/authors-presentation.html")$
+            $partial("ui/elements/conference-presentation.html")$
+        </div>
+        <div class="tab-pane" id="tab2">
+            $partial("ui/elements/metadata.html")$
+        </div>
+        <div class="tab-pane" id="tab3">
+            $partial("ui/elements/submit-pull-request.html")$
+        </div>
+        <ul class="pager wizard">
+            <li class="previous first" style="display:none;"><a href="#">First</a></li>
+            <li class="previous"><a href="#">Previous</a></li>
+            <li class="next last" style="display:none;"><a href="#">Last</a></li>
+            <li class="next"><a href="#">Next</a></li>
+        </ul>
+    </div>
+</div>
