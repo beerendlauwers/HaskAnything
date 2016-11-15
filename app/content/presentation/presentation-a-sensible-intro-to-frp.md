@@ -1,6 +1,6 @@
 ---
 title: A Sensible Intro to FRP
-url-video: https://begriffs.com/posts/2016-07-27-tikhon-on-frp.html
+url-video: "https://player.vimeo.com/external/176422593.sd.mp4?s=2481d98f0eb01f71691218cffbee74919713d116"
 url-slides: http://jelv.is/talks/frp-2016/
 authors: Tikhon Jelvis
 source: https://begriffs.com/posts/2016-07-27-tikhon-on-frp.html
