@@ -35,18 +35,18 @@ addLibraries = extend "libraries"
 extend :: String -> Tags -> Context String -> Context String
 extend s tags = mappend (contentTagsField s tags)
 
--- |Helper function for extending a context with some tags. 
--- |You can supply a custom $f$ to define where 
+-- |Helper function for extending a context with some tags.
+-- |You can supply a custom $f$ to define where
 extendWith f s tags = mappend (f s tags)
 
-contentTagsField = 
+contentTagsField =
     tagsFieldWith getTags simpleRenderLink mconcat
-    
+
 simpleRenderLink :: String -> (Maybe FilePath) -> Maybe H.Html
 simpleRenderLink _   Nothing         = Nothing
 simpleRenderLink tag (Just filePath) =
   Just $ H.a ! A.href (toValue $ toUrl filePath) ! A.class_ "tag" $ toHtml tag
-  
+
 -- |Gives you a list of unique tags.
 getUniqueTags' :: Tags -> [String]
 getUniqueTags' (Tags m _ _) = nub $ map fst m
@@ -57,22 +57,30 @@ matchTagsWithCategories' (Tags tags _ _) (Tags cats _ _) = matchTagsWithCategori
 
 -- |Given a list of tags and a list of categories, searches for common 'Identifier's in both and zips it up wih the category.
 matchTagsWithCategories :: [(String, [Identifier])] -> [(String, [Identifier])] -> [(String, [String])]
-matchTagsWithCategories tags cats = 
+matchTagsWithCategories tags cats =
  map f cats
-  where 
+  where
   f (cat,paths) = (cat, nub $ catMaybes $ concatMap (\c -> map (find c) tags ) cats)
-  find (cat,cpaths) (tag,tpaths) = 
+  find (cat,cpaths) (tag,tpaths) =
    if length (intersect cpaths tpaths) > 0
     then Just tag
-    else Nothing    
-    
-    
+    else Nothing
+
+
 getLibraries :: MonadMetadata m => Identifier -> m [String]
 getLibraries identifier = do
     metadata <- getMetadata identifier
     return $ fromMaybe [] $
         (lookupStringList "libraries" metadata) `mplus`
         (map trim . splitAll "," <$> lookupString "libraries" metadata)
-    
+
 buildLibraries :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
 buildLibraries = buildTagsWith getLibraries
+
+getCategoryType :: MonadMetadata m => Identifier -> m [String]
+getCategoryType identifier = do
+    metadata <- getMetadata identifier
+    return $ [ fromMaybe [] $ lookupString "type" metadata ]
+
+buildCategoryTypes :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
+buildCategoryTypes = buildTagsWith getCategoryType
