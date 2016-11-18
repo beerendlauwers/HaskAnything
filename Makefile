@@ -13,6 +13,7 @@ build:	${EXE}
 deploy:
 	cd app && echo ${CNAME} > _site/CNAME
 	cd app && rm -rf _site/.git
+	cd app/_site && touch .nojekyll
 	cd app/_site && git init && git add .
 	cd app/_site && git config user.email "nobody@circleci.com"
 	cd app/_site && git config user.name CircleCI
