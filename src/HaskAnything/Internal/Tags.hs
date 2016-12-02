@@ -13,11 +13,19 @@ import qualified Text.Blaze.Html5.Attributes     as A
 
 -- For the library stuff
 import qualified Data.Map                        as M
-import           Control.Monad                   (liftM,mplus)
+import           Control.Monad                   (liftM,mplus,forM_)
 
 -- For the tag extraction stuff
 import           Data.List                       (nub,intersect)
 import           Data.Maybe                      (fromMaybe,catMaybes,fromJust)
+
+-- The default tagsRules function doesn't allow me to set an extension on the created tag identifier, which is what I need.
+tagsRules' :: Tags -> (String -> Pattern -> Rules ()) -> Rules ()
+tagsRules' tags rules =
+    forM_ (tagsMap tags) $ \(tag, identifiers) ->
+        rulesExtraDependencies [tagsDependency tags] $
+            create [tagsMakeId tags (tag ++ ".html")] $ do
+                rules tag $ fromList identifiers
 
 -- |Adds the categories of a piece of content to the context.
 addCategories :: Tags -> Context String -> Context String
