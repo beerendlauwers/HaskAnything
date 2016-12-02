@@ -13,12 +13,12 @@ import           HaskAnything.Internal.Content
 import           HaskAnything.Internal.Tags
 import           HaskAnything.Internal.Facet
 import           HaskAnything.Internal.JSON
-import           HaskAnything.Internal.Extra     (toString,loadBodyLBS)
-import           HaskAnything.Internal.Field     (urlReplaceField,loadSeriesList)
+import           HaskAnything.Internal.Extra     (toString,loadBodyLBS,getCategory)
+import           HaskAnything.Internal.Field     (urlReplaceField, getFieldFromMetadata, getManyFieldsFromMetaData, loadSeriesList)
 
 import           HaskAnything.Internal.Po
 
-import           Control.Monad                   (foldM, forM, forM_, mplus, join)
+import           Control.Monad                   (foldM, forM, mplus, join)
 
 import           Data.Tuple.Utils
 
@@ -256,27 +256,10 @@ facetCtx tags categories libraries =
  )
  (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","categories",categories),("Libraries","libraries",libraries)])
 
-getCategory :: MonadMetadata m => Identifier -> m [String]
-getCategory = return . return . takeBaseName . takeDirectory . toFilePath
-
 processList nm metadata = (BSL.unpack . encode) $
     case lookupString nm metadata of
         (Just s) -> (map trim . splitAll ",") s
         Nothing -> fromMaybe [] (lookupStringList nm metadata)
-
--- The default tagsRules function doesn't allow me to set an extension on the created tag identifier, which is what I need.
-tagsRules' :: Tags -> (String -> Pattern -> Rules ()) -> Rules ()
-tagsRules' tags rules =
-    forM_ (tagsMap tags) $ \(tag, identifiers) ->
-        rulesExtraDependencies [tagsDependency tags] $
-            create [tagsMakeId tags (tag ++ ".html")] $ do
-                rules tag $ fromList identifiers
-
-getFieldFromMetadata :: String -> Context String
-getFieldFromMetadata key = field key (\i -> fmap (maybe empty id) (getMetadataField  (itemIdentifier i) key) )
-
-getManyFieldsFromMetaData :: [String] -> Context String
-getManyFieldsFromMetaData keys = foldr1 mappend (map getFieldFromMetadata keys)
 
 -- Given a key and a value, constructs a context that takes a key that will come from a Hakyll template.
 -- If the key (k) coming from the Hakyll template corresponds with the one we provided (key), we return the value.
@@ -295,8 +278,20 @@ extractMetadata key i = do
   Nothing -> empty
 
 seriesCtx :: Tags -> Tags -> Tags -> Context String
-seriesCtx t c l = loadSeriesList ctx <> ctx
-  where ctx = postCtx t c l
+seriesCtx t c l = loadSeriesList contexts <> ctx
+ where
+   ctx = postCtx t c l
+   contexts =
+     [
+      ("article", articleCtx t c l),
+      ("how-do-i", postCtx t c l),
+      ("package", packageCtx t c l),
+      ("paper", postCtx t c l),
+      ("presentation", postCtx t c l),
+      ("reddit-post", postCtx t c l),
+      ("series", seriesCtx t c l)
+     ]
+
 
 articleCtx :: Tags -> Tags -> Tags -> Context String
 articleCtx t c l = ifField "has-permission" (extractMetadata "permission-file") <> getManyFieldsFromMetaData ["authors","date","url","permission-file","blog"]  <> postCtx t c l
