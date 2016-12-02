@@ -35,6 +35,7 @@ library
                      , hackage-db
                      , unordered-containers
                      , MissingH
+                     , filepath
   default-language:    Haskell2010
 
 executable hask-anything-exe
