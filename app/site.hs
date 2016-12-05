@@ -1,12 +1,11 @@
 --------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings, FlexibleContexts, ScopedTypeVariables #-}
 import           Data.Monoid (mconcat,mappend,(<>))
-import qualified Data.List                      as L
+
 import           Hakyll.Core.Metadata           (lookupString)
 import           Hakyll
 import           Hakyll.Web.Tags
 import           Control.Applicative           (empty)
-import           Data.List.Split               (splitOn)
 import           System.FilePath               (dropExtension, takeFileName, takeBaseName, takeDirectory)
 
 import           HaskAnything.Internal.Content
@@ -14,7 +13,8 @@ import           HaskAnything.Internal.Tags
 import           HaskAnything.Internal.Facet
 import           HaskAnything.Internal.JSON
 import           HaskAnything.Internal.Extra     (toString,loadBodyLBS,getCategory)
-import           HaskAnything.Internal.Field     (urlReplaceField, getFieldFromMetadata, getManyFieldsFromMetaData, loadSeriesList)
+import           HaskAnything.Internal.Field     (urlReplaceField, getFieldFromMetadata, getManyFieldsFromMetaData, loadSeriesList, relativizeUrl)
+import           HaskAnything.Internal.Field.Video (generateVideoEmbed)
 
 import           HaskAnything.Internal.Po
 
@@ -24,7 +24,7 @@ import           Data.Tuple.Utils
 
 import           Data.Aeson                      (encode)
 import qualified Data.ByteString.Lazy.Char8 as BSL
-import           Data.Maybe                      (listToMaybe,fromMaybe,catMaybes)
+import           Data.Maybe                      (fromMaybe,catMaybes)
 
 
 --------------------------------------------------------------------------------
@@ -320,66 +320,3 @@ deduplicatePosts ps = L.nubBy f
    return v1 == v2
   cmp = withFilePath takeFileName
 -}
-
-data SupportedVideoURL = Youtube String | Vimeo String | VimeoPlayer String deriving (Eq,Show)
-
-
-toSupportedVideoURL :: String -> Maybe SupportedVideoURL
-toSupportedVideoURL url = (listToMaybe . catMaybes) $ map (\v -> if L.isInfixOf (fst v) url then Just (snd v $ url) else Nothing) mapping
- where
-  mapping =
-   [("youtube",Youtube)
-   ,("player.vimeo.com",VimeoPlayer)
-   ,("vimeo.com",Vimeo)
-   ]
-
-generateEmbedding :: SupportedVideoURL -> String
-generateEmbedding supVidUrl = generateEmbeddingWidthHeight (Just "100%") Nothing supVidUrl
-
-generateEmbeddingWidthHeight :: Maybe String -> Maybe String -> SupportedVideoURL -> String
-generateEmbeddingWidthHeight w h v = case v of
- (Youtube url) -> "<div class=\"youtube-fix\"><iframe " ++ genWidth w ++  genHeight h ++ "src=\"" ++ youtubeEmbedUrl url ++ "\" frameborder=\"0\" class=\"video\" allowfullscreen></iframe></div>"
- (VimeoPlayer url) -> "<div class=\"youtube-fix\"><iframe " ++ genWidth w ++  genHeight h ++ "src=\"" ++ url ++ "\" autoplay=\"false\" frameborder=\"0\" class=\"video\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>"
- (Vimeo url) -> "<div class=\"youtube-fix\"><iframe " ++ genWidth w ++  genHeight h ++ "src=\"" ++ vimeoEmbedUrl url ++ "\" autoplay=\"false\" frameborder=\"0\" class=\"video\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>"
- where
-  genHeight, genWidth :: Maybe String -> String
-  genHeight = maybe "" (\height -> "height=\"" ++ height ++ "\" ")
-  genWidth = maybe "" (\width -> "width=\"" ++ width ++ "\" ")
-
--- Takes a Youtube uRL and extracts the video ID from it to create an embeddable URL.
-youtubeEmbedUrl :: String -> String
-youtubeEmbedUrl = ("https://www.youtube.com/embed/" ++) . head . drop 1 . splitOn "?v="
-
--- Takes a Vimeo uRL and extracts the video ID from it to create an embeddable URL.
-vimeoEmbedUrl :: String -> String
-vimeoEmbedUrl = ("https://player.vimeo.com/video/" ++) . last . splitOn "/"
-
-generateVideoEmbed :: Context String
-generateVideoEmbed = functionField "generateVideoEmbed" $ \args item ->
-  case args of
-    [url] -> do return (selectType url)
-    [url,width,height] -> do return (selectTypeWidthHeight url width height)
-    _   -> fail "generateVideoEmbed expects either a single URL or a URL plus width and height"
- where
-  youtubeEmbedUrl url = (("https://www.youtube.com/embed/" ++) . head . drop 1 . splitOn "?v=") url
-  selectType url =
-   case toSupportedVideoURL url of
-    Just v  -> generateEmbedding v
-    Nothing -> ""
-  selectTypeWidthHeight url width height =
-   case toSupportedVideoURL url of
-    Just v -> generateEmbeddingWidthHeight (Just width) (Just height) v
-    Nothing -> ""
-
--- This is also in hakyll-extra, have to hook it up to this project.
-relativizeUrl :: Context a
-relativizeUrl = functionField "relativizeUrl" $ \args item ->
-    case args of
-        [k] -> do   route <- getRoute $ itemIdentifier item
-                    return $ case route of
-                        Nothing -> k
-                        Just r -> rel k (toSiteRoot r)
-        _   -> fail "relativizeUrl only needs a single argument"
-     where
-        isRel x = "/" `L.isPrefixOf` x && not ("//" `L.isPrefixOf` x)
-        rel x root = if isRel x then root ++ x else x

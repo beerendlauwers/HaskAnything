@@ -1,10 +1,10 @@
-{-# LANGUAGE OverloadedStrings, TypeSynonymInstances, FlexibleInstances, DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, DeriveDataTypeable #-}
 
 module HaskAnything.Internal.Field where
 
 import           Hakyll
 import           Data.Data
-import           Data.List                     (find)
+import           Data.List                     (find,isPrefixOf)
 import           Data.Maybe                    (fromMaybe)
 import           Data.String.Utils             (replace)
 import           Control.Applicative           (empty)
@@ -16,6 +16,20 @@ urlReplaceField fieldName (old,new) = field fieldName $ \item -> do
         case mbFilePath of
             Nothing       -> return "urlReplaceField: ???"
             Just filePath -> return $ toUrl $ replace old new $ filePath
+
+-- This is also in hakyll-extra, have to hook it up to this project.
+relativizeUrl :: Context a
+relativizeUrl = functionField "relativizeUrl" $ \args item ->
+    case args of
+        [k] -> do   route <- getRoute $ itemIdentifier item
+                    return $ case route of
+                        Nothing -> k
+                        Just r -> rel k (toSiteRoot r)
+        _   -> fail "relativizeUrl only needs a single argument"
+     where
+        isRel x = "/" `isPrefixOf` x && not ("//" `isPrefixOf` x)
+        rel x root = if isRel x then root ++ x else x
+
 
 getFieldFromMetadata :: String -> Context String
 getFieldFromMetadata key = field key (\i -> fmap (maybe empty id) (getMetadataField  (itemIdentifier i) key) )
