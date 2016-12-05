@@ -9,12 +9,12 @@ import           Control.Applicative           (empty)
 import           System.FilePath               (dropExtension, takeFileName, takeBaseName, takeDirectory)
 
 import           HaskAnything.Internal.Content
+import           HaskAnything.Internal.Context
 import           HaskAnything.Internal.Tags
-import           HaskAnything.Internal.Facet
+import           HaskAnything.Internal.Facet (addCategoryText)
 import           HaskAnything.Internal.JSON
 import           HaskAnything.Internal.Extra     (toString,loadBodyLBS,getCategory)
-import           HaskAnything.Internal.Field     (urlReplaceField, getFieldFromMetadata, getManyFieldsFromMetaData, loadSeriesList, relativizeUrl)
-import           HaskAnything.Internal.Field.Video (generateVideoEmbed)
+import           HaskAnything.Internal.Field     (relativizeUrl)
 
 import           HaskAnything.Internal.Po
 
@@ -24,7 +24,7 @@ import           Data.Tuple.Utils
 
 import           Data.Aeson                      (encode)
 import qualified Data.ByteString.Lazy.Char8 as BSL
-import           Data.Maybe                      (fromMaybe,catMaybes)
+import           Data.Maybe                      (fromMaybe)
 
 
 --------------------------------------------------------------------------------
@@ -214,85 +214,6 @@ main = hakyll $ do
 
 
 --------------------------------------------------------------------------------
-postCtx :: Tags -> Tags -> Tags -> Context String
-postCtx t c l =
-    urlReplaceField "url-to-advanced" ("simple","advanced") `mappend`
-    urlReplaceField "url-to-simple"   ("advanced","simple") `mappend`
-    githubUrl `mappend`
-    generateVideoEmbed `mappend`
-    defaultContext' t c l
-
-defaultContext' :: Tags -> Tags -> Tags -> Context String
-defaultContext' t c l = facetCtx  t c l <> categoryContext c <> defaultContext
-
-categoryContext :: Tags -> Context String
-categoryContext ts =
- listField "categoryContext"
- (
-    field "categoryName" (return . itemBody )
- )
- (sequence $ map makeItem (map fst $ tagsMap ts))
-
-
-facetCtx :: Tags -> Tags -> Tags -> Context String
-facetCtx tags categories libraries =
- listField "facetList"
- (
-     field "facetName" (return . facetName . itemBody) <>
-     field "facetList" (return . facetList . itemBody) <>
-     field "facetPrettyName" (return . facetPrettyName . itemBody) <>
-     field "facetPath" (return . facetPath . itemBody)
- )
- (sequence $ map (\(nm,p,t) -> makeItem $ generateFacetList nm p t) [("Tags","tags",tags),("Categories","categories",categories),("Libraries","libraries",libraries)])
-
-processList nm metadata = (BSL.unpack . encode) $
-    case lookupString nm metadata of
-        (Just s) -> (map trim . splitAll ",") s
-        Nothing -> fromMaybe [] (lookupStringList nm metadata)
-
--- Given a key and a value, constructs a context that takes a key that will come from a Hakyll template.
--- If the key (k) coming from the Hakyll template corresponds with the one we provided (key), we return the value.
--- Otherwise, we return empty, which will make Hakyll continue down the monoidal context chain in search of another Context that could provide
--- a value for this key.
-ifField :: String -> (Item a -> Compiler ContextField) -> Context a
-ifField key value = Context $ \k _ i -> if k == key then value i else empty
-
--- Given the key of some metadata, extracts the value as a string and returns it.
--- If the metadata doesn't exist, we return empty.
-extractMetadata :: String -> Item a -> Compiler ContextField
-extractMetadata key i = do
- m <- getMetadataField (itemIdentifier i) key
- case m of
-  Just x -> return (StringField x)
-  Nothing -> empty
-
-seriesCtx :: Tags -> Tags -> Tags -> Context String
-seriesCtx t c l = loadSeriesList contexts <> ctx
- where
-   ctx = postCtx t c l
-   contexts =
-     [
-      ("article", articleCtx t c l),
-      ("how-do-i", postCtx t c l),
-      ("package", packageCtx t c l),
-      ("paper", postCtx t c l),
-      ("presentation", postCtx t c l),
-      ("reddit-post", postCtx t c l),
-      ("series", seriesCtx t c l)
-     ]
-
-
-articleCtx :: Tags -> Tags -> Tags -> Context String
-articleCtx t c l = ifField "has-permission" (extractMetadata "permission-file") <> getManyFieldsFromMetaData ["authors","date","url","permission-file","blog"]  <> postCtx t c l
-
-packageCtx :: Tags -> Tags -> Tags -> Context String
-packageCtx t c l = getManyFieldsFromMetaData ["name","authors","source","hackage","stackage","synopsis"]  <> postCtx t c l
-
-videoCtx :: Tags -> Tags -> Tags -> Context String
-videoCtx t c l = getManyFieldsFromMetaData ["url-video","url-slides","authors","source"]  <> postCtx t c l
-
-githubUrl :: Context String
-githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" ++) . toFilePath  . itemIdentifier
 
 withFilePath :: (FilePath -> String) -> Maybe FilePath ->  String
 withFilePath pathTostr mbFilePath =

@@ -30,6 +30,21 @@ relativizeUrl = functionField "relativizeUrl" $ \args item ->
         isRel x = "/" `isPrefixOf` x && not ("//" `isPrefixOf` x)
         rel x root = if isRel x then root ++ x else x
 
+-- Given a key and a value, constructs a context that takes a key that will come from a Hakyll template.
+-- If the key (k) coming from the Hakyll template corresponds with the one we provided (key), we return the value.
+-- Otherwise, we return empty, which will make Hakyll continue down the monoidal context chain in search of another Context that could provide
+-- a value for this key.
+ifField :: String -> (Item a -> Compiler ContextField) -> Context a
+ifField key value = Context $ \k _ i -> if k == key then value i else empty
+
+-- Given the key of some metadata, extracts the value as a string and returns it.
+-- If the metadata doesn't exist, we return empty.
+extractMetadata :: String -> Item a -> Compiler ContextField
+extractMetadata key i = do
+ m <- getMetadataField (itemIdentifier i) key
+ case m of
+  Just x -> return (StringField x)
+  Nothing -> empty
 
 getFieldFromMetadata :: String -> Context String
 getFieldFromMetadata key = field key (\i -> fmap (maybe empty id) (getMetadataField  (itemIdentifier i) key) )

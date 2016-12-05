@@ -16,6 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
   exposed-modules:     HaskAnything.Internal.Content
+                     , HaskAnything.Internal.Context
                      , HaskAnything.Internal.Tags
                      , HaskAnything.Internal.Facet
                      , HaskAnything.Internal.JSON
