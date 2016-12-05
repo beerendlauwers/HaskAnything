@@ -157,17 +157,6 @@ main = hakyll $ do
                 >>= loadAndApplyTemplate "templates/default.html" ctx
                 >>= relativizeUrls
 
-    {- WIP
-    match "translations/*" $ do
-        compile readPo
-
-    create "test.html" $ do
-        route idRoute
-        compile $ do
-            let testContext = -}
-
-            -- Interesting: https://github.com/yogsototh/yblog/blob/master/site.hs
-
     makeJSONFileFromMetadataInContent "content/*/*" "conference" "conferences"
 
     match "ui/elements/*" $ compile templateCompiler
@@ -310,13 +299,3 @@ withFilePath pathTostr mbFilePath =
     case mbFilePath of
       Nothing       -> "withFilePath ???"
       Just filePath -> pathTostr filePath
-
-{- -- TODO: fix.
-deduplicatePosts ps = L.nubBy f
- where
-  f i1 i2 = do
-   v1 <- cmp i1
-   v2 <- cmp i2
-   return v1 == v2
-  cmp = withFilePath takeFileName
--}
