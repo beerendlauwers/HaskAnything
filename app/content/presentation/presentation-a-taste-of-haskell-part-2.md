@@ -14,10 +14,10 @@ In this tutorial, I will try to show you why programming in Haskell is such fun,
 
 I'm going to use xmonad (http://xmonad.org) as my running example; it's an X11 window manager written entirely in 500 lines of Haskell. Based on xmonad I will show you how to 
 
-► write functional programs 
-► test them using QuickCheck 
-► write imperative programs 
-► call foreign functions 
-► use Haskell for scripting applications 
+- write functional programs 
+- test them using QuickCheck 
+- write imperative programs 
+- call foreign functions 
+- use Haskell for scripting applications 
 
 I won't assume you know any functional programming at all, but I will assume that you are an experienced professional programmer, so I will move along quite briskly.
