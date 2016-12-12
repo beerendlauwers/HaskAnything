@@ -5,9 +5,9 @@ description:         Please see README.md
 homepage:            http://github.com/githubuser/hask-anything#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Example Author Name
-maintainer:          example@example.com
-copyright:           2010 Author Here
+author:              Beerend Lauwers
+maintainer:          beerendlawers@gmail.com
+copyright:           2016 Beerend Lauwers
 category:            Web
 build-type:          Simple
 -- extra-source-files:
