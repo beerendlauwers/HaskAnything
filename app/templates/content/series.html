@@ -1,5 +1,24 @@
-NOT YET IMPLEMENTED
+<link type="text/css" rel="stylesheet" href="/vendor/lightslider/css/lightslider.css" />
+<script src="/vendor/lightslider/js/lightslider.js"></script>
 
-$for(seriesList)$
-$title$
-$endfor$
+<div class="col-md-12 col-sm-12 intro">
+  <h1>$title$</h1>
+  <ul class="lightSlider">
+  $for(seriesList)$
+    $if(seriesCategory.presentation)$
+      $partial("templates/content/series/presentation.html")$
+    $endif$
+  $endfor$
+  </ul>
+</div>
+
+<div class="col-md-12 col-sm-12">
+$body$
+</div>
+
+
+<script type="text/javascript">
+  jQuery(document).ready(function() {
+    jQuery(".lightSlider").lightSlider();
+  });
+</script>
