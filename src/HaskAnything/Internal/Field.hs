@@ -9,6 +9,8 @@ import           Data.Maybe                    (fromMaybe)
 import           Data.String.Utils             (replace)
 import           Control.Applicative           (empty)
 import           HaskAnything.Internal.Extra   (getCategory)
+import           Data.Monoid ((<>))
+import           System.FilePath               (dropExtension)
 
 urlReplaceField :: String -> (String,String) -> Context a
 urlReplaceField fieldName (old,new) = field fieldName $ \item -> do
@@ -16,6 +18,17 @@ urlReplaceField fieldName (old,new) = field fieldName $ \item -> do
         case mbFilePath of
             Nothing       -> return "urlReplaceField: ???"
             Just filePath -> return $ toUrl $ replace old new $ filePath
+
+
+pathToHTML :: Context a
+pathToHTML = field "pathToHTML" $ \item -> do
+    (return . dropExtension . toFilePath . itemIdentifier) item
+
+
+-- Just appends the strings it's given and returns the result.
+appendStrings :: Context a
+appendStrings =  functionField "appendStrings" $ \args item ->
+ return $ concat args
 
 -- This is also in hakyll-extra, have to hook it up to this project.
 relativizeUrl :: Context a
@@ -69,8 +82,10 @@ loadSeriesList contextMap = Context $ \k _ i ->
         -- ListField constructor. Will have to work something out for
         -- ListFields with multiple context support.
         categories <- mapM (getCategory) filePaths
+        let firstCategory = (head.head) categories
+        let categoryField = constField ("seriesCategory." ++ firstCategory) firstCategory
         -- Return a listField with the key "loadedItems" and loadedItems.
-        return (ListField (getContext ((head.head) categories)) loadedItems)
+        return (ListField (categoryField <> getContext firstCategory) loadedItems)
     else empty
  where
    getContext cat =
