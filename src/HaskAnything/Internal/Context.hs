@@ -2,8 +2,8 @@ module HaskAnything.Internal.Context where
 
 import           Hakyll
 import           Data.Monoid (mappend,(<>))
-import           HaskAnything.Internal.Field     (urlReplaceField, extractMetadata, getManyFieldsFromMetaData, loadSeriesList, relativizeUrl, ifField)
-import           HaskAnything.Internal.Field.Video (generateVideoEmbed)
+import           HaskAnything.Internal.Field     (urlReplaceField, extractMetadata, getManyFieldsFromMetaData, loadSeriesList, relativizeUrl, ifField, appendStrings,pathToHTML)
+import           HaskAnything.Internal.Field.Video (generateVideoEmbed,generateVideoPreviewImage)
 import           HaskAnything.Internal.Facet
 
 postCtx :: Tags -> Tags -> Tags -> Context String
@@ -12,6 +12,10 @@ postCtx t c l =
     urlReplaceField "url-to-simple"   ("advanced","simple") `mappend`
     githubUrl `mappend`
     generateVideoEmbed `mappend`
+    generateVideoPreviewImage `mappend`
+    relativizeUrl `mappend`
+    appendStrings `mappend`
+    pathToHTML `mappend`
     defaultContext' t c l
 
 defaultContext' :: Tags -> Tags -> Tags -> Context String
