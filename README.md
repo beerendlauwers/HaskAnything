@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/beerendlauwers/HaskAnything/tree/master.svg?style=shield&circle-token=f03b1c993138062b403decf7d653ddf6c84da754)](https://circleci.com/gh/beerendlauwers/HaskAnything/tree/master)
+[![CircleCI](https://circleci.com/gh/beerendlauwers/HaskAnything/tree/master.svg?style=shield&circle-token=f03b1c993138062b403decf7d653ddf6c84da754)](https://circleci.com/gh/beerendlauwers/HaskAnything/tree/master) [![Appveyor](https://ci.appveyor.com/api/projects/status/github/beerendlauwers/haskanything?svg=true)](https://ci.appveyor.com/project/beerendlauwers/haskanything)
 
 ### [Hask Anything!](http://haskanything.com/) is a website aimed at collecting and organizing the collective knowledge of the Haskell community: papers, blog posts, code snippets, gists, StackOverflow answers, Reddit threads, presentations, videos, tutorials and so on.
 
