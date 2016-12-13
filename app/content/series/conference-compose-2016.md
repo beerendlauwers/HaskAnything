@@ -20,6 +20,6 @@ tags:
 libraries:
 ---
 
-Compose is a conference for functional programmers, focused on technologies such as Haskell, Scala, Clojure, OCaml, F#, SML and others.
+C◦mp◦se is a conference for functional programmers, focused on technologies such as Haskell, Scala, Clojure, OCaml, F#, SML and others.
 
 This series contains the presentations of 2016, focused on Haskell.
