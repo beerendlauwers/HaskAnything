@@ -19,6 +19,24 @@ $body$
 
 <script type="text/javascript">
   jQuery(document).ready(function() {
-    jQuery(".lightSlider").lightSlider();
+    jQuery(".lightSlider").lightSlider({
+      responsive : [
+            {
+                breakpoint:1200,
+                settings: {
+                    item:2,
+                    slideMove:1,
+                    slideMargin:6,
+                  }
+            },
+            {
+                breakpoint:750,
+                settings: {
+                    item:1,
+                    slideMove:1
+                  }
+            }
+        ]
+    });
   });
 </script>
