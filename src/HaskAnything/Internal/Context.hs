@@ -2,7 +2,7 @@ module HaskAnything.Internal.Context where
 
 import           Hakyll
 import           Data.Monoid (mappend,(<>))
-import           HaskAnything.Internal.Field     (urlReplaceField, extractMetadata, getManyFieldsFromMetaData, loadSeriesList, relativizeUrl, ifField, appendStrings,pathToHTML)
+import           HaskAnything.Internal.Field     (urlReplaceField, extractMetadata, getManyFieldsFromMetaData, loadSeriesList, relativizeUrl, ifField, appendStrings, pathToHTML, fieldEquals, fieldAsList, metadataListField)
 import           HaskAnything.Internal.Field.Video (generateVideoEmbed,generateVideoPreviewImage)
 import           HaskAnything.Internal.Facet
 
@@ -16,6 +16,9 @@ postCtx t c l =
     relativizeUrl `mappend`
     appendStrings `mappend`
     pathToHTML `mappend`
+    fieldEquals `mappend`
+    fieldAsList `mappend`
+    metadataListField `mappend`
     defaultContext' t c l
 
 defaultContext' :: Tags -> Tags -> Tags -> Context String
@@ -44,7 +47,7 @@ facetCtx tags categories libraries =
 
 
 seriesCtx :: Tags -> Tags -> Tags -> Context String
-seriesCtx t c l = loadSeriesList contexts <> ctx
+seriesCtx t c l = loadSeriesList contexts <> getManyFieldsFromMetaData ["dates"] <> ctx
  where
    ctx = postCtx t c l
    contexts =

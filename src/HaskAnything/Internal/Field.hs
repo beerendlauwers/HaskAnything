@@ -24,6 +24,31 @@ pathToHTML :: Context a
 pathToHTML = field "pathToHTML" $ \item -> do
     (return . dropExtension . toFilePath . itemIdentifier) item
 
+-- Given two strings (could also be a field name that resolves to a string),
+-- compares them and returns the result. Can be used in $if$ statements.
+fieldEquals :: Context a
+fieldEquals = functionField "fieldEquals" $ \args item ->
+    case length args of
+        2   -> case (head args) == (last args) of
+                False -> empty
+                True  -> return "ok"
+        _   -> fail "fieldEquals requires two arguments."
+
+fieldAsList :: Context a
+fieldAsList = Context $ \k args i ->
+  if k == "fieldAsList"
+    then
+      case args of
+        [k] -> do
+                -- Load the metadata from the item.
+                metadata <- getMetadata (itemIdentifier i)
+                -- Get the values under the key as a list of strings.
+                let list = (fromMaybe [] (lookupStringList (head args) metadata)) :: [String]
+                listItems <- mapM makeItem list
+                -- Return a listField with the key "loadedItems" and loadedItems.
+                return (ListField (field "item" (return.itemBody)) listItems)
+        _ -> fail "fieldAsList requires one argument. Be sure to pass in the field name as a string, like so: \"name\""
+    else empty
 
 -- Just appends the strings it's given and returns the result.
 appendStrings :: Context a
@@ -92,3 +117,19 @@ loadSeriesList contextMap = Context $ \k _ i ->
      case find ((== cat) . fst) contextMap of
        (Just c) -> snd c
        otherwise -> error ("Could not find a context for category '" ++ cat ++ "' in loadSeriesList.")
+
+getMetadataListField :: MonadMetadata m => Identifier -> String -> m (Maybe [String])
+getMetadataListField identifier key = do
+   metadata <- getMetadata identifier
+   return $ lookupStringList key metadata
+
+--------------------------------------------------------------------------------
+-- | Map any list field to its metadata value, if present
+metadataListField :: Context a
+metadataListField = Context $ \k _ i -> do
+   values <- getMetadataListField (itemIdentifier i) k
+   case values of
+     Just vs -> do
+                 listItems <- mapM makeItem vs
+                 return $ ListField (field "item" (return.itemBody)) listItems
+     Nothing -> empty
