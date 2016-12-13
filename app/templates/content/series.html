@@ -16,6 +16,18 @@
 $body$
 </div>
 
+<div class="col-md-12 col-sm-12">
+$if(fieldEquals(type,"conference"))$
+This conference occurred on the following dates:
+<ul>
+$for(fieldAsList("dates"))$
+<li>$item$</li>
+$endfor$
+</ul>
+
+$endif$
+</div>
+
 
 <script type="text/javascript">
   jQuery(document).ready(function() {
