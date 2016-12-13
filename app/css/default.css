@@ -10,7 +10,7 @@ body {
     display: block;
 }
 
-.tagList > .tag, 
+.tagList > .tag,
 .library .tags .tag {
     border: 1px solid gray;
     background-color: #dfe2e5;
@@ -182,4 +182,8 @@ textarea {
 
 .bottomline .orderby .activeorderby {
     font-weight: 600;
+}
+
+.series-title {
+  min-height: 3em;
 }
