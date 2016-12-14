@@ -6,7 +6,7 @@ authors: Stephanie Weirich
 source: http://www.composeconference.org/2015/speakers/
 conference: Compose2015
 tags: 
-- Depdendent Types
+- Dependent Types
 libraries: 
 ---
 
