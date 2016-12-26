@@ -187,3 +187,7 @@ textarea {
 .series-title {
   min-height: 3em;
 }
+
+.md-editor > textarea.md-input {
+  background-color: white;
+}

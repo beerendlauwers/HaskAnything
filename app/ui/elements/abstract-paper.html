@@ -3,7 +3,8 @@
         <label for="abstract-paper">Paper abstract:</label>
     </div>
    <div class="col-sm-9">
-        <textarea id="abstract-paper"/>
-        <span class="description">Abstract of the paper.</span>
+       <textarea id="abstract-paper" data-iconlibrary="fa" data-provide="markdown" data-resize="vertical"/>
+       <span class="description">Abstract of the paper.</span>
+       $partial("ui/elements/markdown-support.html")$
     </div>
 </div>
