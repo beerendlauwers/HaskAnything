@@ -1,0 +1,50 @@
+---
+title: Submit a permission file
+handlebar-template: permission-file
+handlebar-template-full: templates/handlebars/permission-file.handlebars
+---
+
+<script src="/js/permission-file-lookup.js"></script>
+<script src="/vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+<link href="/css/ui/submit/common.css" rel="stylesheet"/>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery('#rootwizard').bootstrapWizard();
+    });
+</script>
+
+<script id="handlebars-template" type="text/x-handlebars-template">$partial(handlebar-template-full)$</script>
+
+<div class="col-sm-12">
+    <h2>$title$</h2>
+</div>
+
+<div id="rootwizard">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul>
+                    <li><a href="#tab1" data-toggle="tab">1. Permission File</a></li>
+                    <li><a href="#tab2" data-toggle="tab">2. Submit</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane" id="tab1">
+            $partial("ui/elements/entity-permission-file.html")$
+            $partial("ui/elements/date-permission-file.html")$
+            $partial("ui/elements/body-permission-file.html")$
+        </div>
+        <div class="tab-pane" id="tab2">
+            $partial("ui/elements/submit-pull-request.html")$
+        </div>
+        <ul class="pager wizard">
+            <li class="previous first" style="display:none;"><a href="#">First</a></li>
+            <li class="previous"><a href="#">Previous</a></li>
+            <li class="next last" style="display:none;"><a href="#">Last</a></li>
+            <li class="next"><a href="#">Next</a></li>
+        </ul>
+    </div>
+</div>
