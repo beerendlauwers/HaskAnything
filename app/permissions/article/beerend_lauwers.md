@@ -1,5 +1,5 @@
 ---
-person: Beerend Lauwers
+entity: Beerend Lauwers
 date: 2016-10-19
 ---
 
