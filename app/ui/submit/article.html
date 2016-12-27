@@ -1,8 +1,10 @@
 ---
 title: Submit an article
 handlebar-template: article
+handlebar-template-full: templates/handlebars/article.handlebars
 ---
 
+<script src="/js/article-lookup.js"></script>
 <script src="/vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
 <link href="/css/ui/submit/common.css" rel="stylesheet"/>
 
@@ -12,7 +14,7 @@ handlebar-template: article
     });
 </script>
 
-<script id="handlebars-template" type="text/x-handlebars-template">$partial("templates/handlebars/presentation.handlebars")$</script>
+<script id="handlebars-template" type="text/x-handlebars-template">$partial(handlebar-template-full)$</script>
 
 <div class="col-sm-12">
     <h2>$title$</h2>
@@ -33,12 +35,11 @@ handlebar-template: article
     <div class="tab-content">
         <div class="tab-pane" id="tab1">
             $partial("ui/elements/title.html")$
+            $partial("ui/elements/permission-file.html")$
             $partial("ui/elements/date-published.html")$
             $partial("ui/elements/url-article.html")$
-            $partial("ui/elements/url-slides-presentation.html")$
-            $partial("ui/elements/description-presentation.html")$
-            $partial("ui/elements/authors-presentation.html")$
-            $partial("ui/elements/conference-presentation.html")$
+            $partial("ui/elements/description-article.html")$
+            $partial("ui/elements/authors-article.html")$
         </div>
         <div class="tab-pane" id="tab2">
             $partial("ui/elements/metadata.html")$

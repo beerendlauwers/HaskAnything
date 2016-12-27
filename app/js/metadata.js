@@ -2,6 +2,7 @@ function loadDropdowns() {
 var dropdowns = [
         ["../../json/tags.json",'#tags'],
         ["../../json/libraries.json",'#libraries'],
+        ["../../json/permission-files.json",'#permission-file'],
         ];
 
     R.map ( R.apply(loadMetaDataDropdown), dropdowns );
@@ -12,7 +13,7 @@ function loadMetaDataDropdown( url, id ) {
         .done( function(data) {
             var options = R.map( function(item) { return '<option value="' + item + '">' + item + '</option>'; } )( data );
             jQuery(id).append(options);
-            
+
             // Initialize select2 plugin.
             jQuery(id).select2({
               tags: true,
