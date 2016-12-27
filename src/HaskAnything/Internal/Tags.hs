@@ -10,6 +10,7 @@ import           Text.Blaze.Html                 (toHtml, toValue, (!))
 import           Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as A
+import           System.FilePath                 (dropExtension)
 
 -- For the library stuff
 import qualified Data.Map                        as M
@@ -92,3 +93,10 @@ getCategoryType identifier = do
 
 buildCategoryTypes :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
 buildCategoryTypes = buildTagsWith getCategoryType
+
+getTitle :: MonadMetadata m => Identifier -> m [String]
+getTitle identifier = do
+   (return . (:[]) . dropExtension . toFilePath) identifier
+
+buildPermissionFiles :: MonadMetadata m => Pattern -> (String-> Identifier) -> m Tags
+buildPermissionFiles = buildTagsWith getTitle
