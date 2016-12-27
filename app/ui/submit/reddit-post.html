@@ -1,6 +1,7 @@
 ---
 title: Submit a Reddit post
 handlebar-template: reddit-post
+handlebar-template-full: templates/handlebars/reddit-post.handlebars
 ---
 
 <script src="/vendor/showdown/showdown.min.js"></script>
@@ -39,7 +40,7 @@ handlebar-template: reddit-post
     });
 </script>
 
-<script id="handlebars-template" type="text/x-handlebars-template">$partial("templates/handlebars/reddit-post.handlebars")$</script>
+<script id="handlebars-template" type="text/x-handlebars-template">$partial(handlebar-template-full)$</script>
 
 <div class="col-sm-12">
     <h2>$title$</h2>

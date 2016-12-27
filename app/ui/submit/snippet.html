@@ -1,6 +1,7 @@
 ---
 title: Submit a Snippet
 handlebar-template: snippet
+handlebar-template-full: templates/handlebars/snippet.handlebars
 ---
 
 <script src="/vendor/showdown/showdown.min.js"></script>
@@ -8,7 +9,7 @@ handlebar-template: snippet
 <script src="/vendor/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
 <link href="/css/ui/submit/common.css" rel="stylesheet"/>
 
-<script id="handlebars-template" type="text/x-handlebars-template">$partial("templates/handlebars/snippet.handlebars")$</script>
+<script id="handlebars-template" type="text/x-handlebars-template">$partial(handlebar-template-full)$</script>
 
 <script type="text/javascript">
     jQuery(document).ready(function () {
@@ -66,4 +67,3 @@ handlebar-template: snippet
         </ul>
     </div>
 </div>
-

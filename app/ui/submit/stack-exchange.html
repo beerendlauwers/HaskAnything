@@ -1,6 +1,7 @@
 ---
 title: Submit a Stack Exchange question
 handlebar-template: stack-exchange
+handlebar-template-full: templates/handlebars/stack-exchange.handlebars
 ---
 
 <script src="/vendor/showdown/showdown.min.js"></script>
@@ -12,7 +13,7 @@ handlebar-template: stack-exchange
     <h2>$title$</h2>
 </div>
 
-<script id="handlebars-template" type="text/x-handlebars-template">$partial("templates/handlebars/stack-exchange.handlebars")$</script>
+<script id="handlebars-template" type="text/x-handlebars-template">$partial(handlebar-template-full)$</script>
 
 <div class="col-sm-12">
 <form>
@@ -46,8 +47,7 @@ handlebar-template: stack-exchange
         </div>
     </div>
     <div class="metadata">
-    $partial("ui/elements/metadata.html")$ 
+    $partial("ui/elements/metadata.html")$
     </div>
 </form>
 </div>
-
