@@ -59,7 +59,13 @@ function getFinalFileTitle(templateName, titleSelector) {
     }
 
     // Put it in the correct directory.
-    proposedTitle = "app/content/" + templateName + "/" + proposedTitle;
+    if (templateName == "permission-file") {
+      proposedTitle = "app/permissions/" + proposedTitle;
+    }
+    else {
+      proposedTitle = "app/content/" + templateName + "/" + proposedTitle;
+    }
+
 
     return proposedTitle;
 }
