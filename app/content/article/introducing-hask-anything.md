@@ -1,7 +1,7 @@
 ---
 title: "Introducing: Hask Anything!"
 date: 2016-08-05
-permission-file: beerend_lauwers
+permission-file: permissions/article/beerend_lauwers
 url: http://beerendlauwers.be/posts/2016-08-05-introducing-hask-anything.html
 authors: Beerend Lauwers
 type: blog
@@ -48,7 +48,7 @@ That's what Hask Anything! is about: collecting and organizing the collective kn
 
 ### Q: Can't I just post a tutorial directly on here?
 
-**A:** Yes. I mean, not yet because there's no tutorial category right now, but that's on the to-do list. 
+**A:** Yes. I mean, not yet because there's no tutorial category right now, but that's on the to-do list.
 
 But yes, becoming a source of knowledge is also on the roadmap.
 
