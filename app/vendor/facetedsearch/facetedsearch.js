@@ -53,6 +53,13 @@
     }
 
     /**
+     * Quick hack to gain access to the settings.
+     */
+    jQuery.getFacetSettings = function () {
+      return settings;
+    }
+
+    /**
      * This is the second function / variable that gets exported into the
      * jQuery namespace. Use it to update everything if you messed with
      * the settings object
