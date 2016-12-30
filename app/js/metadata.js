@@ -1,7 +1,7 @@
 function loadDropdowns() {
 var dropdowns = [
-        ["../../json/tags.json",'#tags'],
-        ["../../json/libraries.json",'#libraries'],
+        ["../../json/tags.json",'#metadata-tags'],
+        ["../../json/libraries.json",'#metadata-libraries'],
         ["../../json/permission-files.json",'#permission-file'],
         ];
 
