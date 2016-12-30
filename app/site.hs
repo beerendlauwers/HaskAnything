@@ -14,15 +14,12 @@ import           HaskAnything.Internal.Tags
 import           HaskAnything.Internal.Facet (addCategoryText)
 import           HaskAnything.Internal.JSON
 import           HaskAnything.Internal.Extra     (toString,loadBodyLBS,getCategory)
-import           HaskAnything.Internal.Field     (relativizeUrl)
+import           HaskAnything.Internal.Field     (relativizeUrl,getContentData)
 
 import           HaskAnything.Internal.Po
 
 import           Control.Monad                   (foldM, forM, mplus, join)
 
-import           Data.Tuple.Utils
-
-import           Data.Aeson                      (encode)
 import qualified Data.ByteString.Lazy.Char8 as BSL
 import           Data.Maybe                      (fromMaybe)
 
@@ -133,29 +130,9 @@ main = hakyll $ do
     create ["filter.html"] $ do
         route idRoute
         compile $ do
-            -- Load the content identifiers.
-            allContent::[Item String] <- loadAll "content/*/*"
-            let idents = map itemIdentifier allContent
 
-            -- Get metadata from them.
-            allCategories <- sequence (map getCategory idents)
-            allMetadata <- sequence (map getMetadata idents)
-            allRoutes <- sequence (map getRoute idents)
-
-            -- Zip it up for easy access later on.
-            let zipped = zip3 allMetadata allRoutes allCategories
-
-            -- Construct a data structure that Hakyll's templating system understands.
-            let allIdents =
-                      listField "tagData"
-                        (
-                            field "title" (return . (\metadata -> fromMaybe "(no title)" $ lookupString "title" metadata) . fst3 . itemBody) <>
-                            field "tags" (return . (processList "tags") . fst3 . itemBody) <>
-                            field "libraries" (return . (processList "libraries") . fst3 . itemBody) <>
-                            field "url" (return . (\route -> fromMaybe "#" route) . snd3 . itemBody) <>
-                            field "category" (return . BSL.unpack . encode . thd3 . itemBody)
-                        )
-                        ( sequence (map makeItem zipped) )
+            -- Get all the content data as a list field.
+            allIdents <- getContentData
 
             -- Add that data structure to our local compilation context.
             let ctx = allIdents <> constField "title" "Filter by facets" <> defaultContext' tags categories libraries
@@ -199,8 +176,11 @@ main = hakyll $ do
     match "ui/submit/*" $ do
         route idRoute
         compile $ do
+            -- Get all the content data as a list field.
+            allIdents <- getContentData
+
             getResourceBody
-                >>= applyAsTemplate (defaultContext' tags categories libraries)
+                >>= applyAsTemplate (allIdents <> defaultContext' tags categories libraries)
                 >>= loadAndApplyTemplate "templates/submit.html" (defaultContext' tags categories libraries)
                 >>= loadAndApplyTemplate "templates/default.html" (defaultContext' tags categories libraries)
                 >>= relativizeUrls

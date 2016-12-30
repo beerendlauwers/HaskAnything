@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings, TypeSynonymInstances, FlexibleInstances, FlexibleContexts, DeriveDataTypeable, ScopedTypeVariables #-}
 
 module HaskAnything.Internal.Field where
 
@@ -9,8 +9,14 @@ import           Data.Maybe                    (fromMaybe)
 import           Data.String.Utils             (replace)
 import           Control.Applicative           (empty)
 import           HaskAnything.Internal.Extra   (getCategory)
+import           HaskAnything.Internal.JSON    (processList)
 import           Data.Monoid ((<>))
 import           System.FilePath               (dropExtension)
+
+-- For the content field generation fucntion
+import           Data.Tuple.Utils
+import qualified Data.ByteString.Lazy.Char8 as BSL
+import           Data.Aeson                      (encode)
 
 urlReplaceField :: String -> (String,String) -> Context a
 urlReplaceField fieldName (old,new) = field fieldName $ \item -> do
@@ -133,3 +139,31 @@ metadataListField = Context $ \k _ i -> do
                  listItems <- mapM makeItem vs
                  return $ ListField (field "item" (return.itemBody)) listItems
      Nothing -> empty
+
+getContentData :: Compiler (Context a)
+getContentData = do
+  -- Load the content identifiers.
+  allContent::[Item String] <- loadAll "content/*/*"
+  let idents = map itemIdentifier allContent
+
+  -- Get metadata from them.
+  allCategories <- sequence (map getCategory idents)
+  allMetadata <- sequence (map getMetadata idents)
+  allRoutes <- sequence (map getRoute idents)
+
+  -- Zip it up for easy access later on.
+  let zipped = zip3 allMetadata allRoutes allCategories
+
+  -- Construct a data structure that Hakyll's templating system understands.
+  let allIdents =
+        listField "tagData"
+          (
+              field "title" (return . (\metadata -> fromMaybe "(no title)" $ lookupString "title" metadata) . fst3 . itemBody) <>
+              field "tags" (return . (processList "tags") . fst3 . itemBody) <>
+              field "libraries" (return . (processList "libraries") . fst3 . itemBody) <>
+              field "url" (return . (\route -> fromMaybe "#" route) . snd3 . itemBody) <>
+              field "category" (return . BSL.unpack . encode . thd3 . itemBody)
+          )
+          ( sequence (map makeItem zipped) )
+
+  return allIdents
