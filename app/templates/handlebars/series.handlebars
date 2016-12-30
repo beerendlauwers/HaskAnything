@@ -1,1 +1,16 @@
-TODO
+---
+title: {{title}}
+dates:
+ {{#each dates}}
+  - {{{this}}}
+ {{/each}}
+list:
+ {{#each list}}
+  - {{{this}}}
+ {{/each}}
+type: {{{series-type}}}
+tags: {{{metadata-tags}}}
+libraries: {{{metadata-libraries}}}
+---
+
+{{{body}}}
