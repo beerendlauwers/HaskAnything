@@ -43,7 +43,7 @@ jQuery(document).ready(function() {
     // Add event handler
     jQuery('#facets').on("facetuicreated", function(){
 
-      jQuery('.bottomline').insertAfter('#facets');
+      facetUICreatedCommon();
 
       setTimeout( function() {
         // Read querystring for data.

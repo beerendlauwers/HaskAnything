@@ -23,3 +23,35 @@ function updateFilterResultsHeader() {
     }
   });
 }
+
+function facetUICreatedCommon() {
+  jQuery('.bottomline').insertAfter('#facets');
+
+  // Add a text filter box.
+  jQuery('.facetsearch').each( function(index,element) {
+    var title = jQuery(element).find('.facettitle');
+
+    var input = jQuery('<input placeholder="Filter..." type="text"></input>');
+
+    input.keyup( function() {
+      var text = jQuery(this).val().toLowerCase();
+
+      jQuery(this).closest('.facetsearch').find('.facetlist .facetitem').each( function(index, element) {
+        var e = jQuery(element);
+        // Don't include the count (the '(1)' stuff).
+        var value = e.contents().get(0).nodeValue.toLowerCase();
+
+        if (value.substr(0, text.length) == text) {
+          e.show();
+        }
+        else {
+          e.hide();
+        }
+      });
+
+
+    });
+
+    title.after(input);
+  });
+}
