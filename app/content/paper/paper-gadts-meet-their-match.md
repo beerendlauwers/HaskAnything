@@ -1,7 +1,7 @@
 ---
 title: GADTs Meet Their Match
 paper-url: http://research.microsoft.com/en-us/um/people/simonpj/papers/pattern-matching/gadtpm.pdf
-authors-paper: Georgios Karachalias, Tom Schrijvers, Dimitrios Vytiniotis and Simon Peyton Jones
+authors: Georgios Karachalias, Tom Schrijvers, Dimitrios Vytiniotis, Simon Peyton Jones
 tags: gadts
 ---
 

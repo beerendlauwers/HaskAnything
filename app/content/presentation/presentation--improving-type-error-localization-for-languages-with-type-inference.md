@@ -2,7 +2,7 @@
 title: "Improving Type Error Localization for Languages with Type Inference"
 url-video: https://www.youtube.com/watch?v=BMT6MZ5zuvw
 url-slides: /files/presentation/presentation--improving-type-error-localization-for-languages-with-type-inference.pdf
-authors: Zvonimir Pavlinovic, Tim King and Thomas Wies (speaker)
+authors: Zvonimir Pavlinovic, Tim King, Thomas Wies
 source: http://www.composeconference.org/2016/speakers/
 conference: Compose2016
 tags:
@@ -10,6 +10,8 @@ tags:
  - Type Inference
 libraries:
 ---
+
+Speaker: Thomas Wies
 
 Functional programming languages have spearheaded groundbreaking innovations in programming language design and implementation. Garbage collection, type inference, higher-order functions, and polymorphic type abstractions are just some examples of innovative features that have emerged from research in these languages. Expert programmers cherish these features because they can significantly increase a programmer’s productivity. However, these advanced language features are often difficult to master because they require a deep understanding of the inner workings of the compiler.
 
