@@ -8,7 +8,7 @@ import           Data.Aeson                      (encode)
 import           HaskAnything.Internal.Tags      (getUniqueTags')
 import           Data.List                       (nub)
 import           Data.Maybe                      (fromMaybe)
-import qualified Data.ByteString.Lazy.Char8 as BSL
+import qualified Data.ByteString.Lazy.UTF8 as BSL
 
 makeJSONFile name tags = do
     create [fromFilePath ("json/" ++ name ++ ".json")] $ do
@@ -36,7 +36,7 @@ getMetadataFromItem metadataField i = do
 -- and expects back a list. This list is then turned into JSON and returned
 -- as a String.
 processList :: String -> Metadata -> String
-processList nm metadata = (BSL.unpack . encode) $ lookupInMetadata nm metadata
+processList nm metadata = (BSL.toString . encode) $ lookupInMetadata nm metadata
 
 lookupInMetadata :: String -> Metadata -> [String]
 lookupInMetadata nm metadata = case lookupString nm metadata of

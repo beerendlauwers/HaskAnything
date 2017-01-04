@@ -39,6 +39,7 @@ library
                      , MissingH
                      , filepath
                      , split
+                     , utf8-string
   default-language:    Haskell2010
 
 executable hask-anything-exe
@@ -54,6 +55,7 @@ executable hask-anything-exe
                      , containers
                      , bytestring
                      , MissingH
+                     , utf8-string
   default-language:    Haskell2010
 
 test-suite hask-anything-test

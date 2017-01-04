@@ -15,7 +15,7 @@ import           System.FilePath               (dropExtension)
 
 -- For the content field generation fucntion
 import           Data.Tuple.Utils
-import qualified Data.ByteString.Lazy.Char8 as BSL
+import qualified Data.ByteString.Lazy.UTF8 as BSL
 import           Data.Aeson                      (encode)
 
 urlReplaceField :: String -> (String,String) -> Context a
@@ -160,10 +160,10 @@ getContentData = do
           (
               field "title" (return . (\metadata -> fromMaybe "(no title)" $ lookupString "title" metadata) . fst3 . itemBody) <>
               field "tags" (return . (processList "tags") . fst3 . itemBody) <>
-              field "authors" (return . (\metadata -> BSL.unpack . encode $ concatMap (\nm -> lookupInMetadata nm metadata) ["authors","author"]) . fst3 . itemBody) <>
+              field "authors" (return . (\metadata -> BSL.toString . encode $ concatMap (\nm -> lookupInMetadata nm metadata) ["authors","author"]) . fst3 . itemBody) <>
               field "libraries" (return . (processList "libraries") . fst3 . itemBody) <>
               field "url" (return . (\route -> fromMaybe "#" route) . snd3 . itemBody) <>
-              field "category" (return . BSL.unpack . encode . thd3 . itemBody)
+              field "category" (return . BSL.toString . encode . thd3 . itemBody)
           )
           ( sequence (map makeItem zipped) )
 

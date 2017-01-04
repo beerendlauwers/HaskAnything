@@ -20,7 +20,7 @@ import           HaskAnything.Internal.Po
 
 import           Control.Monad                   (foldM, forM, mplus, join)
 
-import qualified Data.ByteString.Lazy.Char8 as BSL
+import qualified Data.ByteString.Lazy.UTF8 as BSL
 import           Data.Maybe                      (fromMaybe)
 
 
