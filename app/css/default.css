@@ -137,6 +137,15 @@ textarea {
     display: flex;
 }
 
+#results {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#rootwizard #results {
+  display: block;
+}
+
 .facetsearch {
     margin: 2em;
 }
