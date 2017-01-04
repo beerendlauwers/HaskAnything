@@ -1,5 +1,6 @@
 <script src="/vendor/underscore/underscore.js"></script>
 <script src="/vendor/facetedsearch//facetedsearch.js"></script>
+<script src="/js/filter-helpers.js"></script>
 <script type="text/javascript">
 function initializeFacets() {
 
@@ -11,7 +12,7 @@ function initializeFacets() {
     var item_template =
      '<li>' +
          '<div class="item-header">' +
-         '<h4><a href="<%= obj.url %>"><%= obj.title %></a></h4>' +
+         '<h4><a target="_blank" href="/<%= obj.url %>"><%= obj.title %></a></h4>' +
          '<span class="item-category"><% if (obj.categories) {  %><%= obj.categories %><% } %></span>' +
          '</div>' +
          '<% if (obj.authors && obj.authors.length) {  %><p class="tags">Author(s): <%= obj.authors %></p><% } %>' +
