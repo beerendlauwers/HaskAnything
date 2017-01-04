@@ -25,19 +25,20 @@ function initializeFacets() {
         facets          : {
                             'categories'     : 'Categories',
                             'tags'         : 'Tags',
-                            'libraries'     : 'Libraries'
+                            'libraries'     : 'Libraries',
+                            'authors'        : 'Authors'
         },
         resultSelector  : '#results',
         facetSelector   : '#facets',
         resultTemplate  : item_template,
         paginationCount : 10,
-        orderByOptions  : {'title': 'Title', 'category': 'Categories', 'tags': 'Tags', 'libraries': 'Libraries'}
+        orderByOptions  : {'title': 'Title', 'category': 'Categories', 'tags': 'Tags', 'libraries': 'Libraries', 'authors': "Authors"}
       };
 
 
     // Add event handler
     jQuery('#facets').on("facetuicreated", function(){
-      jQuery('.bottomline').insertAfter('#facets');
+      facetUICreatedCommon();
     });
 
     jQuery('#results').on("facetedsearchresultupdate", function(){
