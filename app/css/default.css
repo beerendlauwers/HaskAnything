@@ -206,6 +206,10 @@ textarea {
   text-align: center;
 }
 
+.facetitem-empty {
+  color: gray;
+}
+
 .series-title {
   min-height: 3em;
 }

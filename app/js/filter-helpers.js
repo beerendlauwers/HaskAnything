@@ -10,4 +10,16 @@ function updateFilterResultsHeader() {
     finalText = count + " " + resultText;
   }
   jQuery('#resultsHeader').text( finalText );
+
+  jQuery('.facetlist .facetitem .facetitemcount').each( function(index, element) {
+    var e = jQuery(element);
+    var parent = e.closest('.facetitem');
+    var value = e.text();
+    if (value == '(0)') {
+      parent.addClass('facetitem-empty');
+    }
+    else {
+      parent.removeClass('facetitem-empty');
+    }
+  });
 }
