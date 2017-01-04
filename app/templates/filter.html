@@ -3,13 +3,14 @@
 <script src="/js/querystring.js"></script>
 <script src="/vendor/underscore/underscore.js"></script>
 <script src="/vendor/facetedsearch//facetedsearch.js"></script>
+<script src="/js/filter-helpers.js"></script>
 <script type="text/javascript">
 
 jQuery(document).ready(function() {
 
     // This contains the metadata for all content on the site. Auto-generated.
     var items = [
-    $partial("templates/content-data.html")$
+    $partial("templates/filter/content-data.html")$
         ];
 
     var item_template =
@@ -18,6 +19,7 @@ jQuery(document).ready(function() {
          '<h4><a href="<%= obj.url %>"><%= obj.title %></a></h4>' +
          '<span class="item-category"><% if (obj.categories) {  %><%= obj.categories %><% } %></span>' +
          '</div>' +
+         '<% if (obj.authors && obj.authors.length) {  %><p class="tags">Author(s): <%= obj.authors %></p><% } %>' +
          '<% if (obj.tags && obj.tags.length) {  %><p class="tags">Tags: <%= obj.tags %></p><% } %>' +
          '<% if (obj.libraries && obj.libraries.length) {  %><p class="libraries">Libraries: <%= obj.libraries %></p><% } %>' +
        '</div>';
@@ -25,15 +27,16 @@ jQuery(document).ready(function() {
         items           : items,
         facets          : {
                             'categories'     : 'Categories',
-                            'tags'         : 'Tags',
-                            'libraries'     : 'Libraries'
+                            'tags'           : 'Tags',
+                            'libraries'      : 'Libraries',
+                            'authors'        : 'Authors'
         },
         resultSelector  : '#results',
         facetSelector   : '#facets',
         resultTemplate  : item_template,
         showMoreTemplate: '<div class="col-sm-12"><a id=showmorebutton>Show more</a></div>',
         paginationCount : 25,
-        orderByOptions  : {'title': 'Title', 'category': 'Categories', 'tags': 'Tags', 'libraries': 'Libraries'}
+        orderByOptions  : {'title': 'Title', 'category': 'Categories', 'tags': 'Tags', 'libraries': 'Libraries', 'authors': 'Authors'}
       };
 
 
@@ -60,17 +63,7 @@ jQuery(document).ready(function() {
     });
 
     jQuery('#results').on("facetedsearchresultupdate", function(){
-       var settings = jQuery.getFacetSettings();
-       var count = settings.currentResults.length;
-       var resultText = (count > 1 || count == 0) ? "Results" : "Result";
-       var finalText = count + " " + resultText;
-       if (count > settings.paginationCount) {
-         finalText = settings.paginationCount + " " + resultText + ' (out of ' + settings.currentResults.length + ')';
-       }
-       else {
-         finalText = count + " " + resultText;
-       }
-       jQuery('#resultsHeader').text( finalText );
+       updateFilterResultsHeader();
      });
 
 
