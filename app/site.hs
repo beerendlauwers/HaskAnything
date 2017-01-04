@@ -62,6 +62,8 @@ main = hakyll $ do
 
     permissionFiles <- buildPermissionFiles "permissions/*/*" (fromCapture "permissions/*")
 
+    authors <- buildAuthors "content/*/*" (fromCapture "authors/*")
+
     matchContent "paper" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx tags categories libraries)
     matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx tags categories libraries)
     matchContent "reddit-post" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
@@ -126,6 +128,7 @@ main = hakyll $ do
     makeJSONFile "article-types" articleTypes
     makeJSONFile "series-types" seriesTypes
     makeJSONFile "permission-files" permissionFiles
+    makeJSONFile "authors" authors
 
     create ["filter.html"] $ do
         route idRoute

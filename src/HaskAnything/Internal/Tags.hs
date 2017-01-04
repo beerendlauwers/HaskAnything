@@ -75,16 +75,15 @@ matchTagsWithCategories tags cats =
     then Just tag
     else Nothing
 
-
-getLibraries :: MonadMetadata m => Identifier -> m [String]
-getLibraries identifier = do
+getListMetadata :: MonadMetadata m => String -> Identifier ->  m [String]
+getListMetadata key identifier = do
     metadata <- getMetadata identifier
     return $ fromMaybe [] $
-        (lookupStringList "libraries" metadata) `mplus`
-        (map trim . splitAll "," <$> lookupString "libraries" metadata)
+        (lookupStringList key metadata) `mplus`
+        (map trim . splitAll "," <$> lookupString key metadata)
 
 buildLibraries :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
-buildLibraries = buildTagsWith getLibraries
+buildLibraries = buildTagsWith (getListMetadata "libraries")
 
 getCategoryType :: MonadMetadata m => Identifier -> m [String]
 getCategoryType identifier = do
@@ -100,3 +99,10 @@ getTitle identifier = do
 
 buildPermissionFiles :: MonadMetadata m => Pattern -> (String-> Identifier) -> m Tags
 buildPermissionFiles = buildTagsWith getTitle
+
+buildAuthors  :: MonadMetadata m => Pattern -> (String-> Identifier) -> m Tags
+buildAuthors = buildTagsWith getAuthors
+ where getAuthors i = do
+        as <- getListMetadata "authors" i
+        a <- getListMetadata "author" i
+        return (a ++ as)

@@ -36,7 +36,9 @@ getMetadataFromItem metadataField i = do
 -- and expects back a list. This list is then turned into JSON and returned
 -- as a String.
 processList :: String -> Metadata -> String
-processList nm metadata = (BSL.unpack . encode) $
-   case lookupString nm metadata of
-       (Just s) -> (map trim . splitAll ",") s
-       Nothing -> fromMaybe [] (lookupStringList nm metadata)
+processList nm metadata = (BSL.unpack . encode) $ lookupInMetadata nm metadata
+
+lookupInMetadata :: String -> Metadata -> [String]
+lookupInMetadata nm metadata = case lookupString nm metadata of
+    (Just s) -> (map trim . splitAll ",") s
+    Nothing -> fromMaybe [] (lookupStringList nm metadata)

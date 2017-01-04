@@ -9,7 +9,7 @@ import           Data.Maybe                    (fromMaybe)
 import           Data.String.Utils             (replace)
 import           Control.Applicative           (empty)
 import           HaskAnything.Internal.Extra   (getCategory)
-import           HaskAnything.Internal.JSON    (processList)
+import           HaskAnything.Internal.JSON    (processList,lookupInMetadata)
 import           Data.Monoid ((<>))
 import           System.FilePath               (dropExtension)
 
@@ -160,6 +160,7 @@ getContentData = do
           (
               field "title" (return . (\metadata -> fromMaybe "(no title)" $ lookupString "title" metadata) . fst3 . itemBody) <>
               field "tags" (return . (processList "tags") . fst3 . itemBody) <>
+              field "authors" (return . (\metadata -> BSL.unpack . encode $ concatMap (\nm -> lookupInMetadata nm metadata) ["authors","author"]) . fst3 . itemBody) <>
               field "libraries" (return . (processList "libraries") . fst3 . itemBody) <>
               field "url" (return . (\route -> fromMaybe "#" route) . snd3 . itemBody) <>
               field "category" (return . BSL.unpack . encode . thd3 . itemBody)
