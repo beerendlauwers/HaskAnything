@@ -7,9 +7,18 @@ function generateFilePreview(templateName) {
     var selectors = jQuery(inputSelector).toArray();
 
     var getValue = function(selector) {
+
         var v = jQuery(selector).val();
 
-        console.log("selector " + selector.id + ": " + v);
+        var dataIsArray = jQuery(selector).closest('.web-submit-element').hasClass('data-is-array');
+        //console.log("selector " + selector.id + " is array? " + dataIsArray);
+
+        if (v && typeof v === 'string' && dataIsArray) {
+          v = v.split(',');
+        }
+
+        //console.log("selector " + selector.id + " : " + v);
+        //console.log(v);
 
         return v ? v : "";
     };
@@ -26,6 +35,8 @@ function generateFilePreview(templateName) {
     var zipped = R.zip( allNames, allValues );
 
     var objs = R.map( function(item) { var obj = {}; obj[item[0]] = item[1]; return obj; }, zipped);
+
+    //console.log(objs);
 
     var context = R.reduce( jQuery.extend, {}, objs );
 

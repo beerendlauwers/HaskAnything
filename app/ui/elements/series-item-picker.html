@@ -50,13 +50,19 @@ function initializeFacets() {
 
       jQuery('.series-item-picker-all').sortable({
         nested: false,
-        group: 'series-picker'
-        /*onDrop: function(item, container, _super) {
+        group: 'series-picker',
+        onDrop: function(item, container, _super) {
           if (item.closest('.series-item-picker').hasClass('series-item-picker-selection')) {
-            console.log("hit");
+             var items = jQuery('.series-item-picker-selection .item-url').map( function() { return jQuery(this).val(); } ).get();
+
+             // Remove the 'content/' bit, we don't use that in the series list.
+             items = R.map( function(item) { return item.replace('content/', ''); }, items );
+
+             // Save values in the hidden input field.
+             jQuery('#series-item-picker').val( R.join(',',items) );
           }
           _super(item, container);
-        }*/
+        }
       });
 
       jQuery('.series-item-picker-selection').sortable({
@@ -97,7 +103,7 @@ jQuery(document).ready(function() {
      <ol class='series-item-picker series-item-picker-selection'>
     </ol>
    </div>
-   <div class="web-submit-element">
+   <div class="web-submit-element data-is-array">
      <input type="hidden" id="series-item-picker" />
    </div>
 </div>
