@@ -9,6 +9,12 @@ var dropdowns = [
 function loadSingleDropdown( url, id ) {
     jQuery.ajax( url )
         .done( function(data) {
+
+            // If the JSON doesn't contain "default" yet, add it.
+            if ( !R.contains(data,"default") ) {
+              data.push( "default" );
+            }
+
             var options = R.map( function(item) { return '<option value="' + item + '">' + item + '</option>'; } )( data );
             jQuery(id).append(options);
 
