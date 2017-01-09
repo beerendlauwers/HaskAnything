@@ -1,16 +1,22 @@
 ---
-title: {{title}}
-dates:
- {{#each dates}}
-  - {{{this}}}
+title: "{{{title}}}"
+dates
+ {{#each dates-series}}
+  - "{{{this}}}"
  {{/each}}
 list:
- {{#each list}}
+ {{#each series-item-picker}}
   - {{{this}}}
  {{/each}}
-type: {{{series-type}}}
-tags: {{{metadata-tags}}}
-libraries: {{{metadata-libraries}}}
+type: {{{type-series}}}
+tags:
+ {{#each metadata-tags}}
+  - "{{{this}}}"
+ {{/each}}
+libraries:
+ {{#each metadata-libraries}}
+  - "{{{this}}}"
+ {{/each}}
 ---
 
 {{{body}}}

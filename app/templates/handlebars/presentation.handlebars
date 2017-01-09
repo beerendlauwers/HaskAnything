@@ -5,8 +5,14 @@ url-slides: {{{url-slides-presentation}}}
 authors: {{{authors-presentation}}}
 source: {{source}}
 conference: {{{conference-presentation}}}
-tags: {{{metadata-tags}}}
-libraries: {{{metadata-libraries}}}
+tags:
+ {{#each metadata-tags}}
+  - "{{{this}}}"
+ {{/each}}
+libraries:
+ {{#each metadata-libraries}}
+  - "{{{this}}}"
+ {{/each}}
 ---
 
 {{{description-presentation}}}

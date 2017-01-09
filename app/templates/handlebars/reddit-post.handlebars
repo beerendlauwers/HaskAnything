@@ -4,8 +4,14 @@ author: {{{author}}}
 unique_id: {{{unique-id}}}
 subreddit: {{{subreddit}}}
 reddit-url: {{{url-input}}}
-tags: {{{metadata-tags}}}
-libraries: {{{metadata-libraries}}}
+tags:
+ {{#each metadata-tags}}
+  - "{{{this}}}"
+ {{/each}}
+libraries:
+ {{#each metadata-libraries}}
+  - "{{{this}}}"
+ {{/each}}
 ---
 
 {{{post-body}}}

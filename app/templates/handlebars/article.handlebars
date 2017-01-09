@@ -2,11 +2,17 @@
 title: "{{{title}}}"
 date: {{{date-published}}}
 permission-file: {{{permission-file}}}
-url: {{{url-article}}}
+url: "{{{url-article}}}"
 authors: {{{authors-article}}}
 type: blog
-tags: {{{metadata-tags}}}
-libraries: {{{metadata-libraries}}}
+tags:
+ {{#each metadata-tags}}
+  - "{{{this}}}"
+ {{/each}}
+libraries:
+ {{#each metadata-libraries}}
+  - "{{{this}}}"
+ {{/each}}
 ---
 
 {{{description-article}}}

@@ -6,7 +6,14 @@ hackage: {{{hackage-package}}}
 stackage: {{{stackage-package}}}
 source: {{{source-package}}}
 authors: {{{authors-package}}}
-tags: {{{metadata-tags}}}
+tags:
+ {{#each metadata-tags}}
+  - "{{{this}}}"
+ {{/each}}
+libraries:
+ {{#each metadata-libraries}}
+  - "{{{this}}}"
+ {{/each}}
 ---
 
 {{{description-package}}}

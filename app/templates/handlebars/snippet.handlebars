@@ -1,7 +1,13 @@
 ---
 title: "{{{snippet-title}}}"
-tags: {{{metadata-tags}}}
-libraries: {{{metadata-libraries}}}
+tags:
+ {{#each metadata-tags}}
+  - "{{{this}}}"
+ {{/each}}
+libraries:
+ {{#each metadata-libraries}}
+  - "{{{this}}}"
+ {{/each}}
 ---
 
 {{{snippet-content}}}

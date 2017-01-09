@@ -2,8 +2,14 @@
 title: "{{{title-paper}}}"
 paper-url: {{{url-paper}}}
 authors-paper: {{{authors-paper}}}
-tags: {{{metadata-tags}}}
-libraries: {{{metadata-libraries}}}
+tags:
+ {{#each metadata-tags}}
+  - "{{{this}}}"
+ {{/each}}
+libraries:
+ {{#each metadata-libraries}}
+  - "{{{this}}}"
+ {{/each}}
 ---
 
 TODO: finish
