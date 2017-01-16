@@ -1,30 +1,16 @@
-function loadDropdowns() {
-var dropdowns = [
-        ["../../json/tags.json",'#metadata-tags'],
-        ["../../json/libraries.json",'#metadata-libraries'],
-        ["../../json/permission-files.json",'#permission-file'],
-        ];
+function loadMetaData() {
+  var dropdowns = [
+    ["../../json/tags.json",'#metadata-tags'],
+    ["../../json/libraries.json",'#metadata-libraries'],
+    ["../../json/permission-files.json",'#permission-file']
+  ];
 
-    R.map ( R.apply(loadMetaDataDropdown), dropdowns );
+  var settings = {
+    tags: true,
+    tokenSeparators: [',']
+  };
+
+  loadDropdowns( dropdowns, settings );
 }
 
-function loadMetaDataDropdown( url, id ) {
-    jQuery.ajax( url )
-        .done( function(data) {
-            var options = R.map( function(item) { return '<option value="' + item + '">' + item + '</option>'; } )( data );
-            jQuery(id).append(options);
-
-            // Initialize select2 plugin.
-            jQuery(id).select2({
-              tags: true,
-              tokenSeparators: [',']
-            });
-        }).fail(function(xhr, ajaxOptions, thrownError) {
-            console.log("failure");
-            console.log(xhr);
-            console.log(ajaxOptions);
-            console.log(thrownError);
-        });
-}
-
-jQuery(document).ready( loadDropdowns );
+loadMetaData();
