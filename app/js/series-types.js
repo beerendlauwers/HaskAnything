@@ -3,6 +3,8 @@ function loadSeriesTypes() {
     ["../../json/series-types.json",'#type-series'],
   ];
 
+  var id = '#type-series';
+
   var onDropdownCallback = function(data) {
 
       // If the JSON doesn't contain "default" yet, add it.
@@ -32,7 +34,7 @@ function loadSeriesTypes() {
 
   jQuery(document).ready(function() {
     // Map over the dropdowns.
-    R.map ( R.apply( f, dropDowns );
+    R.map ( R.apply( f ), dropdowns );
   });
 }
 
