@@ -10,6 +10,11 @@ function generateFilePreview(templateName) {
 
         var v = jQuery(selector).val();
 
+        // Naturally, checkboxes have some special behaviour that we have to work around.
+        if ( jQuery(selector).is(':checkbox') ) {
+          v = jQuery(selector).is(':checked');
+        }
+
         var dataIsArray = jQuery(selector).closest('.web-submit-element').hasClass('data-is-array');
         //console.log("selector " + selector.id + " is array? " + dataIsArray);
 

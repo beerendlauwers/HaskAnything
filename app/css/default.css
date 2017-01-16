@@ -53,6 +53,10 @@ textarea {
     height: 10em;
 }
 
+input[type=checkbox] {
+  width: auto;
+}
+
 .row {
     padding-top: 5px;
     padding-bottom: 5px;

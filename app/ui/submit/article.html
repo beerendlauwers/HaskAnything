@@ -18,6 +18,11 @@ handlebar-template-full: templates/handlebars/article.handlebars
 
 <script type="text/javascript">
     jQuery(document).ready(function () {
+        jQuery('#no-permission').change(function() {
+          var isChecked = jQuery(this).is(":checked");
+          jQuery('#permission-file').prop("disabled", isChecked);
+        });
+
         jQuery('#rootwizard').bootstrapWizard();
     });
 </script>
