@@ -63,7 +63,7 @@ seriesCtx t c l = loadSeriesList contexts <> getManyFieldsFromMetaData ["dates"]
 
 
 articleCtx :: Tags -> Tags -> Tags -> Context String
-articleCtx t c l = ifField "has-permission" (extractMetadata "permission-file") <> getManyFieldsFromMetaData ["authors","date","url","permission-file","blog"]  <> postCtx t c l
+articleCtx t c l = ifField "has-permission" (extractMetadata "permission-file") <> getManyFieldsFromMetaData ["date","url","permission-file"]  <> postCtx t c l
 
 packageCtx :: Tags -> Tags -> Tags -> Context String
 packageCtx t c l = getManyFieldsFromMetaData ["name","authors","source","hackage","stackage","synopsis"]  <> postCtx t c l
