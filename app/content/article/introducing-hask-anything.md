@@ -4,7 +4,7 @@ date: 2016-08-05
 permission-file: permissions/article/beerend_lauwers
 url: http://beerendlauwers.be/posts/2016-08-05-introducing-hask-anything.html
 authors: Beerend Lauwers
-type: blog
+type: "blog post"
 tags: hakyll
 ---
 
