@@ -58,6 +58,36 @@ function generateFilePreview(templateName) {
 function displayFilePreview(templateName,fileSelector,titleSelector) {
     jQuery(fileSelector).text( generateFilePreview(templateName) );
     jQuery(titleSelector).val( generateFileTitle(templateName) );
+
+    // Get the markdown instance.
+    var m = jQuery(fileSelector).data('markdown');
+
+    // Set the preview function so we can do some post-processing.
+
+    // NOTE: Hakyll goes through the JS files as well for processing fields,
+    // so that's why we need to add another dollar sign for 'options' -
+    // this escapes it.
+    m.$$options.onPreview = function(e) {
+      var originalContent = e.getContent();
+
+      // For some reason the preview button gets disabled again.
+      setTimeout( function() {
+        m.showButtons('cmdPreview');
+        m.enableButtons('cmdPreview');
+      }, 30 );
+
+      var preview = normalize(originalContent).trim();
+
+      if (preview.length == 0) {
+        preview = '<i>(The file has no body.)</i>';
+      }
+
+      return preview;
+    };
+
+    // Enable the preview button on the Markdown preview.
+    m.showButtons('cmdPreview');
+    m.enableButtons('cmdPreview');
 }
 
 function setAvailabilityPullRequest( value ) {
