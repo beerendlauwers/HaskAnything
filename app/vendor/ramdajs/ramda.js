@@ -1,6 +1,6 @@
-//  Ramda v0.17.1
+//  Ramda v0.22.0
 //  https://github.com/ramda/ramda
-//  (c) 2013-2015 Scott Sauyet, Michael Hurley, and David Chambers
+//  (c) 2013-2016 Scott Sauyet, Michael Hurley, and David Chambers
 //  Ramda may be freely distributed under the MIT license.
 
 ;(function() {
@@ -9,10 +9,11 @@
 
   /**
      * A special placeholder value used to specify "gaps" within curried functions,
-     * allowing partial application of any combination of arguments,
-     * regardless of their positions.
+     * allowing partial application of any combination of arguments, regardless of
+     * their positions.
      *
-     * If `g` is a curried ternary function and `_` is `R.__`, the following are equivalent:
+     * If `g` is a curried ternary function and `_` is `R.__`, the following are
+     * equivalent:
      *
      *   - `g(1, 2, 3)`
      *   - `g(_, 2, 3)(1)`
@@ -25,6 +26,7 @@
      *
      * @constant
      * @memberOf R
+     * @since v0.6.0
      * @category Function
      * @example
      *
@@ -33,9 +35,9 @@
      */
     var __ = { '@@functional/placeholder': true };
 
-    // jshint unused:vars
+    /* eslint-disable no-unused-vars */
     var _arity = function _arity(n, fn) {
-        // jshint unused:vars
+        /* eslint-disable no-unused-vars */
         switch (n) {
         case 0:
             return function () {
@@ -86,6 +88,19 @@
         }
     };
 
+    var _arrayFromIterator = function _arrayFromIterator(iter) {
+        var list = [];
+        var next;
+        while (!(next = iter.next()).done) {
+            list.push(next.value);
+        }
+        return list;
+    };
+
+    var _arrayOf = function _arrayOf() {
+        return Array.prototype.slice.call(arguments);
+    };
+
     var _cloneRegExp = function _cloneRegExp(pattern) {
         return new RegExp(pattern.source, (pattern.global ? 'g' : '') + (pattern.ignoreCase ? 'i' : '') + (pattern.multiline ? 'm' : '') + (pattern.sticky ? 'y' : '') + (pattern.unicode ? 'u' : ''));
     };
@@ -128,7 +143,8 @@
     };
 
     var _containsWith = function _containsWith(pred, x, list) {
-        var idx = 0, len = list.length;
+        var idx = 0;
+        var len = list.length;
         while (idx < len) {
             if (pred(x, list[idx])) {
                 return true;
@@ -138,161 +154,10 @@
         return false;
     };
 
-    /**
-     * Optimized internal two-arity curry function.
-     *
-     * @private
-     * @category Function
-     * @param {Function} fn The function to curry.
-     * @return {Function} The curried function.
-     */
-    var _curry1 = function _curry1(fn) {
-        return function f1(a) {
-            if (arguments.length === 0) {
-                return f1;
-            } else if (a != null && a['@@functional/placeholder'] === true) {
-                return f1;
-            } else {
-                return fn.apply(this, arguments);
-            }
-        };
-    };
-
-    /**
-     * Optimized internal two-arity curry function.
-     *
-     * @private
-     * @category Function
-     * @param {Function} fn The function to curry.
-     * @return {Function} The curried function.
-     */
-    var _curry2 = function _curry2(fn) {
-        return function f2(a, b) {
-            var n = arguments.length;
-            if (n === 0) {
-                return f2;
-            } else if (n === 1 && a != null && a['@@functional/placeholder'] === true) {
-                return f2;
-            } else if (n === 1) {
-                return _curry1(function (b) {
-                    return fn(a, b);
-                });
-            } else if (n === 2 && a != null && a['@@functional/placeholder'] === true && b != null && b['@@functional/placeholder'] === true) {
-                return f2;
-            } else if (n === 2 && a != null && a['@@functional/placeholder'] === true) {
-                return _curry1(function (a) {
-                    return fn(a, b);
-                });
-            } else if (n === 2 && b != null && b['@@functional/placeholder'] === true) {
-                return _curry1(function (b) {
-                    return fn(a, b);
-                });
-            } else {
-                return fn(a, b);
-            }
-        };
-    };
-
-    /**
-     * Optimized internal three-arity curry function.
-     *
-     * @private
-     * @category Function
-     * @param {Function} fn The function to curry.
-     * @return {Function} The curried function.
-     */
-    var _curry3 = function _curry3(fn) {
-        return function f3(a, b, c) {
-            var n = arguments.length;
-            if (n === 0) {
-                return f3;
-            } else if (n === 1 && a != null && a['@@functional/placeholder'] === true) {
-                return f3;
-            } else if (n === 1) {
-                return _curry2(function (b, c) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 2 && a != null && a['@@functional/placeholder'] === true && b != null && b['@@functional/placeholder'] === true) {
-                return f3;
-            } else if (n === 2 && a != null && a['@@functional/placeholder'] === true) {
-                return _curry2(function (a, c) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 2 && b != null && b['@@functional/placeholder'] === true) {
-                return _curry2(function (b, c) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 2) {
-                return _curry1(function (c) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 3 && a != null && a['@@functional/placeholder'] === true && b != null && b['@@functional/placeholder'] === true && c != null && c['@@functional/placeholder'] === true) {
-                return f3;
-            } else if (n === 3 && a != null && a['@@functional/placeholder'] === true && b != null && b['@@functional/placeholder'] === true) {
-                return _curry2(function (a, b) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 3 && a != null && a['@@functional/placeholder'] === true && c != null && c['@@functional/placeholder'] === true) {
-                return _curry2(function (a, c) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 3 && b != null && b['@@functional/placeholder'] === true && c != null && c['@@functional/placeholder'] === true) {
-                return _curry2(function (b, c) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 3 && a != null && a['@@functional/placeholder'] === true) {
-                return _curry1(function (a) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 3 && b != null && b['@@functional/placeholder'] === true) {
-                return _curry1(function (b) {
-                    return fn(a, b, c);
-                });
-            } else if (n === 3 && c != null && c['@@functional/placeholder'] === true) {
-                return _curry1(function (c) {
-                    return fn(a, b, c);
-                });
-            } else {
-                return fn(a, b, c);
-            }
-        };
-    };
-
-    /**
-     * Internal curryN function.
-     *
-     * @private
-     * @category Function
-     * @param {Number} length The arity of the curried function.
-     * @return {array} An array of arguments received thus far.
-     * @param {Function} fn The function to curry.
-     */
-    var _curryN = function _curryN(length, received, fn) {
-        return function () {
-            var combined = [];
-            var argsIdx = 0;
-            var left = length;
-            var combinedIdx = 0;
-            while (combinedIdx < received.length || argsIdx < arguments.length) {
-                var result;
-                if (combinedIdx < received.length && (received[combinedIdx] == null || received[combinedIdx]['@@functional/placeholder'] !== true || argsIdx >= arguments.length)) {
-                    result = received[combinedIdx];
-                } else {
-                    result = arguments[argsIdx];
-                    argsIdx += 1;
-                }
-                combined[combinedIdx] = result;
-                if (result == null || result['@@functional/placeholder'] !== true) {
-                    left -= 1;
-                }
-                combinedIdx += 1;
-            }
-            return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
-        };
-    };
-
     var _filter = function _filter(fn, list) {
-        var idx = 0, len = list.length, result = [];
+        var idx = 0;
+        var len = list.length;
+        var result = [];
         while (idx < len) {
             if (fn(list[idx])) {
                 result[result.length] = list[idx];
@@ -309,17 +174,11 @@
         };
     };
 
-    /**
-     * @private
-     * @param {Function} fn The strategy for extracting function names from an object
-     * @return {Function} A function that takes an object and returns an array of function names.
-     */
-    var _functionsWith = function _functionsWith(fn) {
-        return function (obj) {
-            return _filter(function (key) {
-                return typeof obj[key] === 'function';
-            }, fn(obj));
-        };
+    // String(x => x) evaluates to "x => x", so the pattern may not match.
+    var _functionName = function _functionName(f) {
+        // String(x => x) evaluates to "x => x", so the pattern may not match.
+        var match = String(f).match(/^function (\w*)/);
+        return match == null ? '' : match[1];
     };
 
     var _has = function _has(prop, obj) {
@@ -329,6 +188,15 @@
     var _identity = function _identity(x) {
         return x;
     };
+
+    var _isArguments = function () {
+        var toString = Object.prototype.toString;
+        return toString.call(arguments) === '[object Arguments]' ? function _isArguments(x) {
+            return toString.call(x) === '[object Arguments]';
+        } : function _isArguments(x) {
+            return _has('callee', x);
+        };
+    }();
 
     /**
      * Tests whether or not an object is an array.
@@ -344,6 +212,10 @@
      */
     var _isArray = Array.isArray || function _isArray(val) {
         return val != null && val.length >= 0 && Object.prototype.toString.call(val) === '[object Array]';
+    };
+
+    var _isFunction = function _isFunction(x) {
+        return Object.prototype.toString.call(x) === '[object Function]';
     };
 
     /**
@@ -362,6 +234,18 @@
         return Object.prototype.toString.call(x) === '[object Number]';
     };
 
+    var _isObject = function _isObject(x) {
+        return Object.prototype.toString.call(x) === '[object Object]';
+    };
+
+    var _isPlaceholder = function _isPlaceholder(a) {
+        return a != null && typeof a === 'object' && a['@@functional/placeholder'] === true;
+    };
+
+    var _isRegExp = function _isRegExp(x) {
+        return Object.prototype.toString.call(x) === '[object RegExp]';
+    };
+
     var _isString = function _isString(x) {
         return Object.prototype.toString.call(x) === '[object String]';
     };
@@ -370,13 +254,41 @@
         return typeof obj['@@transducer/step'] === 'function';
     };
 
-    var _map = function _map(fn, list) {
-        var idx = 0, len = list.length, result = Array(len);
+    var _map = function _map(fn, functor) {
+        var idx = 0;
+        var len = functor.length;
+        var result = Array(len);
         while (idx < len) {
-            result[idx] = fn(list[idx]);
+            result[idx] = fn(functor[idx]);
             idx += 1;
         }
         return result;
+    };
+
+    // Based on https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+    var _objectAssign = function _objectAssign(target) {
+        if (target == null) {
+            throw new TypeError('Cannot convert undefined or null to object');
+        }
+        var output = Object(target);
+        var idx = 1;
+        var length = arguments.length;
+        while (idx < length) {
+            var source = arguments[idx];
+            if (source != null) {
+                for (var nextKey in source) {
+                    if (_has(nextKey, source)) {
+                        output[nextKey] = source[nextKey];
+                    }
+                }
+            }
+            idx += 1;
+        }
+        return output;
+    };
+
+    var _of = function _of(x) {
+        return [x];
     };
 
     var _pipe = function _pipe(f, g) {
@@ -394,8 +306,11 @@
         };
     };
 
+    // \b matches word boundary; [\b] matches backspace
     var _quote = function _quote(s) {
-        return '"' + s.replace(/"/g, '\\"') + '"';
+        var escaped = s.replace(/\\/g, '\\\\').replace(/[\b]/g, '\\b')    // \b matches word boundary; [\b] matches backspace
+    .replace(/\f/g, '\\f').replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t').replace(/\v/g, '\\v').replace(/\0/g, '\\0');
+        return '"' + escaped.replace(/"/g, '\\"') + '"';
     };
 
     var _reduced = function _reduced(x) {
@@ -454,6 +369,365 @@
         };
     }();
 
+    var _xfBase = {
+        init: function () {
+            return this.xf['@@transducer/init']();
+        },
+        result: function (result) {
+            return this.xf['@@transducer/result'](result);
+        }
+    };
+
+    var _xwrap = function () {
+        function XWrap(fn) {
+            this.f = fn;
+        }
+        XWrap.prototype['@@transducer/init'] = function () {
+            throw new Error('init not implemented on XWrap');
+        };
+        XWrap.prototype['@@transducer/result'] = function (acc) {
+            return acc;
+        };
+        XWrap.prototype['@@transducer/step'] = function (acc, x) {
+            return this.f(acc, x);
+        };
+        return function _xwrap(fn) {
+            return new XWrap(fn);
+        };
+    }();
+
+    var _aperture = function _aperture(n, list) {
+        var idx = 0;
+        var limit = list.length - (n - 1);
+        var acc = new Array(limit >= 0 ? limit : 0);
+        while (idx < limit) {
+            acc[idx] = _slice(list, idx, idx + n);
+            idx += 1;
+        }
+        return acc;
+    };
+
+    var _assign = typeof Object.assign === 'function' ? Object.assign : _objectAssign;
+
+    /**
+     * Similar to hasMethod, this checks whether a function has a [methodname]
+     * function. If it isn't an array it will execute that function otherwise it
+     * will default to the ramda implementation.
+     *
+     * @private
+     * @param {Function} fn ramda implemtation
+     * @param {String} methodname property to check for a custom implementation
+     * @return {Object} Whatever the return value of the method is.
+     */
+    var _checkForMethod = function _checkForMethod(methodname, fn) {
+        return function () {
+            var length = arguments.length;
+            if (length === 0) {
+                return fn();
+            }
+            var obj = arguments[length - 1];
+            return _isArray(obj) || typeof obj[methodname] !== 'function' ? fn.apply(this, arguments) : obj[methodname].apply(obj, _slice(arguments, 0, length - 1));
+        };
+    };
+
+    /**
+     * Optimized internal one-arity curry function.
+     *
+     * @private
+     * @category Function
+     * @param {Function} fn The function to curry.
+     * @return {Function} The curried function.
+     */
+    var _curry1 = function _curry1(fn) {
+        return function f1(a) {
+            if (arguments.length === 0 || _isPlaceholder(a)) {
+                return f1;
+            } else {
+                return fn.apply(this, arguments);
+            }
+        };
+    };
+
+    /**
+     * Optimized internal two-arity curry function.
+     *
+     * @private
+     * @category Function
+     * @param {Function} fn The function to curry.
+     * @return {Function} The curried function.
+     */
+    var _curry2 = function _curry2(fn) {
+        return function f2(a, b) {
+            switch (arguments.length) {
+            case 0:
+                return f2;
+            case 1:
+                return _isPlaceholder(a) ? f2 : _curry1(function (_b) {
+                    return fn(a, _b);
+                });
+            default:
+                return _isPlaceholder(a) && _isPlaceholder(b) ? f2 : _isPlaceholder(a) ? _curry1(function (_a) {
+                    return fn(_a, b);
+                }) : _isPlaceholder(b) ? _curry1(function (_b) {
+                    return fn(a, _b);
+                }) : fn(a, b);
+            }
+        };
+    };
+
+    /**
+     * Optimized internal three-arity curry function.
+     *
+     * @private
+     * @category Function
+     * @param {Function} fn The function to curry.
+     * @return {Function} The curried function.
+     */
+    var _curry3 = function _curry3(fn) {
+        return function f3(a, b, c) {
+            switch (arguments.length) {
+            case 0:
+                return f3;
+            case 1:
+                return _isPlaceholder(a) ? f3 : _curry2(function (_b, _c) {
+                    return fn(a, _b, _c);
+                });
+            case 2:
+                return _isPlaceholder(a) && _isPlaceholder(b) ? f3 : _isPlaceholder(a) ? _curry2(function (_a, _c) {
+                    return fn(_a, b, _c);
+                }) : _isPlaceholder(b) ? _curry2(function (_b, _c) {
+                    return fn(a, _b, _c);
+                }) : _curry1(function (_c) {
+                    return fn(a, b, _c);
+                });
+            default:
+                return _isPlaceholder(a) && _isPlaceholder(b) && _isPlaceholder(c) ? f3 : _isPlaceholder(a) && _isPlaceholder(b) ? _curry2(function (_a, _b) {
+                    return fn(_a, _b, c);
+                }) : _isPlaceholder(a) && _isPlaceholder(c) ? _curry2(function (_a, _c) {
+                    return fn(_a, b, _c);
+                }) : _isPlaceholder(b) && _isPlaceholder(c) ? _curry2(function (_b, _c) {
+                    return fn(a, _b, _c);
+                }) : _isPlaceholder(a) ? _curry1(function (_a) {
+                    return fn(_a, b, c);
+                }) : _isPlaceholder(b) ? _curry1(function (_b) {
+                    return fn(a, _b, c);
+                }) : _isPlaceholder(c) ? _curry1(function (_c) {
+                    return fn(a, b, _c);
+                }) : fn(a, b, c);
+            }
+        };
+    };
+
+    /**
+     * Internal curryN function.
+     *
+     * @private
+     * @category Function
+     * @param {Number} length The arity of the curried function.
+     * @param {Array} received An array of arguments received thus far.
+     * @param {Function} fn The function to curry.
+     * @return {Function} The curried function.
+     */
+    var _curryN = function _curryN(length, received, fn) {
+        return function () {
+            var combined = [];
+            var argsIdx = 0;
+            var left = length;
+            var combinedIdx = 0;
+            while (combinedIdx < received.length || argsIdx < arguments.length) {
+                var result;
+                if (combinedIdx < received.length && (!_isPlaceholder(received[combinedIdx]) || argsIdx >= arguments.length)) {
+                    result = received[combinedIdx];
+                } else {
+                    result = arguments[argsIdx];
+                    argsIdx += 1;
+                }
+                combined[combinedIdx] = result;
+                if (!_isPlaceholder(result)) {
+                    left -= 1;
+                }
+                combinedIdx += 1;
+            }
+            return left <= 0 ? fn.apply(this, combined) : _arity(left, _curryN(length, combined, fn));
+        };
+    };
+
+    /**
+     * Returns a function that dispatches with different strategies based on the
+     * object in list position (last argument). If it is an array, executes [fn].
+     * Otherwise, if it has a function with [methodname], it will execute that
+     * function (functor case). Otherwise, if it is a transformer, uses transducer
+     * [xf] to return a new transformer (transducer case). Otherwise, it will
+     * default to executing [fn].
+     *
+     * @private
+     * @param {String} methodname property to check for a custom implementation
+     * @param {Function} xf transducer to initialize if object is transformer
+     * @param {Function} fn default ramda implementation
+     * @return {Function} A function that dispatches on object in list position
+     */
+    var _dispatchable = function _dispatchable(methodname, xf, fn) {
+        return function () {
+            var length = arguments.length;
+            if (length === 0) {
+                return fn();
+            }
+            var obj = arguments[length - 1];
+            if (!_isArray(obj)) {
+                var args = _slice(arguments, 0, length - 1);
+                if (typeof obj[methodname] === 'function') {
+                    return obj[methodname].apply(obj, args);
+                }
+                if (_isTransformer(obj)) {
+                    var transducer = xf.apply(null, args);
+                    return transducer(obj);
+                }
+            }
+            return fn.apply(this, arguments);
+        };
+    };
+
+    var _dropLastWhile = function dropLastWhile(pred, list) {
+        var idx = list.length - 1;
+        while (idx >= 0 && pred(list[idx])) {
+            idx -= 1;
+        }
+        return _slice(list, 0, idx + 1);
+    };
+
+    var _xall = function () {
+        function XAll(f, xf) {
+            this.xf = xf;
+            this.f = f;
+            this.all = true;
+        }
+        XAll.prototype['@@transducer/init'] = _xfBase.init;
+        XAll.prototype['@@transducer/result'] = function (result) {
+            if (this.all) {
+                result = this.xf['@@transducer/step'](result, true);
+            }
+            return this.xf['@@transducer/result'](result);
+        };
+        XAll.prototype['@@transducer/step'] = function (result, input) {
+            if (!this.f(input)) {
+                this.all = false;
+                result = _reduced(this.xf['@@transducer/step'](result, false));
+            }
+            return result;
+        };
+        return _curry2(function _xall(f, xf) {
+            return new XAll(f, xf);
+        });
+    }();
+
+    var _xany = function () {
+        function XAny(f, xf) {
+            this.xf = xf;
+            this.f = f;
+            this.any = false;
+        }
+        XAny.prototype['@@transducer/init'] = _xfBase.init;
+        XAny.prototype['@@transducer/result'] = function (result) {
+            if (!this.any) {
+                result = this.xf['@@transducer/step'](result, false);
+            }
+            return this.xf['@@transducer/result'](result);
+        };
+        XAny.prototype['@@transducer/step'] = function (result, input) {
+            if (this.f(input)) {
+                this.any = true;
+                result = _reduced(this.xf['@@transducer/step'](result, true));
+            }
+            return result;
+        };
+        return _curry2(function _xany(f, xf) {
+            return new XAny(f, xf);
+        });
+    }();
+
+    var _xaperture = function () {
+        function XAperture(n, xf) {
+            this.xf = xf;
+            this.pos = 0;
+            this.full = false;
+            this.acc = new Array(n);
+        }
+        XAperture.prototype['@@transducer/init'] = _xfBase.init;
+        XAperture.prototype['@@transducer/result'] = function (result) {
+            this.acc = null;
+            return this.xf['@@transducer/result'](result);
+        };
+        XAperture.prototype['@@transducer/step'] = function (result, input) {
+            this.store(input);
+            return this.full ? this.xf['@@transducer/step'](result, this.getCopy()) : result;
+        };
+        XAperture.prototype.store = function (input) {
+            this.acc[this.pos] = input;
+            this.pos += 1;
+            if (this.pos === this.acc.length) {
+                this.pos = 0;
+                this.full = true;
+            }
+        };
+        XAperture.prototype.getCopy = function () {
+            return _concat(_slice(this.acc, this.pos), _slice(this.acc, 0, this.pos));
+        };
+        return _curry2(function _xaperture(n, xf) {
+            return new XAperture(n, xf);
+        });
+    }();
+
+    var _xdrop = function () {
+        function XDrop(n, xf) {
+            this.xf = xf;
+            this.n = n;
+        }
+        XDrop.prototype['@@transducer/init'] = _xfBase.init;
+        XDrop.prototype['@@transducer/result'] = _xfBase.result;
+        XDrop.prototype['@@transducer/step'] = function (result, input) {
+            if (this.n > 0) {
+                this.n -= 1;
+                return result;
+            }
+            return this.xf['@@transducer/step'](result, input);
+        };
+        return _curry2(function _xdrop(n, xf) {
+            return new XDrop(n, xf);
+        });
+    }();
+
+    var _xdropLast = function () {
+        function XDropLast(n, xf) {
+            this.xf = xf;
+            this.pos = 0;
+            this.full = false;
+            this.acc = new Array(n);
+        }
+        XDropLast.prototype['@@transducer/init'] = _xfBase.init;
+        XDropLast.prototype['@@transducer/result'] = function (result) {
+            this.acc = null;
+            return this.xf['@@transducer/result'](result);
+        };
+        XDropLast.prototype['@@transducer/step'] = function (result, input) {
+            if (this.full) {
+                result = this.xf['@@transducer/step'](result, this.acc[this.pos]);
+            }
+            this.store(input);
+            return result;
+        };
+        XDropLast.prototype.store = function (input) {
+            this.acc[this.pos] = input;
+            this.pos += 1;
+            if (this.pos === this.acc.length) {
+                this.pos = 0;
+                this.full = true;
+            }
+        };
+        return _curry2(function _xdropLast(n, xf) {
+            return new XDropLast(n, xf);
+        });
+    }();
+
     var _xdropRepeatsWith = function () {
         function XDropRepeatsWith(pred, xf) {
             this.xf = xf;
@@ -482,14 +756,26 @@
         });
     }();
 
-    var _xfBase = {
-        init: function () {
-            return this.xf['@@transducer/init']();
-        },
-        result: function (result) {
-            return this.xf['@@transducer/result'](result);
+    var _xdropWhile = function () {
+        function XDropWhile(f, xf) {
+            this.xf = xf;
+            this.f = f;
         }
-    };
+        XDropWhile.prototype['@@transducer/init'] = _xfBase.init;
+        XDropWhile.prototype['@@transducer/result'] = _xfBase.result;
+        XDropWhile.prototype['@@transducer/step'] = function (result, input) {
+            if (this.f) {
+                if (this.f(input)) {
+                    return result;
+                }
+                this.f = null;
+            }
+            return this.xf['@@transducer/step'](result, input);
+        };
+        return _curry2(function _xdropWhile(f, xf) {
+            return new XDropWhile(f, xf);
+        });
+    }();
 
     var _xfilter = function () {
         function XFilter(f, xf) {
@@ -616,20 +902,55 @@
         });
     }();
 
+    var _xreduceBy = function () {
+        function XReduceBy(valueFn, valueAcc, keyFn, xf) {
+            this.valueFn = valueFn;
+            this.valueAcc = valueAcc;
+            this.keyFn = keyFn;
+            this.xf = xf;
+            this.inputs = {};
+        }
+        XReduceBy.prototype['@@transducer/init'] = _xfBase.init;
+        XReduceBy.prototype['@@transducer/result'] = function (result) {
+            var key;
+            for (key in this.inputs) {
+                if (_has(key, this.inputs)) {
+                    result = this.xf['@@transducer/step'](result, this.inputs[key]);
+                    if (result['@@transducer/reduced']) {
+                        result = result['@@transducer/value'];
+                        break;
+                    }
+                }
+            }
+            this.inputs = null;
+            return this.xf['@@transducer/result'](result);
+        };
+        XReduceBy.prototype['@@transducer/step'] = function (result, input) {
+            var key = this.keyFn(input);
+            this.inputs[key] = this.inputs[key] || [
+                key,
+                this.valueAcc
+            ];
+            this.inputs[key][1] = this.valueFn(this.inputs[key][1], input);
+            return result;
+        };
+        return _curryN(4, [], function _xreduceBy(valueFn, valueAcc, keyFn, xf) {
+            return new XReduceBy(valueFn, valueAcc, keyFn, xf);
+        });
+    }();
+
     var _xtake = function () {
         function XTake(n, xf) {
             this.xf = xf;
             this.n = n;
+            this.i = 0;
         }
         XTake.prototype['@@transducer/init'] = _xfBase.init;
         XTake.prototype['@@transducer/result'] = _xfBase.result;
         XTake.prototype['@@transducer/step'] = function (result, input) {
-            if (this.n === 0) {
-                return _reduced(result);
-            } else {
-                this.n -= 1;
-                return this.xf['@@transducer/step'](result, input);
-            }
+            this.i += 1;
+            var ret = this.n === 0 ? result : this.xf['@@transducer/step'](result, input);
+            return this.i >= this.n ? _reduced(ret) : ret;
         };
         return _curry2(function _xtake(n, xf) {
             return new XTake(n, xf);
@@ -651,29 +972,12 @@
         });
     }();
 
-    var _xwrap = function () {
-        function XWrap(fn) {
-            this.f = fn;
-        }
-        XWrap.prototype['@@transducer/init'] = function () {
-            throw new Error('init not implemented on XWrap');
-        };
-        XWrap.prototype['@@transducer/result'] = function (acc) {
-            return acc;
-        };
-        XWrap.prototype['@@transducer/step'] = function (acc, x) {
-            return this.f(acc, x);
-        };
-        return function _xwrap(fn) {
-            return new XWrap(fn);
-        };
-    }();
-
     /**
-     * Adds two numbers. Equivalent to `a + b` but curried.
+     * Adds two values.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Math
      * @sig Number -> Number -> Number
      * @param {Number} a
@@ -686,17 +990,17 @@
      *      R.add(7)(10);      //=> 17
      */
     var add = _curry2(function add(a, b) {
-        return a + b;
+        return Number(a) + Number(b);
     });
 
     /**
-     * Applies a function to the value at the given index of an array,
-     * returning a new copy of the array with the element at the given
-     * index replaced with the result of the function application.
-     * @see R.update
+     * Applies a function to the value at the given index of an array, returning a
+     * new copy of the array with the element at the given index replaced with the
+     * result of the function application.
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category List
      * @sig (a -> a) -> Number -> [a] -> [a]
      * @param {Function} fn The function to apply.
@@ -706,6 +1010,7 @@
      * @return {Array} A copy of the supplied array-like object with
      *         the element at index `idx` replaced with the value
      *         returned by applying `fn` to the existing element.
+     * @see R.update
      * @example
      *
      *      R.adjust(R.add(10), 1, [0, 1, 2]);     //=> [0, 11, 2]
@@ -723,14 +1028,51 @@
     });
 
     /**
-     * Returns a function that always returns the given value. Note that for
-     * non-primitives the value returned is a reference to the original value.
+     * Returns `true` if all elements of the list match the predicate, `false` if
+     * there are any that don't.
      *
-     * This function is known as `const`, `constant`, or `K` (for K combinator)
-     * in other languages and libraries.
+     * Dispatches to the `all` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> Boolean
+     * @param {Function} fn The predicate function.
+     * @param {Array} list The array to consider.
+     * @return {Boolean} `true` if the predicate is satisfied by every element, `false`
+     *         otherwise.
+     * @see R.any, R.none, R.transduce
+     * @example
+     *
+     *      var lessThan2 = R.flip(R.lt)(2);
+     *      var lessThan3 = R.flip(R.lt)(3);
+     *      R.all(lessThan2)([1, 2]); //=> false
+     *      R.all(lessThan3)([1, 2]); //=> true
+     */
+    var all = _curry2(_dispatchable('all', _xall, function all(fn, list) {
+        var idx = 0;
+        while (idx < list.length) {
+            if (!fn(list[idx])) {
+                return false;
+            }
+            idx += 1;
+        }
+        return true;
+    }));
+
+    /**
+     * Returns a function that always returns the given value. Note that for
+     * non-primitives the value returned is a reference to the original value.
+     *
+     * This function is known as `const`, `constant`, or `K` (for K combinator) in
+     * other languages and libraries.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig a -> (* -> a)
      * @param {*} val The value to wrap in a function
@@ -747,39 +1089,96 @@
     });
 
     /**
-     * Returns a new list, composed of n-tuples of consecutive elements
-     * If `n` is greater than the length of the list, an empty list is returned.
+     * Returns `true` if both arguments are `true`; `false` otherwise.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
+     * @category Logic
+     * @sig * -> * -> *
+     * @param {Boolean} a A boolean value
+     * @param {Boolean} b A boolean value
+     * @return {Boolean} `true` if both arguments are `true`, `false` otherwise
+     * @see R.both
+     * @example
+     *
+     *      R.and(true, true); //=> true
+     *      R.and(true, false); //=> false
+     *      R.and(false, true); //=> false
+     *      R.and(false, false); //=> false
+     */
+    var and = _curry2(function and(a, b) {
+        return a && b;
+    });
+
+    /**
+     * Returns `true` if at least one of elements of the list match the predicate,
+     * `false` otherwise.
+     *
+     * Dispatches to the `any` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> Boolean
+     * @param {Function} fn The predicate function.
+     * @param {Array} list The array to consider.
+     * @return {Boolean} `true` if the predicate is satisfied by at least one element, `false`
+     *         otherwise.
+     * @see R.all, R.none, R.transduce
+     * @example
+     *
+     *      var lessThan0 = R.flip(R.lt)(0);
+     *      var lessThan2 = R.flip(R.lt)(2);
+     *      R.any(lessThan0)([1, 2]); //=> false
+     *      R.any(lessThan2)([1, 2]); //=> true
+     */
+    var any = _curry2(_dispatchable('any', _xany, function any(fn, list) {
+        var idx = 0;
+        while (idx < list.length) {
+            if (fn(list[idx])) {
+                return true;
+            }
+            idx += 1;
+        }
+        return false;
+    }));
+
+    /**
+     * Returns a new list, composed of n-tuples of consecutive elements If `n` is
+     * greater than the length of the list, an empty list is returned.
+     *
+     * Dispatches to the `aperture` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.12.0
      * @category List
      * @sig Number -> [a] -> [[a]]
      * @param {Number} n The size of the tuples to create
      * @param {Array} list The list to split into `n`-tuples
      * @return {Array} The new list.
+     * @see R.transduce
      * @example
      *
      *      R.aperture(2, [1, 2, 3, 4, 5]); //=> [[1, 2], [2, 3], [3, 4], [4, 5]]
      *      R.aperture(3, [1, 2, 3, 4, 5]); //=> [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
      *      R.aperture(7, [1, 2, 3, 4, 5]); //=> []
      */
-    var aperture = _curry2(function aperture(n, list) {
-        var idx = 0;
-        var limit = list.length - (n - 1);
-        var acc = new Array(limit >= 0 ? limit : 0);
-        while (idx < limit) {
-            acc[idx] = _slice(list, idx, idx + n);
-            idx += 1;
-        }
-        return acc;
-    });
+    var aperture = _curry2(_dispatchable('aperture', _xaperture, _aperture));
 
     /**
-     * Returns a new list containing the contents of the given list, followed by the given
-     * element.
+     * Returns a new list containing the contents of the given list, followed by
+     * the given element.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig a -> [a] -> [a]
      * @param {*} el The element to add to the end of the new list.
@@ -799,11 +1198,12 @@
 
     /**
      * Applies function `fn` to the argument list `args`. This is useful for
-     * creating a fixed-arity function from a variadic function. `fn` should
-     * be a bound function if context is significant.
+     * creating a fixed-arity function from a variadic function. `fn` should be a
+     * bound function if context is significant.
      *
      * @func
      * @memberOf R
+     * @since v0.7.0
      * @category Function
      * @sig (*... -> a) -> [*] -> a
      * @param {Function} fn
@@ -821,12 +1221,13 @@
 
     /**
      * Makes a shallow clone of an object, setting or overriding the specified
-     * property with the given value.  Note that this copies and flattens
-     * prototype properties onto the new object as well.  All non-primitive
-     * properties are copied by reference.
+     * property with the given value. Note that this copies and flattens prototype
+     * properties onto the new object as well. All non-primitive properties are
+     * copied by reference.
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Object
      * @sig String -> a -> {k: v} -> {k: v}
      * @param {String} prop the property name to set
@@ -848,14 +1249,14 @@
     });
 
     /**
-     * Makes a shallow clone of an object, setting or overriding the nodes
-     * required to create the given path, and placing the specific value at the
-     * tail end of that path.  Note that this copies and flattens prototype
-     * properties onto the new object as well.  All non-primitive properties
-     * are copied by reference.
+     * Makes a shallow clone of an object, setting or overriding the nodes required
+     * to create the given path, and placing the specific value at the tail end of
+     * that path. Note that this copies and flattens prototype properties onto the
+     * new object as well. All non-primitive properties are copied by reference.
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Object
      * @sig [String] -> a -> {k: v} -> {k: v}
      * @param {Array} path the path to set
@@ -870,7 +1271,7 @@
     var assocPath = _curry3(function assocPath(path, val, obj) {
         switch (path.length) {
         case 0:
-            return obj;
+            return val;
         case 1:
             return assoc(path[0], val, obj);
         default:
@@ -885,13 +1286,19 @@
      *
      * @func
      * @memberOf R
+     * @since v0.6.0
      * @category Function
      * @category Object
-     * @see R.partial
      * @sig (* -> *) -> {*} -> (* -> *)
      * @param {Function} fn The function to bind to context
      * @param {Object} thisObj The context to bind `fn` to
      * @return {Function} A function that will execute in the context of `thisObj`.
+     * @see R.partial
+     * @example
+     *
+     *      var log = R.bind(console.log, console);
+     *      R.pipe(R.assoc('a', 2), R.tap(log), R.assoc('a', 3))({a: 1}); //=> {a: 3}
+     *      // logs {a: 2}
      */
     var bind = _curry2(function bind(fn, thisObj) {
         return _arity(fn.length, function () {
@@ -900,47 +1307,46 @@
     });
 
     /**
-     * A function wrapping calls to the two functions in an `&&` operation, returning the result of the first
-     * function if it is false-y and the result of the second function otherwise.  Note that this is
-     * short-circuited, meaning that the second function will not be invoked if the first returns a false-y
-     * value.
+     * Restricts a number to be within a range.
+     *
+     * Also works for other ordered types such as Strings and Dates.
      *
      * @func
      * @memberOf R
-     * @category Logic
-     * @sig (*... -> Boolean) -> (*... -> Boolean) -> (*... -> Boolean)
-     * @param {Function} f a predicate
-     * @param {Function} g another predicate
-     * @return {Function} a function that applies its arguments to `f` and `g` and `&&`s their outputs together.
-     * @see R.and
+     * @since v0.20.0
+     * @category Relation
+     * @sig Ord a => a -> a -> a -> a
+     * @param {Number} minimum number
+     * @param {Number} maximum number
+     * @param {Number} value to be clamped
+     * @return {Number} Returns the clamped value
      * @example
      *
-     *      var gt10 = function(x) { return x > 10; };
-     *      var even = function(x) { return x % 2 === 0 };
-     *      var f = R.both(gt10, even);
-     *      f(100); //=> true
-     *      f(101); //=> false
+     *      R.clamp(1, 10, -1) // => 1
+     *      R.clamp(1, 10, 11) // => 10
+     *      R.clamp(1, 10, 4)  // => 4
      */
-    var both = _curry2(function both(f, g) {
-        return function _both() {
-            return f.apply(this, arguments) && g.apply(this, arguments);
-        };
+    var clamp = _curry3(function clamp(min, max, value) {
+        if (min > max) {
+            throw new Error('min must not be greater than max in clamp(min, max, value)');
+        }
+        return value < min ? min : value > max ? max : value;
     });
 
     /**
-     * Makes a comparator function out of a function that reports whether the first element is less than the second.
+     * Makes a comparator function out of a function that reports whether the first
+     * element is less than the second.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (a, b -> Boolean) -> (a, b -> Number)
      * @param {Function} pred A predicate function of arity two.
      * @return {Function} A Function :: a -> b -> Int that returns `-1` if a < b, `1` if b < a, otherwise `0`.
      * @example
      *
-     *      var cmp = R.comparator(function(a, b) {
-     *        return a.age < b.age;
-     *      });
+     *      var cmp = R.comparator((a, b) => a.age < b.age);
      *      var people = [
      *        // ...
      *      ];
@@ -953,149 +1359,10 @@
     });
 
     /**
-     * Takes a function `f` and returns a function `g` such that:
-     *
-     *   - applying `g` to zero or more arguments will give __true__ if applying
-     *     the same arguments to `f` gives a logical __false__ value; and
-     *
-     *   - applying `g` to zero or more arguments will give __false__ if applying
-     *     the same arguments to `f` gives a logical __true__ value.
-     *
-     * @func
-     * @memberOf R
-     * @category Logic
-     * @sig (*... -> *) -> (*... -> Boolean)
-     * @param {Function} f
-     * @return {Function}
-     * @see R.not
-     * @example
-     *
-     *      var isEven = function(n) { return n % 2 === 0; };
-     *      var isOdd = R.complement(isEven);
-     *      isOdd(21); //=> true
-     *      isOdd(42); //=> false
-     */
-    var complement = _curry1(_complement);
-
-    /**
-     * Returns a function, `fn`, which encapsulates if/else-if/else logic.
-     * `R.cond` takes a list of [predicate, transform] pairs. All of the
-     * arguments to `fn` are applied to each of the predicates in turn
-     * until one returns a "truthy" value, at which point `fn` returns the
-     * result of applying its arguments to the corresponding transformer.
-     * If none of the predicates matches, `fn` returns undefined.
-     *
-     * @func
-     * @memberOf R
-     * @category Logic
-     * @sig [[(*... -> Boolean),(*... -> *)]] -> (*... -> *)
-     * @param {Array} pairs
-     * @return {Function}
-     * @example
-     *
-     *      var fn = R.cond([
-     *        [R.equals(0),   R.always('water freezes at 0�C')],
-     *        [R.equals(100), R.always('water boils at 100�C')],
-     *        [R.T,           function(temp) { return 'nothing special happens at ' + temp + '�C'; }]
-     *      ]);
-     *      fn(0); //=> 'water freezes at 0�C'
-     *      fn(50); //=> 'nothing special happens at 50�C'
-     *      fn(100); //=> 'water boils at 100�C'
-     */
-    var cond = _curry1(function cond(pairs) {
-        return function () {
-            var idx = 0;
-            while (idx < pairs.length) {
-                if (pairs[idx][0].apply(this, arguments)) {
-                    return pairs[idx][1].apply(this, arguments);
-                }
-                idx += 1;
-            }
-        };
-    });
-
-    /**
-     * Returns `true` if the `x` is found in the `list`, using `pred` as an
-     * equality predicate for `x`.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a, a -> Boolean) -> a -> [a] -> Boolean
-     * @param {Function} pred A predicate used to test whether two items are equal.
-     * @param {*} x The item to find
-     * @param {Array} list The list to iterate over
-     * @return {Boolean} `true` if `x` is in `list`, else `false`.
-     * @example
-     *
-     *      var xs = [{x: 12}, {x: 11}, {x: 10}];
-     *      R.containsWith(function(a, b) { return a.x === b.x; }, {x: 10}, xs); //=> true
-     *      R.containsWith(function(a, b) { return a.x === b.x; }, {x: 1}, xs); //=> false
-     */
-    var containsWith = _curry3(_containsWith);
-
-    /**
-     * Counts the elements of a list according to how many match each value
-     * of a key generated by the supplied function. Returns an object
-     * mapping the keys produced by `fn` to the number of occurrences in
-     * the list. Note that all keys are coerced to strings because of how
-     * JavaScript objects work.
-     *
-     * @func
-     * @memberOf R
-     * @category Relation
-     * @sig (a -> String) -> [a] -> {*}
-     * @param {Function} fn The function used to map values to keys.
-     * @param {Array} list The list to count elements from.
-     * @return {Object} An object mapping keys to number of occurrences in the list.
-     * @example
-     *
-     *      var numbers = [1.0, 1.1, 1.2, 2.0, 3.0, 2.2];
-     *      var letters = R.split('', 'abcABCaaaBBc');
-     *      R.countBy(Math.floor)(numbers);    //=> {'1': 3, '2': 2, '3': 1}
-     *      R.countBy(R.toLower)(letters);   //=> {'a': 5, 'b': 4, 'c': 3}
-     */
-    var countBy = _curry2(function countBy(fn, list) {
-        var counts = {};
-        var len = list.length;
-        var idx = 0;
-        while (idx < len) {
-            var key = fn(list[idx]);
-            counts[key] = (_has(key, counts) ? counts[key] : 0) + 1;
-            idx += 1;
-        }
-        return counts;
-    });
-
-    /**
-     * Creates an object containing a single key:value pair.
-     *
-     * @func
-     * @memberOf R
-     * @category Object
-     * @sig String -> a -> {String:a}
-     * @param {String} key
-     * @param {*} val
-     * @return {Object}
-     * @example
-     *
-     *      var matchPhrases = R.compose(
-     *        R.createMapEntry('must'),
-     *        R.map(R.createMapEntry('match_phrase'))
-     *      );
-     *      matchPhrases(['foo', 'bar', 'baz']); //=> {must: [{match_phrase: 'foo'}, {match_phrase: 'bar'}, {match_phrase: 'baz'}]}
-     */
-    var createMapEntry = _curry2(function createMapEntry(key, val) {
-        var obj = {};
-        obj[key] = val;
-        return obj;
-    });
-
-    /**
-     * Returns a curried equivalent of the provided function, with the
-     * specified arity. The curried function has two unusual capabilities.
-     * First, its arguments needn't be provided one at a time. If `g` is
-     * `R.curryN(3, f)`, the following are equivalent:
+     * Returns a curried equivalent of the provided function, with the specified
+     * arity. The curried function has two unusual capabilities. First, its
+     * arguments needn't be provided one at a time. If `g` is `R.curryN(3, f)`, the
+     * following are equivalent:
      *
      *   - `g(1)(2)(3)`
      *   - `g(1)(2, 3)`
@@ -1104,8 +1371,8 @@
      *
      * Secondly, the special placeholder value `R.__` may be used to specify
      * "gaps", allowing partial application of any combination of arguments,
-     * regardless of their positions. If `g` is as above and `_` is `R.__`,
-     * the following are equivalent:
+     * regardless of their positions. If `g` is as above and `_` is `R.__`, the
+     * following are equivalent:
      *
      *   - `g(1, 2, 3)`
      *   - `g(_, 2, 3)(1)`
@@ -1117,6 +1384,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.5.0
      * @category Function
      * @sig Number -> (* -> a) -> (* -> a)
      * @param {Number} length The arity for the returned function.
@@ -1125,11 +1393,9 @@
      * @see R.curry
      * @example
      *
-     *      var addFourNumbers = function() {
-     *        return R.sum([].slice.call(arguments, 0, 4));
-     *      };
+     *      var sumArgs = (...args) => R.sum(args);
      *
-     *      var curriedAddFourNumbers = R.curryN(4, addFourNumbers);
+     *      var curriedAddFourNumbers = R.curryN(4, sumArgs);
      *      var f = curriedAddFourNumbers(1, 2);
      *      var g = f(3);
      *      g(4); //=> 10
@@ -1146,6 +1412,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Math
      * @sig Number -> Number
      * @param {Number} n
@@ -1158,11 +1425,12 @@
     var dec = add(-1);
 
     /**
-     * Returns the second argument if it is not null or undefined. If it is null
-     * or undefined, the first (default) argument is returned.
+     * Returns the second argument if it is not `null`, `undefined` or `NaN`
+     * otherwise the first argument is returned.
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category Logic
      * @sig a -> b -> a | b
      * @param {a} val The default value.
@@ -1170,33 +1438,35 @@
      * @return {*} The the second value or the default value
      * @example
      *
-     *      var defaultTo42 = defaultTo(42);
+     *      var defaultTo42 = R.defaultTo(42);
      *
      *      defaultTo42(null);  //=> 42
      *      defaultTo42(undefined);  //=> 42
      *      defaultTo42('Ramda');  //=> 'Ramda'
+     *      defaultTo42(parseInt('string')); //=> 42
      */
     var defaultTo = _curry2(function defaultTo(d, v) {
-        return v == null ? d : v;
+        return v == null || v !== v ? d : v;
     });
 
     /**
-     * Finds the set (i.e. no duplicates) of all elements in the first list not contained in the second list.
-     * Duplication is determined according to the value returned by applying the supplied predicate to two list
-     * elements.
+     * Finds the set (i.e. no duplicates) of all elements in the first list not
+     * contained in the second list. Duplication is determined according to the
+     * value returned by applying the supplied predicate to two list elements.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
-     * @sig (a,a -> Boolean) -> [a] -> [a] -> [a]
+     * @sig (a -> a -> Boolean) -> [*] -> [*] -> [*]
      * @param {Function} pred A predicate used to test whether two items are equal.
      * @param {Array} list1 The first list.
      * @param {Array} list2 The second list.
-     * @see R.difference
      * @return {Array} The elements in `list1` that are not in `list2`.
+     * @see R.difference, R.symmetricDifference, R.symmetricDifferenceWith
      * @example
      *
-     *      function cmp(x, y) { return x.a === y.a; }
+     *      var cmp = (x, y) => x.a === y.a;
      *      var l1 = [{a: 1}, {a: 2}, {a: 3}];
      *      var l2 = [{a: 3}, {a: 4}];
      *      R.differenceWith(cmp, l1, l2); //=> [{a: 1}, {a: 2}]
@@ -1205,10 +1475,9 @@
         var out = [];
         var idx = 0;
         var firstLen = first.length;
-        var containsPred = containsWith(pred);
         while (idx < firstLen) {
-            if (!containsPred(first[idx], second) && !containsPred(first[idx], out)) {
-                out[out.length] = first[idx];
+            if (!_containsWith(pred, first[idx], second) && !_containsWith(pred, first[idx], out)) {
+                out.push(first[idx]);
             }
             idx += 1;
         }
@@ -1220,6 +1489,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category Object
      * @sig String -> {k: v} -> {k: v}
      * @param {String} prop the name of the property to dissociate
@@ -1241,13 +1511,13 @@
     });
 
     /**
-     * Makes a shallow clone of an object, omitting the property at the
-     * given path. Note that this copies and flattens prototype properties
-     * onto the new object as well.  All non-primitive properties are copied
-     * by reference.
+     * Makes a shallow clone of an object, omitting the property at the given path.
+     * Note that this copies and flattens prototype properties onto the new object
+     * as well. All non-primitive properties are copied by reference.
      *
      * @func
      * @memberOf R
+     * @since v0.11.0
      * @category Object
      * @sig [String] -> {k: v} -> {k: v}
      * @param {Array} path the path to set
@@ -1276,6 +1546,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Math
      * @sig Number -> Number -> Number
      * @param {Number} a The first value.
@@ -1297,70 +1568,50 @@
     });
 
     /**
-     * Returns a new list containing all but last the`n` elements of a given list,
-     * passing each value from the right to the supplied predicate function, skipping
-     * elements while the predicate function returns `true`. The predicate function
-     * is passed one argument: (value)*.
+     * Returns a new list excluding the leading elements of a given list which
+     * satisfy the supplied predicate function. It passes each value to the supplied
+     * predicate function, skipping elements while the predicate function returns
+     * `true`. The predicate function is applied to one argument: *(value)*.
+     *
+     * Dispatches to the `dropWhile` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category List
      * @sig (a -> Boolean) -> [a] -> [a]
      * @param {Function} fn The function called per iteration.
      * @param {Array} list The collection to iterate over.
      * @return {Array} A new array.
-     * @see R.takeLastWhile
+     * @see R.takeWhile, R.transduce, R.addIndex
      * @example
      *
-     *      var lteThree = function(x) {
-     *        return x <= 3;
-     *      };
+     *      var lteTwo = x => x <= 2;
      *
-     *      R.dropLastWhile(lteThree, [1, 2, 3, 4, 3, 2, 1]); //=> [1, 2]
+     *      R.dropWhile(lteTwo, [1, 2, 3, 4, 3, 2, 1]); //=> [3, 4, 3, 2, 1]
      */
-    var dropLastWhile = _curry2(function dropLastWhile(pred, list) {
-        var idx = list.length - 1;
-        while (idx >= 0 && pred(list[idx])) {
-            idx -= 1;
+    var dropWhile = _curry2(_dispatchable('dropWhile', _xdropWhile, function dropWhile(pred, list) {
+        var idx = 0;
+        var len = list.length;
+        while (idx < len && pred(list[idx])) {
+            idx += 1;
         }
-        return _slice(list, 0, idx + 1);
-    });
-
-    /**
-     * A function wrapping calls to the two functions in an `||` operation, returning the result of the first
-     * function if it is truth-y and the result of the second function otherwise.  Note that this is
-     * short-circuited, meaning that the second function will not be invoked if the first returns a truth-y
-     * value.
-     *
-     * @func
-     * @memberOf R
-     * @category Logic
-     * @sig (*... -> Boolean) -> (*... -> Boolean) -> (*... -> Boolean)
-     * @param {Function} f a predicate
-     * @param {Function} g another predicate
-     * @return {Function} a function that applies its arguments to `f` and `g` and `||`s their outputs together.
-     * @see R.or
-     * @example
-     *
-     *      var gt10 = function(x) { return x > 10; };
-     *      var even = function(x) { return x % 2 === 0 };
-     *      var f = R.either(gt10, even);
-     *      f(101); //=> true
-     *      f(8); //=> true
-     */
-    var either = _curry2(function either(f, g) {
-        return function _either() {
-            return f.apply(this, arguments) || g.apply(this, arguments);
-        };
-    });
+        return _slice(list, idx);
+    }));
 
     /**
      * Returns the empty value of its argument's type. Ramda defines the empty
-     * value of Array (`[]`), Object (`{}`), and String (`''`). Other types are
-     * supported if they define `<Type>.empty` and/or `<Type>.prototype.empty`.
+     * value of Array (`[]`), Object (`{}`), String (`''`), and Arguments. Other
+     * types are supported if they define `<Type>.empty` and/or
+     * `<Type>.prototype.empty`.
+     *
+     * Dispatches to the `empty` method of the first argument, if present.
      *
      * @func
      * @memberOf R
+     * @since v0.3.0
      * @category Function
      * @sig a -> a
      * @param {*} x
@@ -1372,32 +1623,25 @@
      *      R.empty('unicorns');    //=> ''
      *      R.empty({x: 1, y: 2});  //=> {}
      */
+    // else
     var empty = _curry1(function empty(x) {
-        if (x != null && typeof x.empty === 'function') {
-            return x.empty();
-        } else if (x != null && typeof x.constructor != null && typeof x.constructor.empty === 'function') {
-            return x.constructor.empty();
-        } else {
-            switch (Object.prototype.toString.call(x)) {
-            case '[object Array]':
-                return [];
-            case '[object Object]':
-                return {};
-            case '[object String]':
-                return '';
-            }
-        }
+        return x != null && typeof x.empty === 'function' ? x.empty() : x != null && x.constructor != null && typeof x.constructor.empty === 'function' ? x.constructor.empty() : _isArray(x) ? [] : _isString(x) ? '' : _isObject(x) ? {} : _isArguments(x) ? function () {
+            return arguments;
+        }() : // else
+        void 0;
     });
 
     /**
-     * Creates a new object by recursively evolving a shallow copy of `object`, according to the
-     * `transformation` functions. All non-primitive properties are copied by reference.
+     * Creates a new object by recursively evolving a shallow copy of `object`,
+     * according to the `transformation` functions. All non-primitive properties
+     * are copied by reference.
      *
-     * A `tranformation` function will not be invoked if its corresponding key does not exist in
-     * the evolved object.
+     * A `transformation` function will not be invoked if its corresponding key
+     * does not exist in the evolved object.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Object
      * @sig {k: (v -> v)} -> {k: v} -> {k: v}
      * @param {Object} transformations The object specifying transformation functions to apply
@@ -1415,7 +1659,8 @@
      *      R.evolve(transformations, tomato); //=> {firstName: 'Tomato', data: {elapsed: 101, remaining: 1399}, id:123}
      */
     var evolve = _curry2(function evolve(transformations, object) {
-        var transformation, key, type, result = {};
+        var result = {};
+        var transformation, key, type;
         for (key in object) {
             transformation = transformations[key];
             type = typeof transformation;
@@ -1425,36 +1670,262 @@
     });
 
     /**
-     * Creates a new object out of a list key-value pairs.
+     * Returns the first element of the list which matches the predicate, or
+     * `undefined` if no element matches.
+     *
+     * Dispatches to the `find` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> a | undefined
+     * @param {Function} fn The predicate function used to determine if the element is the
+     *        desired one.
+     * @param {Array} list The array to consider.
+     * @return {Object} The element found, or `undefined`.
+     * @see R.transduce
+     * @example
+     *
+     *      var xs = [{a: 1}, {a: 2}, {a: 3}];
+     *      R.find(R.propEq('a', 2))(xs); //=> {a: 2}
+     *      R.find(R.propEq('a', 4))(xs); //=> undefined
+     */
+    var find = _curry2(_dispatchable('find', _xfind, function find(fn, list) {
+        var idx = 0;
+        var len = list.length;
+        while (idx < len) {
+            if (fn(list[idx])) {
+                return list[idx];
+            }
+            idx += 1;
+        }
+    }));
+
+    /**
+     * Returns the index of the first element of the list which matches the
+     * predicate, or `-1` if no element matches.
+     *
+     * Dispatches to the `findIndex` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.1
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> Number
+     * @param {Function} fn The predicate function used to determine if the element is the
+     * desired one.
+     * @param {Array} list The array to consider.
+     * @return {Number} The index of the element found, or `-1`.
+     * @see R.transduce
+     * @example
+     *
+     *      var xs = [{a: 1}, {a: 2}, {a: 3}];
+     *      R.findIndex(R.propEq('a', 2))(xs); //=> 1
+     *      R.findIndex(R.propEq('a', 4))(xs); //=> -1
+     */
+    var findIndex = _curry2(_dispatchable('findIndex', _xfindIndex, function findIndex(fn, list) {
+        var idx = 0;
+        var len = list.length;
+        while (idx < len) {
+            if (fn(list[idx])) {
+                return idx;
+            }
+            idx += 1;
+        }
+        return -1;
+    }));
+
+    /**
+     * Returns the last element of the list which matches the predicate, or
+     * `undefined` if no element matches.
+     *
+     * Dispatches to the `findLast` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.1
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> a | undefined
+     * @param {Function} fn The predicate function used to determine if the element is the
+     * desired one.
+     * @param {Array} list The array to consider.
+     * @return {Object} The element found, or `undefined`.
+     * @see R.transduce
+     * @example
+     *
+     *      var xs = [{a: 1, b: 0}, {a:1, b: 1}];
+     *      R.findLast(R.propEq('a', 1))(xs); //=> {a: 1, b: 1}
+     *      R.findLast(R.propEq('a', 4))(xs); //=> undefined
+     */
+    var findLast = _curry2(_dispatchable('findLast', _xfindLast, function findLast(fn, list) {
+        var idx = list.length - 1;
+        while (idx >= 0) {
+            if (fn(list[idx])) {
+                return list[idx];
+            }
+            idx -= 1;
+        }
+    }));
+
+    /**
+     * Returns the index of the last element of the list which matches the
+     * predicate, or `-1` if no element matches.
+     *
+     * Dispatches to the `findLastIndex` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.1
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> Number
+     * @param {Function} fn The predicate function used to determine if the element is the
+     * desired one.
+     * @param {Array} list The array to consider.
+     * @return {Number} The index of the element found, or `-1`.
+     * @see R.transduce
+     * @example
+     *
+     *      var xs = [{a: 1, b: 0}, {a:1, b: 1}];
+     *      R.findLastIndex(R.propEq('a', 1))(xs); //=> 1
+     *      R.findLastIndex(R.propEq('a', 4))(xs); //=> -1
+     */
+    var findLastIndex = _curry2(_dispatchable('findLastIndex', _xfindLastIndex, function findLastIndex(fn, list) {
+        var idx = list.length - 1;
+        while (idx >= 0) {
+            if (fn(list[idx])) {
+                return idx;
+            }
+            idx -= 1;
+        }
+        return -1;
+    }));
+
+    /**
+     * Iterate over an input `list`, calling a provided function `fn` for each
+     * element in the list.
+     *
+     * `fn` receives one argument: *(value)*.
+     *
+     * Note: `R.forEach` does not skip deleted or unassigned indices (sparse
+     * arrays), unlike the native `Array.prototype.forEach` method. For more
+     * details on this behavior, see:
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Description
+     *
+     * Also note that, unlike `Array.prototype.forEach`, Ramda's `forEach` returns
+     * the original array. In some libraries this function is named `each`.
+     *
+     * Dispatches to the `forEach` method of the second argument, if present.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.1
+     * @category List
+     * @sig (a -> *) -> [a] -> [a]
+     * @param {Function} fn The function to invoke. Receives one argument, `value`.
+     * @param {Array} list The list to iterate over.
+     * @return {Array} The original list.
+     * @see R.addIndex
+     * @example
+     *
+     *      var printXPlusFive = x => console.log(x + 5);
+     *      R.forEach(printXPlusFive, [1, 2, 3]); //=> [1, 2, 3]
+     *      // logs 6
+     *      // logs 7
+     *      // logs 8
+     */
+    var forEach = _curry2(_checkForMethod('forEach', function forEach(fn, list) {
+        var len = list.length;
+        var idx = 0;
+        while (idx < len) {
+            fn(list[idx]);
+            idx += 1;
+        }
+        return list;
+    }));
+
+    /**
+     * Creates a new object from a list key-value pairs. If a key appears in
+     * multiple pairs, the rightmost pair is included in the object.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.3.0
      * @category List
      * @sig [[k,v]] -> {k: v}
      * @param {Array} pairs An array of two-element arrays that will be the keys and values of the output object.
      * @return {Object} The object made by pairing up `keys` and `values`.
-     * @see R.toPairs
+     * @see R.toPairs, R.pair
      * @example
      *
-     *      R.fromPairs([['a', 1], ['b', 2],  ['c', 3]]); //=> {a: 1, b: 2, c: 3}
+     *      R.fromPairs([['a', 1], ['b', 2], ['c', 3]]); //=> {a: 1, b: 2, c: 3}
      */
     var fromPairs = _curry1(function fromPairs(pairs) {
-        var idx = 0, len = pairs.length, out = {};
-        while (idx < len) {
-            if (_isArray(pairs[idx]) && pairs[idx].length) {
-                out[pairs[idx][0]] = pairs[idx][1];
-            }
+        var result = {};
+        var idx = 0;
+        while (idx < pairs.length) {
+            result[pairs[idx][0]] = pairs[idx][1];
             idx += 1;
         }
-        return out;
+        return result;
     });
 
     /**
-     * Returns `true` if the first argument is greater than the second;
-     * `false` otherwise.
+     * Takes a list and returns a list of lists where each sublist's elements are
+     * all "equal" according to the provided equality function.
      *
      * @func
      * @memberOf R
+     * @since v0.21.0
+     * @category List
+     * @sig ((a, a) → Boolean) → [a] → [[a]]
+     * @param {Function} fn Function for determining whether two given (adjacent)
+     *        elements should be in the same group
+     * @param {Array} list The array to group. Also accepts a string, which will be
+     *        treated as a list of characters.
+     * @return {List} A list that contains sublists of equal elements,
+     *         whose concatenations are equal to the original list.
+     * @example
+     *
+     * R.groupWith(R.equals, [0, 1, 1, 2, 3, 5, 8, 13, 21])
+     * //=> [[0], [1, 1], [2], [3], [5], [8], [13], [21]]
+     *
+     * R.groupWith((a, b) => a % 2 === b % 2, [0, 1, 1, 2, 3, 5, 8, 13, 21])
+     * //=> [[0], [1, 1], [2], [3, 5], [8], [13, 21]]
+     *
+     * R.groupWith(R.eqBy(isVowel), 'aestiou')
+     * //=> ['ae', 'st', 'iou']
+     */
+    var groupWith = _curry2(function (fn, list) {
+        var res = [];
+        var idx = 0;
+        var len = list.length;
+        while (idx < len) {
+            var nextidx = idx + 1;
+            while (nextidx < len && fn(list[idx], list[nextidx])) {
+                nextidx += 1;
+            }
+            res.push(list.slice(idx, nextidx));
+            idx = nextidx;
+        }
+        return res;
+    });
+
+    /**
+     * Returns `true` if the first argument is greater than the second; `false`
+     * otherwise.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig Ord a => a -> a -> Boolean
      * @param {*} a
@@ -1479,6 +1950,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig Ord a => a -> a -> Boolean
      * @param {Number} a
@@ -1498,11 +1970,11 @@
     });
 
     /**
-     * Returns whether or not an object has an own property with
-     * the specified name
+     * Returns whether or not an object has an own property with the specified name
      *
      * @func
      * @memberOf R
+     * @since v0.7.0
      * @category Object
      * @sig s -> {s: x} -> Boolean
      * @param {String} prop The name of the property to check for.
@@ -1524,11 +1996,12 @@
     var has = _curry2(_has);
 
     /**
-     * Returns whether or not an object or its prototype chain has
-     * a property with the specified name
+     * Returns whether or not an object or its prototype chain has a property with
+     * the specified name
      *
      * @func
      * @memberOf R
+     * @since v0.7.0
      * @category Object
      * @sig s -> {s: x} -> Boolean
      * @param {String} prop The name of the property to check for.
@@ -1559,6 +2032,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.15.0
      * @category Relation
      * @sig a -> a -> Boolean
      * @param {*} a
@@ -1591,11 +2065,12 @@
     });
 
     /**
-     * A function that does nothing but return the parameter supplied to it. Good as a default
-     * or placeholder function.
+     * A function that does nothing but return the parameter supplied to it. Good
+     * as a default or placeholder function.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig a -> a
      * @param {*} x The value to return.
@@ -1610,11 +2085,12 @@
     var identity = _curry1(_identity);
 
     /**
-     * Creates a function that will process either the `onTrue` or the `onFalse` function depending
-     * upon the result of the `condition` predicate.
+     * Creates a function that will process either the `onTrue` or the `onFalse`
+     * function depending upon the result of the `condition` predicate.
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Logic
      * @sig (*... -> Boolean) -> (*... -> *) -> (*... -> *) -> (*... -> *)
      * @param {Function} condition A predicate function
@@ -1622,13 +2098,16 @@
      * @param {Function} onFalse A function to invoke when the `condition` evaluates to a falsy value.
      * @return {Function} A new unary function that will process either the `onTrue` or the `onFalse`
      *                    function depending upon the result of the `condition` predicate.
+     * @see R.unless, R.when
      * @example
      *
-     *      // Flatten all arrays in the list but leave other values alone.
-     *      var flattenArrays = R.map(R.ifElse(Array.isArray, R.flatten, R.identity));
-     *
-     *      flattenArrays([[0], [[10], [8]], 1234, {}]); //=> [[0], [10, 8], 1234, {}]
-     *      flattenArrays([[[10], 123], [8, [10]], "hello"]); //=> [[10, 123], [8, 10], "hello"]
+     *      var incCount = R.ifElse(
+     *        R.has('count'),
+     *        R.over(R.lensProp('count'), R.inc),
+     *        R.assoc('count', 1)
+     *      );
+     *      incCount({});           //=> { count: 1 }
+     *      incCount({ count: 1 }); //=> { count: 2 }
      */
     var ifElse = _curry3(function ifElse(condition, onTrue, onFalse) {
         return curryN(Math.max(condition.length, onTrue.length, onFalse.length), function _ifElse() {
@@ -1641,6 +2120,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Math
      * @sig Number -> Number
      * @param {Number} n
@@ -1653,12 +2133,13 @@
     var inc = add(1);
 
     /**
-     * Inserts the supplied element into the list, at index `index`.  _Note
-     * that this is not destructive_: it returns a copy of the list with the changes.
+     * Inserts the supplied element into the list, at index `index`. _Note that
+     * this is not destructive_: it returns a copy of the list with the changes.
      * <small>No lists have been harmed in the application of this function.</small>
      *
      * @func
      * @memberOf R
+     * @since v0.2.2
      * @category List
      * @sig Number -> a -> [a] -> [a]
      * @param {Number} index The position to insert the element
@@ -1677,12 +2158,13 @@
     });
 
     /**
-     * Inserts the sub-list into the list, at index `index`.  _Note  that this
-     * is not destructive_: it returns a copy of the list with the changes.
+     * Inserts the sub-list into the list, at index `index`. _Note that this is not
+     * destructive_: it returns a copy of the list with the changes.
      * <small>No lists have been harmed in the application of this function.</small>
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category List
      * @sig Number -> [a] -> [a] -> [a]
      * @param {Number} index The position to insert the sub-list
@@ -1699,11 +2181,44 @@
     });
 
     /**
-     * See if an object (`val`) is an instance of the supplied constructor.
-     * This function will check up the inheritance chain, if any.
+     * Creates a new list with the separator interposed between elements.
+     *
+     * Dispatches to the `intersperse` method of the second argument, if present.
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
+     * @category List
+     * @sig a -> [a] -> [a]
+     * @param {*} separator The element to add to the list.
+     * @param {Array} list The list to be interposed.
+     * @return {Array} The new list.
+     * @example
+     *
+     *      R.intersperse('n', ['ba', 'a', 'a']); //=> ['ba', 'n', 'a', 'n', 'a']
+     */
+    var intersperse = _curry2(_checkForMethod('intersperse', function intersperse(separator, list) {
+        var out = [];
+        var idx = 0;
+        var length = list.length;
+        while (idx < length) {
+            if (idx === length - 1) {
+                out.push(list[idx]);
+            } else {
+                out.push(list[idx], separator);
+            }
+            idx += 1;
+        }
+        return out;
+    }));
+
+    /**
+     * See if an object (`val`) is an instance of the supplied constructor. This
+     * function will check up the inheritance chain, if any.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.3.0
      * @category Type
      * @sig (* -> {*}) -> a -> Boolean
      * @param {Object} ctor A constructor
@@ -1729,6 +2244,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.5.0
      * @category Type
      * @category List
      * @sig * -> Boolean
@@ -1752,7 +2268,7 @@
         if (typeof x !== 'object') {
             return false;
         }
-        if (x instanceof String) {
+        if (_isString(x)) {
             return false;
         }
         if (x.nodeType === 1) {
@@ -1768,33 +2284,11 @@
     });
 
     /**
-     * Reports whether the list has zero elements.
-     *
-     * @func
-     * @memberOf R
-     * @category Logic
-     * @sig [a] -> Boolean
-     * @param {Array} list
-     * @return {Boolean}
-     * @example
-     *
-     *      R.isEmpty([1, 2, 3]);   //=> false
-     *      R.isEmpty([]);          //=> true
-     *      R.isEmpty('');          //=> true
-     *      R.isEmpty(null);        //=> false
-     *      R.isEmpty(R.keys({}));  //=> true
-     *      R.isEmpty({});          //=> false ({} does not have a length property)
-     *      R.isEmpty({length: 0}); //=> true
-     */
-    var isEmpty = _curry1(function isEmpty(list) {
-        return Object(list).length === 0;
-    });
-
-    /**
      * Checks if the input value is `null` or `undefined`.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Type
      * @sig * -> Boolean
      * @param {*} x The value to test.
@@ -1811,13 +2305,14 @@
     });
 
     /**
-     * Returns a list containing the names of all the enumerable own
-     * properties of the supplied object.
-     * Note that the order of the output array is not guaranteed to be
-     * consistent across different JS platforms.
+     * Returns a list containing the names of all the enumerable own properties of
+     * the supplied object.
+     * Note that the order of the output array is not guaranteed to be consistent
+     * across different JS platforms.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig {k: v} -> [k]
      * @param {Object} obj The object to extract properties from
@@ -1827,6 +2322,7 @@
      *      R.keys({a: 1, b: 2, c: 3}); //=> ['a', 'b', 'c']
      */
     // cover IE < 9 keys issues
+    // Safari bug
     var keys = function () {
         // cover IE < 9 keys issues
         var hasEnumBug = !{ toString: null }.propertyIsEnumerable('toString');
@@ -1839,6 +2335,11 @@
             'hasOwnProperty',
             'toLocaleString'
         ];
+        // Safari bug
+        var hasArgsEnumBug = function () {
+            'use strict';
+            return arguments.propertyIsEnumerable('length');
+        }();
         var contains = function contains(list, item) {
             var idx = 0;
             while (idx < list.length) {
@@ -1849,15 +2350,17 @@
             }
             return false;
         };
-        return typeof Object.keys === 'function' ? _curry1(function keys(obj) {
+        return typeof Object.keys === 'function' && !hasArgsEnumBug ? _curry1(function keys(obj) {
             return Object(obj) !== obj ? [] : Object.keys(obj);
         }) : _curry1(function keys(obj) {
             if (Object(obj) !== obj) {
                 return [];
             }
-            var prop, ks = [], nIdx;
+            var prop, nIdx;
+            var ks = [];
+            var checkArgsLength = hasArgsEnumBug && _isArguments(obj);
             for (prop in obj) {
-                if (_has(prop, obj)) {
+                if (_has(prop, obj) && (!checkArgsLength || prop !== 'length')) {
                     ks[ks.length] = prop;
                 }
             }
@@ -1876,13 +2379,14 @@
     }();
 
     /**
-     * Returns a list containing the names of all the
-     * properties of the supplied object, including prototype properties.
-     * Note that the order of the output array is not guaranteed to be
-     * consistent across different JS platforms.
+     * Returns a list containing the names of all the properties of the supplied
+     * object, including prototype properties.
+     * Note that the order of the output array is not guaranteed to be consistent
+     * across different JS platforms.
      *
      * @func
      * @memberOf R
+     * @since v0.2.0
      * @category Object
      * @sig {k: v} -> [k]
      * @param {Object} obj The object to extract properties from
@@ -1895,7 +2399,8 @@
      *      R.keysIn(f); //=> ['x', 'y']
      */
     var keysIn = _curry1(function keysIn(obj) {
-        var prop, ks = [];
+        var prop;
+        var ks = [];
         for (prop in obj) {
             ks[ks.length] = prop;
         }
@@ -1907,6 +2412,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.3.0
      * @category List
      * @sig [a] -> Number
      * @param {Array} list The array to inspect.
@@ -1917,15 +2423,16 @@
      *      R.length([1, 2, 3]); //=> 3
      */
     var length = _curry1(function length(list) {
-        return list != null && is(Number, list.length) ? list.length : NaN;
+        return list != null && _isNumber(list.length) ? list.length : NaN;
     });
 
     /**
-     * Returns `true` if the first argument is less than the second;
-     * `false` otherwise.
+     * Returns `true` if the first argument is less than the second; `false`
+     * otherwise.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig Ord a => a -> a -> Boolean
      * @param {*} a
@@ -1950,6 +2457,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig Ord a => a -> a -> Boolean
      * @param {Number} a
@@ -1969,32 +2477,36 @@
     });
 
     /**
-     * The mapAccum function behaves like a combination of map and reduce; it applies a
-     * function to each element of a list, passing an accumulating parameter from left to
-     * right, and returning a final value of this accumulator together with the new list.
+     * The mapAccum function behaves like a combination of map and reduce; it
+     * applies a function to each element of a list, passing an accumulating
+     * parameter from left to right, and returning a final value of this
+     * accumulator together with the new list.
      *
-     * The iterator function receives two arguments, *acc* and *value*, and should return
-     * a tuple *[acc, value]*.
+     * The iterator function receives two arguments, *acc* and *value*, and should
+     * return a tuple *[acc, value]*.
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category List
      * @sig (acc -> x -> (acc, y)) -> acc -> [x] -> (acc, [y])
      * @param {Function} fn The function to be called on every element of the input `list`.
      * @param {*} acc The accumulator value.
      * @param {Array} list The list to iterate over.
      * @return {*} The final, accumulated value.
+     * @see R.addIndex
      * @example
      *
      *      var digits = ['1', '2', '3', '4'];
-     *      var append = function(a, b) {
-     *        return [a + b, a + b];
-     *      }
+     *      var appender = (a, b) => [a + b, a + b];
      *
-     *      R.mapAccum(append, 0, digits); //=> ['01234', ['01', '012', '0123', '01234']]
+     *      R.mapAccum(appender, 0, digits); //=> ['01234', ['01', '012', '0123', '01234']]
      */
     var mapAccum = _curry3(function mapAccum(fn, acc, list) {
-        var idx = 0, len = list.length, result = [], tuple = [acc];
+        var idx = 0;
+        var len = list.length;
+        var result = [];
+        var tuple = [acc];
         while (idx < len) {
             tuple = fn(tuple[0], list[idx]);
             result[idx] = tuple[1];
@@ -2007,35 +2519,38 @@
     });
 
     /**
-     * The mapAccumRight function behaves like a combination of map and reduce; it applies a
-     * function to each element of a list, passing an accumulating parameter from right
-     * to left, and returning a final value of this accumulator together with the new list.
+     * The mapAccumRight function behaves like a combination of map and reduce; it
+     * applies a function to each element of a list, passing an accumulating
+     * parameter from right to left, and returning a final value of this
+     * accumulator together with the new list.
      *
-     * Similar to `mapAccum`, except moves through the input list from the right to the
-     * left.
+     * Similar to `mapAccum`, except moves through the input list from the right to
+     * the left.
      *
-     * The iterator function receives two arguments, *acc* and *value*, and should return
-     * a tuple *[acc, value]*.
+     * The iterator function receives two arguments, *acc* and *value*, and should
+     * return a tuple *[acc, value]*.
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category List
      * @sig (acc -> x -> (acc, y)) -> acc -> [x] -> (acc, [y])
      * @param {Function} fn The function to be called on every element of the input `list`.
      * @param {*} acc The accumulator value.
      * @param {Array} list The list to iterate over.
      * @return {*} The final, accumulated value.
+     * @see R.addIndex
      * @example
      *
      *      var digits = ['1', '2', '3', '4'];
-     *      var append = function(a, b) {
-     *        return [a + b, a + b];
-     *      }
+     *      var append = (a, b) => [a + b, a + b];
      *
      *      R.mapAccumRight(append, 0, digits); //=> ['04321', ['04321', '0432', '043', '04']]
      */
     var mapAccumRight = _curry3(function mapAccumRight(fn, acc, list) {
-        var idx = list.length - 1, result = [], tuple = [acc];
+        var idx = list.length - 1;
+        var result = [];
+        var tuple = [acc];
         while (idx >= 0) {
             tuple = fn(tuple[0], list[idx]);
             result[idx] = tuple[1];
@@ -2048,19 +2563,20 @@
     });
 
     /**
-     * Tests a regular expression against a String. Note that this function
-     * will return an empty array when there are no matches. This differs
-     * from [`String.prototype.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)
+     * Tests a regular expression against a String. Note that this function will
+     * return an empty array when there are no matches. This differs from
+     * [`String.prototype.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)
      * which returns `null` when there are no matches.
      *
      * @func
      * @memberOf R
-     * @see R.test
+     * @since v0.1.0
      * @category String
      * @sig RegExp -> String -> [String | Undefined]
      * @param {RegExp} rx A regular expression.
      * @param {String} str The string to match against
      * @return {Array} The list of matches or empty array.
+     * @see R.test
      * @example
      *
      *      R.match(/([a-z]a)/g, 'bananas'); //=> ['ba', 'na', 'na']
@@ -2072,13 +2588,14 @@
     });
 
     /**
-     * mathMod behaves like the modulo operator should mathematically, unlike the `%`
-     * operator (and by extension, R.modulo). So while "-17 % 5" is -2,
+     * mathMod behaves like the modulo operator should mathematically, unlike the
+     * `%` operator (and by extension, R.modulo). So while "-17 % 5" is -2,
      * mathMod(-17, 5) is 3. mathMod requires Integer arguments, and returns NaN
      * when the modulus is zero or negative.
      *
      * @func
      * @memberOf R
+     * @since v0.3.0
      * @category Math
      * @sig Number -> Number -> Number
      * @param {Number} m The dividend.
@@ -2117,6 +2634,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig Ord a => a -> a -> a
      * @param {*} a
@@ -2133,11 +2651,12 @@
     });
 
     /**
-     * Takes a function and two values, and returns whichever value produces
-     * the larger result when passed to the provided function.
+     * Takes a function and two values, and returns whichever value produces the
+     * larger result when passed to the provided function.
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Relation
      * @sig Ord b => (a -> b) -> a -> a -> a
      * @param {Function} f
@@ -2147,23 +2666,32 @@
      * @see R.max, R.minBy
      * @example
      *
-     *      R.maxBy(function(n) { return n * n; }, -3, 2); //=> -3
+     *      //  square :: Number -> Number
+     *      var square = n => n * n;
+     *
+     *      R.maxBy(square, -3, 2); //=> -3
+     *
+     *      R.reduce(R.maxBy(square), 0, [3, -5, 4, 1, -2]); //=> -5
+     *      R.reduce(R.maxBy(square), 0, []); //=> 0
      */
     var maxBy = _curry3(function maxBy(f, a, b) {
         return f(b) > f(a) ? b : a;
     });
 
     /**
-     * Create a new object with the own properties of `a`
-     * merged with the own properties of object `b`.
+     * Create a new object with the own properties of the first object merged with
+     * the own properties of the second object. If a key exists in both objects,
+     * the value from the second object will be used.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig {k: v} -> {k: v} -> {k: v}
-     * @param {Object} a
-     * @param {Object} b
+     * @param {Object} l
+     * @param {Object} r
      * @return {Object}
+     * @see R.mergeWith, R.mergeWithKey
      * @example
      *
      *      R.merge({ 'name': 'fred', 'age': 10 }, { 'age': 40 });
@@ -2172,19 +2700,68 @@
      *      var resetToDefault = R.merge(R.__, {x: 0});
      *      resetToDefault({x: 5, y: 2}); //=> {x: 0, y: 2}
      */
-    var merge = _curry2(function merge(a, b) {
+    var merge = _curry2(function merge(l, r) {
+        return _assign({}, l, r);
+    });
+
+    /**
+     * Merges a list of objects together into one object.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.10.0
+     * @category List
+     * @sig [{k: v}] -> {k: v}
+     * @param {Array} list An array of objects
+     * @return {Object} A merged object.
+     * @see R.reduce
+     * @example
+     *
+     *      R.mergeAll([{foo:1},{bar:2},{baz:3}]); //=> {foo:1,bar:2,baz:3}
+     *      R.mergeAll([{foo:1},{foo:2},{bar:2}]); //=> {foo:2,bar:2}
+     */
+    var mergeAll = _curry1(function mergeAll(list) {
+        return _assign.apply(null, [{}].concat(list));
+    });
+
+    /**
+     * Creates a new object with the own properties of the two provided objects. If
+     * a key exists in both objects, the provided function is applied to the key
+     * and the values associated with the key in each object, with the result being
+     * used as the value associated with the key in the returned object. The key
+     * will be excluded from the returned object if the resulting value is
+     * `undefined`.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category Object
+     * @sig (String -> a -> a -> a) -> {a} -> {a} -> {a}
+     * @param {Function} fn
+     * @param {Object} l
+     * @param {Object} r
+     * @return {Object}
+     * @see R.merge, R.mergeWith
+     * @example
+     *
+     *      let concatValues = (k, l, r) => k == 'values' ? R.concat(l, r) : r
+     *      R.mergeWithKey(concatValues,
+     *                     { a: true, thing: 'foo', values: [10, 20] },
+     *                     { b: true, thing: 'bar', values: [15, 35] });
+     *      //=> { a: true, b: true, thing: 'bar', values: [10, 20, 15, 35] }
+     */
+    var mergeWithKey = _curry3(function mergeWithKey(fn, l, r) {
         var result = {};
-        var ks = keys(a);
-        var idx = 0;
-        while (idx < ks.length) {
-            result[ks[idx]] = a[ks[idx]];
-            idx += 1;
+        var k;
+        for (k in l) {
+            if (_has(k, l)) {
+                result[k] = _has(k, r) ? fn(k, l[k], r[k]) : l[k];
+            }
         }
-        ks = keys(b);
-        idx = 0;
-        while (idx < ks.length) {
-            result[ks[idx]] = b[ks[idx]];
-            idx += 1;
+        for (k in r) {
+            if (_has(k, r) && !_has(k, result)) {
+                result[k] = r[k];
+            }
         }
         return result;
     });
@@ -2194,6 +2771,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig Ord a => a -> a -> a
      * @param {*} a
@@ -2210,11 +2788,12 @@
     });
 
     /**
-     * Takes a function and two values, and returns whichever value produces
-     * the smaller result when passed to the provided function.
+     * Takes a function and two values, and returns whichever value produces the
+     * smaller result when passed to the provided function.
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Relation
      * @sig Ord b => (a -> b) -> a -> a -> a
      * @param {Function} f
@@ -2224,19 +2803,26 @@
      * @see R.min, R.maxBy
      * @example
      *
-     *      R.minBy(function(n) { return n * n; }, -3, 2); //=> 2
+     *      //  square :: Number -> Number
+     *      var square = n => n * n;
+     *
+     *      R.minBy(square, -3, 2); //=> 2
+     *
+     *      R.reduce(R.minBy(square), Infinity, [3, -5, 4, 1, -2]); //=> 1
+     *      R.reduce(R.minBy(square), Infinity, []); //=> Infinity
      */
     var minBy = _curry3(function minBy(f, a, b) {
         return f(b) < f(a) ? b : a;
     });
 
     /**
-     * Divides the second parameter by the first and returns the remainder.
-     * Note that this functions preserves the JavaScript-style behavior for
-     * modulo. For mathematical modulo see `mathMod`
+     * Divides the first parameter by the second and returns the remainder. Note
+     * that this function preserves the JavaScript-style behavior for modulo. For
+     * mathematical modulo see `mathMod`.
      *
      * @func
      * @memberOf R
+     * @since v0.1.1
      * @category Math
      * @sig Number -> Number -> Number
      * @param {Number} a The value to the divide.
@@ -2263,6 +2849,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Math
      * @sig Number -> Number -> Number
      * @param {Number} a The first value.
@@ -2282,11 +2869,13 @@
     });
 
     /**
-     * Wraps a function of any arity (including nullary) in a function that accepts exactly `n`
-     * parameters. Any extraneous parameters will not be passed to the supplied function.
+     * Wraps a function of any arity (including nullary) in a function that accepts
+     * exactly `n` parameters. Any extraneous parameters will not be passed to the
+     * supplied function.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig Number -> (* -> a) -> (* -> a)
      * @param {Number} n The desired arity of the new function.
@@ -2295,9 +2884,8 @@
      *         arity `n`.
      * @example
      *
-     *      var takesTwoArgs = function(a, b) {
-     *        return [a, b];
-     *      };
+     *      var takesTwoArgs = (a, b) => [a, b];
+     *
      *      takesTwoArgs.length; //=> 2
      *      takesTwoArgs(1, 2); //=> [1, 2]
      *
@@ -2362,6 +2950,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Math
      * @sig Number -> Number
      * @param {Number} n
@@ -2375,11 +2964,36 @@
     });
 
     /**
+     * Returns `true` if no elements of the list match the predicate, `false`
+     * otherwise.
+     *
+     * Dispatches to the `any` method of the second argument, if present.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.12.0
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> Boolean
+     * @param {Function} fn The predicate function.
+     * @param {Array} list The array to consider.
+     * @return {Boolean} `true` if the predicate is not satisfied by every element, `false` otherwise.
+     * @see R.all, R.any
+     * @example
+     *
+     *      var isEven = n => n % 2 === 0;
+     *
+     *      R.none(isEven, [1, 3, 5, 7, 9, 11]); //=> true
+     *      R.none(isEven, [1, 3, 5, 7, 8, 11]); //=> false
+     */
+    var none = _curry2(_complement(_dispatchable('any', _xany, any)));
+
+    /**
      * A function that returns the `!` of its argument. It will return `true` when
      * passed false-y value, and `false` when passed a truth-y one.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Logic
      * @sig * -> Boolean
      * @param {*} a any value
@@ -2389,19 +3003,20 @@
      *
      *      R.not(true); //=> false
      *      R.not(false); //=> true
-     *      R.not(0); => true
-     *      R.not(1); => false
+     *      R.not(0); //=> true
+     *      R.not(1); //=> false
      */
     var not = _curry1(function not(a) {
         return !a;
     });
 
     /**
-     * Returns the nth element of the given list or string.
-     * If n is negative the element at index length + n is returned.
+     * Returns the nth element of the given list or string. If n is negative the
+     * element at index length + n is returned.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig Number -> [a] -> a | Undefined
      * @sig Number -> String -> String
@@ -2415,8 +3030,8 @@
      *      R.nth(-1, list); //=> 'quux'
      *      R.nth(-99, list); //=> undefined
      *
-     *      R.nth('abc', 2); //=> 'c'
-     *      R.nth('abc', 3); //=> ''
+     *      R.nth(2, 'abc'); //=> 'c'
+     *      R.nth(3, 'abc'); //=> ''
      */
     var nth = _curry2(function nth(offset, list) {
         var idx = offset < 0 ? list.length + offset : offset;
@@ -2428,6 +3043,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Function
      * @sig Number -> *... -> *
      * @param {Number} n
@@ -2438,49 +3054,36 @@
      *      R.nthArg(-1)('a', 'b', 'c'); //=> 'c'
      */
     var nthArg = _curry1(function nthArg(n) {
-        return function () {
+        var arity = n < 0 ? 1 : n + 1;
+        return curryN(arity, function () {
             return nth(n, arguments);
-        };
+        });
     });
 
     /**
-     * Returns the nth character of the given string.
+     * Creates an object containing a single key:value pair.
      *
      * @func
      * @memberOf R
-     * @category String
-     * @sig Number -> String -> String
-     * @param {Number} n
-     * @param {String} str
-     * @return {String}
-     * @deprecated since v0.16.0
+     * @since v0.18.0
+     * @category Object
+     * @sig String -> a -> {String:a}
+     * @param {String} key
+     * @param {*} val
+     * @return {Object}
+     * @see R.pair
      * @example
      *
-     *      R.nthChar(2, 'Ramda'); //=> 'm'
-     *      R.nthChar(-2, 'Ramda'); //=> 'd'
+     *      var matchPhrases = R.compose(
+     *        R.objOf('must'),
+     *        R.map(R.objOf('match_phrase'))
+     *      );
+     *      matchPhrases(['foo', 'bar', 'baz']); //=> {must: [{match_phrase: 'foo'}, {match_phrase: 'bar'}, {match_phrase: 'baz'}]}
      */
-    var nthChar = _curry2(function nthChar(n, str) {
-        return str.charAt(n < 0 ? str.length + n : n);
-    });
-
-    /**
-     * Returns the character code of the nth character of the given string.
-     *
-     * @func
-     * @memberOf R
-     * @category String
-     * @sig Number -> String -> Number
-     * @param {Number} n
-     * @param {String} str
-     * @return {Number}
-     * @deprecated since v0.16.0
-     * @example
-     *
-     *      R.nthCharCode(2, 'Ramda'); //=> 'm'.charCodeAt(0)
-     *      R.nthCharCode(-2, 'Ramda'); //=> 'd'.charCodeAt(0)
-     */
-    var nthCharCode = _curry2(function nthCharCode(n, str) {
-        return str.charCodeAt(n < 0 ? str.length + n : n);
+    var objOf = _curry2(function objOf(key, val) {
+        var obj = {};
+        obj[key] = val;
+        return obj;
     });
 
     /**
@@ -2491,6 +3094,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.3.0
      * @category Function
      * @sig a -> [a]
      * @param {*} x any value
@@ -2500,47 +3104,74 @@
      *      R.of(null); //=> [null]
      *      R.of([42]); //=> [[42]]
      */
-    var of = _curry1(function of(x) {
-        return [x];
-    });
+    var of = _curry1(_of);
 
     /**
-     * Accepts a function `fn` and returns a function that guards invocation of `fn` such that
-     * `fn` can only ever be called once, no matter how many times the returned function is
-     * invoked.
+     * Accepts a function `fn` and returns a function that guards invocation of
+     * `fn` such that `fn` can only ever be called once, no matter how many times
+     * the returned function is invoked. The first value calculated is returned in
+     * subsequent invocations.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (a... -> b) -> (a... -> b)
      * @param {Function} fn The function to wrap in a call-only-once wrapper.
      * @return {Function} The wrapped function.
      * @example
      *
-     *      var addOneOnce = R.once(function(x){ return x + 1; });
+     *      var addOneOnce = R.once(x => x + 1);
      *      addOneOnce(10); //=> 11
      *      addOneOnce(addOneOnce(50)); //=> 11
      */
     var once = _curry1(function once(fn) {
-        var called = false, result;
-        return function () {
+        var called = false;
+        var result;
+        return _arity(fn.length, function () {
             if (called) {
                 return result;
             }
             called = true;
             result = fn.apply(this, arguments);
             return result;
-        };
+        });
+    });
+
+    /**
+     * Returns `true` if one or both of its arguments are `true`. Returns `false`
+     * if both arguments are `false`.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category Logic
+     * @sig * -> * -> *
+     * @param {Boolean} a A boolean value
+     * @param {Boolean} b A boolean value
+     * @return {Boolean} `true` if one or both arguments are `true`, `false` otherwise
+     * @see R.either
+     * @example
+     *
+     *      R.or(true, true); //=> true
+     *      R.or(true, false); //=> true
+     *      R.or(false, true); //=> true
+     *      R.or(false, false); //=> false
+     */
+    var or = _curry2(function or(a, b) {
+        return a || b;
     });
 
     /**
      * Returns the result of "setting" the portion of the given data structure
-     * focused by the given lens to the given value.
+     * focused by the given lens to the result of applying the given function to
+     * the focused value.
      *
      * @func
      * @memberOf R
+     * @since v0.16.0
      * @category Object
-     * @typedef Lens s a = Functor f => (a -> f a) -> s -> f s
+     * @typedefn Lens s a = Functor f => (a -> f a) -> s -> f s
      * @sig Lens s a -> (a -> a) -> s -> s
      * @param {Lens} lens
      * @param {*} v
@@ -2553,7 +3184,14 @@
      *
      *      R.over(headLens, R.toUpper, ['foo', 'bar', 'baz']); //=> ['FOO', 'bar', 'baz']
      */
+    // `Identity` is a functor that holds a single value, where `map` simply
+    // transforms the held value with the provided function.
+    // The value returned by the getter function is first transformed with `f`,
+    // then set as the value of an `Identity`. This is then mapped over with the
+    // setter function of the lens.
     var over = function () {
+        // `Identity` is a functor that holds a single value, where `map` simply
+        // transforms the held value with the provided function.
         var Identity = function (x) {
             return {
                 value: x,
@@ -2563,6 +3201,9 @@
             };
         };
         return _curry3(function over(lens, f, x) {
+            // The value returned by the getter function is first transformed with `f`,
+            // then set as the value of an `Identity`. This is then mapped over with the
+            // setter function of the lens.
             return lens(function (y) {
                 return Identity(f(y));
             })(x).value;
@@ -2570,43 +3211,115 @@
     }();
 
     /**
+     * Takes two arguments, `fst` and `snd`, and returns `[fst, snd]`.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.18.0
+     * @category List
+     * @sig a -> b -> (a,b)
+     * @param {*} fst
+     * @param {*} snd
+     * @return {Array}
+     * @see R.objOf, R.of
+     * @example
+     *
+     *      R.pair('foo', 'bar'); //=> ['foo', 'bar']
+     */
+    var pair = _curry2(function pair(fst, snd) {
+        return [
+            fst,
+            snd
+        ];
+    });
+
+    /**
      * Retrieve the value at a given path.
      *
      * @func
      * @memberOf R
+     * @since v0.2.0
      * @category Object
      * @sig [String] -> {k: v} -> v | Undefined
      * @param {Array} path The path to use.
+     * @param {Object} obj The object to retrieve the nested property from.
      * @return {*} The data at `path`.
+     * @see R.prop
      * @example
      *
      *      R.path(['a', 'b'], {a: {b: 2}}); //=> 2
      *      R.path(['a', 'b'], {c: {b: 2}}); //=> undefined
      */
     var path = _curry2(function path(paths, obj) {
-        if (obj == null) {
-            return;
-        } else {
-            var val = obj;
-            for (var idx = 0, len = paths.length; idx < len && val != null; idx += 1) {
-                val = val[paths[idx]];
+        var val = obj;
+        var idx = 0;
+        while (idx < paths.length) {
+            if (val == null) {
+                return;
             }
-            return val;
+            val = val[paths[idx]];
+            idx += 1;
         }
+        return val;
     });
 
     /**
-     * Returns a partial copy of an object containing only the keys specified.  If the key does not exist, the
-     * property is ignored.
+     * If the given, non-null object has a value at the given path, returns the
+     * value at that path. Otherwise returns the provided default value.
      *
      * @func
      * @memberOf R
+     * @since v0.18.0
+     * @category Object
+     * @sig a -> [String] -> Object -> a
+     * @param {*} d The default value.
+     * @param {Array} p The path to use.
+     * @param {Object} obj The object to retrieve the nested property from.
+     * @return {*} The data at `path` of the supplied object or the default value.
+     * @example
+     *
+     *      R.pathOr('N/A', ['a', 'b'], {a: {b: 2}}); //=> 2
+     *      R.pathOr('N/A', ['a', 'b'], {c: {b: 2}}); //=> "N/A"
+     */
+    var pathOr = _curry3(function pathOr(d, p, obj) {
+        return defaultTo(d, path(p, obj));
+    });
+
+    /**
+     * Returns `true` if the specified object property at given path satisfies the
+     * given predicate; `false` otherwise.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category Logic
+     * @sig (a -> Boolean) -> [String] -> Object -> Boolean
+     * @param {Function} pred
+     * @param {Array} propPath
+     * @param {*} obj
+     * @return {Boolean}
+     * @see R.propSatisfies, R.path
+     * @example
+     *
+     *      R.pathSatisfies(y => y > 0, ['x', 'y'], {x: {y: 2}}); //=> true
+     */
+    var pathSatisfies = _curry3(function pathSatisfies(pred, propPath, obj) {
+        return propPath.length > 0 && pred(path(propPath, obj));
+    });
+
+    /**
+     * Returns a partial copy of an object containing only the keys specified. If
+     * the key does not exist, the property is ignored.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig [k] -> {k: v} -> {k: v}
      * @param {Array} names an array of String property names to copy onto a new object
      * @param {Object} obj The object to copy from
      * @return {Object} A new object with only properties from `names` on it.
-     * @see R.omit
+     * @see R.omit, R.props
      * @example
      *
      *      R.pick(['a', 'd'], {a: 1, b: 2, c: 3, d: 4}); //=> {a: 1, d: 4}
@@ -2625,10 +3338,12 @@
     });
 
     /**
-     * Similar to `pick` except that this one includes a `key: undefined` pair for properties that don't exist.
+     * Similar to `pick` except that this one includes a `key: undefined` pair for
+     * properties that don't exist.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig [k] -> {k: v} -> {k: v}
      * @param {Array} names an array of String property names to copy onto a new object
@@ -2653,11 +3368,12 @@
     });
 
     /**
-     * Returns a partial copy of an object containing only the keys that
-     * satisfy the supplied predicate.
+     * Returns a partial copy of an object containing only the keys that satisfy
+     * the supplied predicate.
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Object
      * @sig (v, k -> Boolean) -> {k: v} -> {k: v}
      * @param {Function} pred A predicate to determine whether or not a key
@@ -2665,10 +3381,10 @@
      * @param {Object} obj The object to copy from
      * @return {Object} A new object with only properties that satisfy `pred`
      *         on it.
-     * @see R.pick
+     * @see R.pick, R.filter
      * @example
      *
-     *      var isUpperCase = function(val, key) { return key.toUpperCase() === key; }
+     *      var isUpperCase = (val, key) => key.toUpperCase() === key;
      *      R.pickBy(isUpperCase, {a: 1, b: 2, A: 3, B: 4}); //=> {A: 3, B: 4}
      */
     var pickBy = _curry2(function pickBy(test, obj) {
@@ -2682,11 +3398,12 @@
     });
 
     /**
-     * Returns a new list with the given element at the front, followed by the contents of the
-     * list.
+     * Returns a new list with the given element at the front, followed by the
+     * contents of the list.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig a -> [a] -> [a]
      * @param {*} el The item to add to the head of the output list.
@@ -2702,15 +3419,18 @@
     });
 
     /**
-     * Returns a function that when supplied an object returns the indicated property of that object, if it exists.
+     * Returns a function that when supplied an object returns the indicated
+     * property of that object, if it exists.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig s -> {s: a} -> a | Undefined
      * @param {String} p The property name
      * @param {Object} obj The object to query
      * @return {*} The value at `obj.p`.
+     * @see R.path
      * @example
      *
      *      R.prop('x', {x: 100}); //=> 100
@@ -2721,12 +3441,37 @@
     });
 
     /**
-     * If the given, non-null object has an own property with the specified name,
-     * returns the value of that property.
-     * Otherwise returns the provided default value.
+     * Returns `true` if the specified object property is of the given type;
+     * `false` otherwise.
      *
      * @func
      * @memberOf R
+     * @since v0.16.0
+     * @category Type
+     * @sig Type -> String -> Object -> Boolean
+     * @param {Function} type
+     * @param {String} name
+     * @param {*} obj
+     * @return {Boolean}
+     * @see R.is, R.propSatisfies
+     * @example
+     *
+     *      R.propIs(Number, 'x', {x: 1, y: 2});  //=> true
+     *      R.propIs(Number, 'x', {x: 'foo'});    //=> false
+     *      R.propIs(Number, 'x', {});            //=> false
+     */
+    var propIs = _curry3(function propIs(type, name, obj) {
+        return is(type, obj[name]);
+    });
+
+    /**
+     * If the given, non-null object has an own property with the specified name,
+     * returns the value of that property. Otherwise returns the provided default
+     * value.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.6.0
      * @category Object
      * @sig a -> String -> Object -> a
      * @param {*} val The default value.
@@ -2755,14 +3500,14 @@
      *
      * @func
      * @memberOf R
+     * @since v0.16.0
      * @category Logic
      * @sig (a -> Boolean) -> String -> {String: a} -> Boolean
      * @param {Function} pred
      * @param {String} name
      * @param {*} obj
      * @return {Boolean}
-     * @see R.propEq
-     * @see R.propIs
+     * @see R.propEq, R.propIs
      * @example
      *
      *      R.propSatisfies(x => x > 0, 'x', {x: 1, y: 2}); //=> true
@@ -2772,10 +3517,12 @@
     });
 
     /**
-     * Acts as multiple `prop`: array of keys in, array of values out. Preserves order.
+     * Acts as multiple `prop`: array of keys in, array of values out. Preserves
+     * order.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig [k] -> {k: v} -> [v]
      * @param {Array} ps The property names to fetch
@@ -2801,11 +3548,11 @@
     });
 
     /**
-     * Returns a list of numbers from `from` (inclusive) to `to`
-     * (exclusive).
+     * Returns a list of numbers from `from` (inclusive) to `to` (exclusive).
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig Number -> Number -> [Number]
      * @param {Number} from The first number in the list.
@@ -2830,20 +3577,23 @@
     });
 
     /**
-     * Returns a single item by iterating through the list, successively calling the iterator
-     * function and passing it an accumulator value and the current value from the array, and
-     * then passing the result to the next call.
+     * Returns a single item by iterating through the list, successively calling
+     * the iterator function and passing it an accumulator value and the current
+     * value from the array, and then passing the result to the next call.
      *
-     * Similar to `reduce`, except moves through the input list from the right to the left.
+     * Similar to `reduce`, except moves through the input list from the right to
+     * the left.
      *
      * The iterator function receives two values: *(acc, value)*
      *
-     * Note: `R.reduceRight` does not skip deleted or unassigned indices (sparse arrays), unlike
-     * the native `Array.prototype.reduce` method. For more details on this behavior, see:
+     * Note: `R.reduceRight` does not skip deleted or unassigned indices (sparse
+     * arrays), unlike the native `Array.prototype.reduce` method. For more details
+     * on this behavior, see:
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight#Description
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig (a,b -> a) -> a -> [b] -> a
      * @param {Function} fn The iterator function. Receives two values, the accumulator and the
@@ -2851,12 +3601,11 @@
      * @param {*} acc The accumulator value.
      * @param {Array} list The list to iterate over.
      * @return {*} The final, accumulated value.
+     * @see R.addIndex
      * @example
      *
      *      var pairs = [ ['a', 1], ['b', 2], ['c', 3] ];
-     *      var flattenPairs = function(acc, pair) {
-     *        return acc.concat(pair);
-     *      };
+     *      var flattenPairs = (acc, pair) => acc.concat(pair);
      *
      *      R.reduceRight(flattenPairs, [], pairs); //=> [ 'c', 3, 'b', 2, 'a', 1 ]
      */
@@ -2870,26 +3619,25 @@
     });
 
     /**
-     * Returns a value wrapped to indicate that it is the final value of the
-     * reduce and transduce functions.  The returned value
-     * should be considered a black box: the internal structure is not
-     * guaranteed to be stable.
+     * Returns a value wrapped to indicate that it is the final value of the reduce
+     * and transduce functions. The returned value should be considered a black
+     * box: the internal structure is not guaranteed to be stable.
      *
      * Note: this optimization is unavailable to functions not explicitly listed
-     * above.  For instance, it is not currently supported by reduceIndexed,
-     * reduceRight, or reduceRightIndexed.
+     * above. For instance, it is not currently supported by reduceRight.
      *
      * @func
      * @memberOf R
+     * @since v0.15.0
      * @category List
-     * @see R.reduce, R.transduce
      * @sig a -> *
      * @param {*} x The final value of the reduce.
      * @return {*} The wrapped value.
+     * @see R.reduce, R.transduce
      * @example
      *
      *      R.reduce(
-     *        R.pipe(R.add, R.ifElse(R.lte(10), R.reduced, R.identity)),
+     *        R.pipe(R.add, R.when(R.gte(R.__, 10), R.reduced)),
      *        0,
      *        [1, 2, 3, 4, 5]) // 10
      */
@@ -2897,12 +3645,13 @@
 
     /**
      * Removes the sub-list of `list` starting at index `start` and containing
-     * `count` elements.  _Note that this is not destructive_: it returns a
-     * copy of the list with the changes.
+     * `count` elements. _Note that this is not destructive_: it returns a copy of
+     * the list with the changes.
      * <small>No lists have been harmed in the application of this function.</small>
      *
      * @func
      * @memberOf R
+     * @since v0.2.2
      * @category List
      * @sig Number -> Number -> [a] -> [a]
      * @param {Number} start The position to start removing elements
@@ -2922,6 +3671,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.7.0
      * @category String
      * @sig RegExp|String -> String -> String -> String
      * @param {RegExp|String} pattern A regular expression or a substring to match.
@@ -2941,31 +3691,40 @@
     });
 
     /**
-     * Returns a new list with the same elements as the original list, just
-     * in the reverse order.
+     * Returns a new list or string with the elements or characters in reverse
+     * order.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig [a] -> [a]
-     * @param {Array} list The list to reverse.
-     * @return {Array} A copy of the list in reverse order.
+     * @sig String -> String
+     * @param {Array|String} list
+     * @return {Array|String}
      * @example
      *
      *      R.reverse([1, 2, 3]);  //=> [3, 2, 1]
      *      R.reverse([1, 2]);     //=> [2, 1]
      *      R.reverse([1]);        //=> [1]
      *      R.reverse([]);         //=> []
+     *
+     *      R.reverse('abc');      //=> 'cba'
+     *      R.reverse('ab');       //=> 'ba'
+     *      R.reverse('a');        //=> 'a'
+     *      R.reverse('');         //=> ''
      */
     var reverse = _curry1(function reverse(list) {
-        return _slice(list).reverse();
+        return _isString(list) ? list.split('').reverse().join('') : _slice(list).reverse();
     });
 
     /**
-     * Scan is similar to reduce, but returns a list of successively reduced values from the left
+     * Scan is similar to reduce, but returns a list of successively reduced values
+     * from the left
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category List
      * @sig (a,b -> a) -> a -> [b] -> [a]
      * @param {Function} fn The iterator function. Receives two values, the accumulator and the
@@ -2979,7 +3738,9 @@
      *      var factorials = R.scan(R.multiply, 1, numbers); //=> [1, 1, 2, 6, 24]
      */
     var scan = _curry3(function scan(fn, acc, list) {
-        var idx = 0, len = list.length, result = [acc];
+        var idx = 0;
+        var len = list.length;
+        var result = [acc];
         while (idx < len) {
             acc = fn(acc, list[idx]);
             result[idx + 1] = acc;
@@ -2994,8 +3755,9 @@
      *
      * @func
      * @memberOf R
+     * @since v0.16.0
      * @category Object
-     * @typedef Lens s a = Functor f => (a -> f a) -> s -> f s
+     * @typedefn Lens s a = Functor f => (a -> f a) -> s -> f s
      * @sig Lens s a -> a -> s -> s
      * @param {Lens} lens
      * @param {*} v
@@ -3014,12 +3776,43 @@
     });
 
     /**
-     * Returns a copy of the list, sorted according to the comparator function, which should accept two values at a
-     * time and return a negative number if the first value is smaller, a positive number if it's larger, and zero
-     * if they are equal.  Please note that this is a **copy** of the list.  It does not modify the original.
+     * Returns the elements of the given list or string (or object with a `slice`
+     * method) from `fromIndex` (inclusive) to `toIndex` (exclusive).
+     *
+     * Dispatches to the `slice` method of the third argument, if present.
      *
      * @func
      * @memberOf R
+     * @since v0.1.4
+     * @category List
+     * @sig Number -> Number -> [a] -> [a]
+     * @sig Number -> Number -> String -> String
+     * @param {Number} fromIndex The start index (inclusive).
+     * @param {Number} toIndex The end index (exclusive).
+     * @param {*} list
+     * @return {*}
+     * @example
+     *
+     *      R.slice(1, 3, ['a', 'b', 'c', 'd']);        //=> ['b', 'c']
+     *      R.slice(1, Infinity, ['a', 'b', 'c', 'd']); //=> ['b', 'c', 'd']
+     *      R.slice(0, -1, ['a', 'b', 'c', 'd']);       //=> ['a', 'b', 'c']
+     *      R.slice(-3, -1, ['a', 'b', 'c', 'd']);      //=> ['b', 'c']
+     *      R.slice(0, 3, 'ramda');                     //=> 'ram'
+     */
+    var slice = _curry3(_checkForMethod('slice', function slice(fromIndex, toIndex, list) {
+        return Array.prototype.slice.call(list, fromIndex, toIndex);
+    }));
+
+    /**
+     * Returns a copy of the list, sorted according to the comparator function,
+     * which should accept two values at a time and return a negative number if the
+     * first value is smaller, a positive number if it's larger, and zero if they
+     * are equal. Please note that this is a **copy** of the list. It does not
+     * modify the original.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig (a,a -> Number) -> [a] -> [a]
      * @param {Function} comparator A sorting function :: a -> b -> Int
@@ -3039,6 +3832,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig Ord b => (a -> b) -> [a] -> [a]
      * @param {Function} fn
@@ -3046,7 +3840,7 @@
      * @return {Array} A new list sorted by the keys generated by `fn`.
      * @example
      *
-     *      var sortByFirstItem = R.sortBy(prop(0));
+     *      var sortByFirstItem = R.sortBy(R.prop(0));
      *      var sortByNameCaseInsensitive = R.sortBy(R.compose(R.toLower, R.prop('name')));
      *      var pairs = [[-1, 1], [-2, 2], [-3, 3]];
      *      sortByFirstItem(pairs); //=> [[-3, 3], [-2, 2], [-1, 1]]
@@ -3074,10 +3868,98 @@
     });
 
     /**
-     * Subtracts two numbers. Equivalent to `a - b` but curried.
+     * Splits a given list or string at a given index.
      *
      * @func
      * @memberOf R
+     * @since v0.19.0
+     * @category List
+     * @sig Number -> [a] -> [[a], [a]]
+     * @sig Number -> String -> [String, String]
+     * @param {Number} index The index where the array/string is split.
+     * @param {Array|String} array The array/string to be split.
+     * @return {Array}
+     * @example
+     *
+     *      R.splitAt(1, [1, 2, 3]);          //=> [[1], [2, 3]]
+     *      R.splitAt(5, 'hello world');      //=> ['hello', ' world']
+     *      R.splitAt(-1, 'foobar');          //=> ['fooba', 'r']
+     */
+    var splitAt = _curry2(function splitAt(index, array) {
+        return [
+            slice(0, index, array),
+            slice(index, length(array), array)
+        ];
+    });
+
+    /**
+     * Splits a collection into slices of the specified length.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.16.0
+     * @category List
+     * @sig Number -> [a] -> [[a]]
+     * @sig Number -> String -> [String]
+     * @param {Number} n
+     * @param {Array} list
+     * @return {Array}
+     * @example
+     *
+     *      R.splitEvery(3, [1, 2, 3, 4, 5, 6, 7]); //=> [[1, 2, 3], [4, 5, 6], [7]]
+     *      R.splitEvery(3, 'foobarbaz'); //=> ['foo', 'bar', 'baz']
+     */
+    var splitEvery = _curry2(function splitEvery(n, list) {
+        if (n <= 0) {
+            throw new Error('First argument to splitEvery must be a positive integer');
+        }
+        var result = [];
+        var idx = 0;
+        while (idx < list.length) {
+            result.push(slice(idx, idx += n, list));
+        }
+        return result;
+    });
+
+    /**
+     * Takes a list and a predicate and returns a pair of lists with the following properties:
+     *
+     *  - the result of concatenating the two output lists is equivalent to the input list;
+     *  - none of the elements of the first output list satisfies the predicate; and
+     *  - if the second output list is non-empty, its first element satisfies the predicate.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> [[a], [a]]
+     * @param {Function} pred The predicate that determines where the array is split.
+     * @param {Array} list The array to be split.
+     * @return {Array}
+     * @example
+     *
+     *      R.splitWhen(R.equals(2), [1, 2, 3, 1, 2, 3]);   //=> [[1], [2, 3, 1, 2, 3]]
+     */
+    var splitWhen = _curry2(function splitWhen(pred, list) {
+        var idx = 0;
+        var len = list.length;
+        var prefix = [];
+        while (idx < len && !pred(list[idx])) {
+            prefix.push(list[idx]);
+            idx += 1;
+        }
+        return [
+            prefix,
+            _slice(list, idx)
+        ];
+    });
+
+    /**
+     * Subtracts its second argument from its first argument.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category Math
      * @sig Number -> Number -> Number
      * @param {Number} a The first value.
@@ -3096,28 +3978,100 @@
      *      complementaryAngle(72); //=> 18
      */
     var subtract = _curry2(function subtract(a, b) {
-        return a - b;
+        return Number(a) - Number(b);
     });
 
     /**
-     * Returns a new list containing the last `n` elements of a given list, passing each value
-     * to the supplied predicate function, and terminating when the predicate function returns
-     * `false`. Excludes the element that caused the predicate function to fail. The predicate
-     * function is passed one argument: *(value)*.
+     * Returns all but the first element of the given list or string (or object
+     * with a `tail` method).
+     *
+     * Dispatches to the `slice` method of the first argument, if present.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig [a] -> [a]
+     * @sig String -> String
+     * @param {*} list
+     * @return {*}
+     * @see R.head, R.init, R.last
+     * @example
+     *
+     *      R.tail([1, 2, 3]);  //=> [2, 3]
+     *      R.tail([1, 2]);     //=> [2]
+     *      R.tail([1]);        //=> []
+     *      R.tail([]);         //=> []
+     *
+     *      R.tail('abc');  //=> 'bc'
+     *      R.tail('ab');   //=> 'b'
+     *      R.tail('a');    //=> ''
+     *      R.tail('');     //=> ''
+     */
+    var tail = _checkForMethod('tail', slice(1, Infinity));
+
+    /**
+     * Returns the first `n` elements of the given list, string, or
+     * transducer/transformer (or object with a `take` method).
+     *
+     * Dispatches to the `take` method of the second argument, if present.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig Number -> [a] -> [a]
+     * @sig Number -> String -> String
+     * @param {Number} n
+     * @param {*} list
+     * @return {*}
+     * @see R.drop
+     * @example
+     *
+     *      R.take(1, ['foo', 'bar', 'baz']); //=> ['foo']
+     *      R.take(2, ['foo', 'bar', 'baz']); //=> ['foo', 'bar']
+     *      R.take(3, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
+     *      R.take(4, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
+     *      R.take(3, 'ramda');               //=> 'ram'
+     *
+     *      var personnel = [
+     *        'Dave Brubeck',
+     *        'Paul Desmond',
+     *        'Eugene Wright',
+     *        'Joe Morello',
+     *        'Gerry Mulligan',
+     *        'Bob Bates',
+     *        'Joe Dodge',
+     *        'Ron Crotty'
+     *      ];
+     *
+     *      var takeFive = R.take(5);
+     *      takeFive(personnel);
+     *      //=> ['Dave Brubeck', 'Paul Desmond', 'Eugene Wright', 'Joe Morello', 'Gerry Mulligan']
+     */
+    var take = _curry2(_dispatchable('take', _xtake, function take(n, xs) {
+        return slice(0, n < 0 ? Infinity : n, xs);
+    }));
+
+    /**
+     * Returns a new list containing the last `n` elements of a given list, passing
+     * each value to the supplied predicate function, and terminating when the
+     * predicate function returns `false`. Excludes the element that caused the
+     * predicate function to fail. The predicate function is passed one argument:
+     * *(value)*.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.16.0
      * @category List
      * @sig (a -> Boolean) -> [a] -> [a]
      * @param {Function} fn The function called per iteration.
      * @param {Array} list The collection to iterate over.
      * @return {Array} A new array.
-     * @see R.dropLastWhile
+     * @see R.dropLastWhile, R.addIndex
      * @example
      *
-     *      var isNotOne = function(x) {
-     *        return !(x === 1);
-     *      };
+     *      var isNotOne = x => x !== 1;
      *
      *      R.takeLastWhile(isNotOne, [1, 2, 3, 4]); //=> [2, 3, 4]
      */
@@ -3130,10 +4084,46 @@
     });
 
     /**
+     * Returns a new list containing the first `n` elements of a given list,
+     * passing each value to the supplied predicate function, and terminating when
+     * the predicate function returns `false`. Excludes the element that caused the
+     * predicate function to fail. The predicate function is passed one argument:
+     * *(value)*.
+     *
+     * Dispatches to the `takeWhile` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig (a -> Boolean) -> [a] -> [a]
+     * @param {Function} fn The function called per iteration.
+     * @param {Array} list The collection to iterate over.
+     * @return {Array} A new array.
+     * @see R.dropWhile, R.transduce, R.addIndex
+     * @example
+     *
+     *      var isNotFour = x => x !== 4;
+     *
+     *      R.takeWhile(isNotFour, [1, 2, 3, 4, 3, 2, 1]); //=> [1, 2, 3]
+     */
+    var takeWhile = _curry2(_dispatchable('takeWhile', _xtakeWhile, function takeWhile(fn, list) {
+        var idx = 0;
+        var len = list.length;
+        while (idx < len && fn(list[idx])) {
+            idx += 1;
+        }
+        return _slice(list, 0, idx);
+    }));
+
+    /**
      * Runs the given function with the supplied object, then returns the object.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (a -> *) -> a -> a
      * @param {Function} fn The function to call with `x`. The return value of `fn` will be thrown away.
@@ -3141,9 +4131,9 @@
      * @return {*} `x`.
      * @example
      *
-     *      var sayX = function(x) { console.log('x is ' + x); };
+     *      var sayX = x => console.log('x is ' + x);
      *      R.tap(sayX, 100); //=> 100
-     *      //-> 'x is 100'
+     *      // logs 'x is 100'
      */
     var tap = _curry2(function tap(fn, x) {
         fn(x);
@@ -3151,36 +4141,17 @@
     });
 
     /**
-     * Determines whether a given string matches a given regular expression.
+     * Calls an input function `n` times, returning an array containing the results
+     * of those function calls.
+     *
+     * `fn` is passed one argument: The current value of `n`, which begins at `0`
+     * and is gradually incremented to `n - 1`.
      *
      * @func
      * @memberOf R
-     * @see R.match
-     * @category String
-     * @sig RegExp -> String -> Boolean
-     * @param {RegExp} pattern
-     * @param {String} str
-     * @return {Boolean}
-     * @example
-     *
-     *      R.test(/^x/, 'xyz'); //=> true
-     *      R.test(/^y/, 'xyz'); //=> false
-     */
-    var test = _curry2(function test(pattern, str) {
-        return _cloneRegExp(pattern).test(str);
-    });
-
-    /**
-     * Calls an input function `n` times, returning an array containing the results of those
-     * function calls.
-     *
-     * `fn` is passed one argument: The current value of `n`, which begins at `0` and is
-     * gradually incremented to `n - 1`.
-     *
-     * @func
-     * @memberOf R
+     * @since v0.2.3
      * @category List
-     * @sig (i -> a) -> i -> [a]
+     * @sig (Number -> a) -> Number -> [a]
      * @param {Function} fn The function to invoke. Passed one argument, the current value of `n`.
      * @param {Number} n A value between `0` and `n - 1`. Increments after each function call.
      * @return {Array} An array containing the return values of all calls to `fn`.
@@ -3190,8 +4161,12 @@
      */
     var times = _curry2(function times(fn, n) {
         var len = Number(n);
-        var list = new Array(len);
         var idx = 0;
+        var list;
+        if (len < 0 || isNaN(len)) {
+            throw new RangeError('n must be a non-negative number');
+        }
+        list = new Array(len);
         while (idx < len) {
             list[idx] = fn(idx);
             idx += 1;
@@ -3200,13 +4175,14 @@
     });
 
     /**
-     * Converts an object into an array of key, value arrays.
-     * Only the object's own properties are used.
-     * Note that the order of the output array is not guaranteed to be
-     * consistent across different JS platforms.
+     * Converts an object into an array of key, value arrays. Only the object's
+     * own properties are used.
+     * Note that the order of the output array is not guaranteed to be consistent
+     * across different JS platforms.
      *
      * @func
      * @memberOf R
+     * @since v0.4.0
      * @category Object
      * @sig {String: *} -> [[String,*]]
      * @param {Object} obj The object to extract from
@@ -3230,13 +4206,14 @@
     });
 
     /**
-     * Converts an object into an array of key, value arrays.
-     * The object's own properties and prototype properties are used.
-     * Note that the order of the output array is not guaranteed to be
-     * consistent across different JS platforms.
+     * Converts an object into an array of key, value arrays. The object's own
+     * properties and prototype properties are used. Note that the order of the
+     * output array is not guaranteed to be consistent across different JS
+     * platforms.
      *
      * @func
      * @memberOf R
+     * @since v0.4.0
      * @category Object
      * @sig {String: *} -> [[String,*]]
      * @param {Object} obj The object to extract from
@@ -3261,10 +4238,51 @@
     });
 
     /**
+     * Transposes the rows and columns of a 2D list.
+     * When passed a list of `n` lists of length `x`,
+     * returns a list of `x` lists of length `n`.
+     *
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category List
+     * @sig [[a]] -> [[a]]
+     * @param {Array} list A 2D list
+     * @return {Array} A 2D list
+     * @example
+     *
+     *      R.transpose([[1, 'a'], [2, 'b'], [3, 'c']]) //=> [[1, 2, 3], ['a', 'b', 'c']]
+     *      R.transpose([[1, 2, 3], ['a', 'b', 'c']]) //=> [[1, 'a'], [2, 'b'], [3, 'c']]
+     *
+     * If some of the rows are shorter than the following rows, their elements are skipped:
+     *
+     *      R.transpose([[10, 11], [20], [], [30, 31, 32]]) //=> [[10, 20, 30], [11, 31], [32]]
+     */
+    var transpose = _curry1(function transpose(outerlist) {
+        var i = 0;
+        var result = [];
+        while (i < outerlist.length) {
+            var innerlist = outerlist[i];
+            var j = 0;
+            while (j < innerlist.length) {
+                if (typeof result[j] === 'undefined') {
+                    result[j] = [];
+                }
+                result[j].push(innerlist[j]);
+                j += 1;
+            }
+            i += 1;
+        }
+        return result;
+    });
+
+    /**
      * Removes (strips) whitespace from both ends of the string.
      *
      * @func
      * @memberOf R
+     * @since v0.6.0
      * @category String
      * @sig String -> String
      * @param {String} str The string to trim.
@@ -3292,12 +4310,45 @@
     }();
 
     /**
-     * Gives a single-word string description of the (native) type of a value, returning such
-     * answers as 'Object', 'Number', 'Array', or 'Null'.  Does not attempt to distinguish user
-     * Object types any further, reporting them all as 'Object'.
+     * `tryCatch` takes two functions, a `tryer` and a `catcher`. The returned
+     * function evaluates the `tryer`; if it does not throw, it simply returns the
+     * result. If the `tryer` *does* throw, the returned function evaluates the
+     * `catcher` function and returns its result. Note that for effective
+     * composition with this function, both the `tryer` and `catcher` functions
+     * must return the same type of results.
      *
      * @func
      * @memberOf R
+     * @since v0.20.0
+     * @category Function
+     * @sig (...x -> a) -> ((e, ...x) -> a) -> (...x -> a)
+     * @param {Function} tryer The function that may throw.
+     * @param {Function} catcher The function that will be evaluated if `tryer` throws.
+     * @return {Function} A new function that will catch exceptions and send then to the catcher.
+     * @example
+     *
+     *      R.tryCatch(R.prop('x'), R.F)({x: true}); //=> true
+     *      R.tryCatch(R.prop('x'), R.F)(null);      //=> false
+     */
+    var tryCatch = _curry2(function _tryCatch(tryer, catcher) {
+        return _arity(tryer.length, function () {
+            try {
+                return tryer.apply(this, arguments);
+            } catch (e) {
+                return catcher.apply(this, _concat([e], arguments));
+            }
+        });
+    });
+
+    /**
+     * Gives a single-word string description of the (native) type of a value,
+     * returning such answers as 'Object', 'Number', 'Array', or 'Null'. Does not
+     * attempt to distinguish user Object types any further, reporting them all as
+     * 'Object'.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.8.0
      * @category Type
      * @sig (* -> {*}) -> String
      * @param {*} val The value to test
@@ -3317,18 +4368,19 @@
     });
 
     /**
-     * Takes a function `fn`, which takes a single array argument, and returns
-     * a function which:
+     * Takes a function `fn`, which takes a single array argument, and returns a
+     * function which:
      *
      *   - takes any number of positional arguments;
      *   - passes these arguments to `fn` as an array; and
      *   - returns the result.
      *
-     * In other words, R.unapply derives a variadic function from a function
-     * which takes an array. R.unapply is the inverse of R.apply.
+     * In other words, R.unapply derives a variadic function from a function which
+     * takes an array. R.unapply is the inverse of R.apply.
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Function
      * @sig ([*...] -> a) -> (*... -> a)
      * @param {Function} fn
@@ -3345,11 +4397,13 @@
     });
 
     /**
-     * Wraps a function of any arity (including nullary) in a function that accepts exactly 1
-     * parameter. Any extraneous parameters will not be passed to the supplied function.
+     * Wraps a function of any arity (including nullary) in a function that accepts
+     * exactly 1 parameter. Any extraneous parameters will not be passed to the
+     * supplied function.
      *
      * @func
      * @memberOf R
+     * @since v0.2.0
      * @category Function
      * @sig (* -> b) -> (a -> b)
      * @param {Function} fn The function to wrap.
@@ -3377,6 +4431,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category Function
      * @sig Number -> (a -> b) -> (a -> c)
      * @param {Number} length The arity for the returned function.
@@ -3385,18 +4440,10 @@
      * @see R.curry
      * @example
      *
-     *      var addFour = function(a) {
-     *        return function(b) {
-     *          return function(c) {
-     *            return function(d) {
-     *              return a + b + c + d;
-     *            };
-     *          };
-     *        };
-     *      };
+     *      var addFour = a => b => c => d => a + b + c + d;
      *
      *      var uncurriedAddFour = R.uncurryN(4, addFour);
-     *      curriedAddFour(1, 2, 3, 4); //=> 10
+     *      uncurriedAddFour(1, 2, 3, 4); //=> 10
      */
     var uncurryN = _curry2(function uncurryN(depth, fn) {
         return curryN(depth, function () {
@@ -3415,14 +4462,16 @@
     });
 
     /**
-     * Builds a list from a seed value. Accepts an iterator function, which returns either false
-     * to stop iteration or an array of length 2 containing the value to add to the resulting
-     * list and the seed to be used in the next call to the iterator function.
+     * Builds a list from a seed value. Accepts an iterator function, which returns
+     * either false to stop iteration or an array of length 2 containing the value
+     * to add to the resulting list and the seed to be used in the next call to the
+     * iterator function.
      *
      * The iterator function receives one argument: *(seed)*.
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category List
      * @sig (a -> [b]) -> * -> [b]
      * @param {Function} fn The iterator function. receives one argument, `seed`, and returns
@@ -3433,7 +4482,7 @@
      * @return {Array} The final list.
      * @example
      *
-     *      var f = function(n) { return n > 50 ? false : [-n, n + 10] };
+     *      var f = n => n > 50 ? false : [-n, n + 10];
      *      R.unfold(f, 10); //=> [-10, -20, -30, -40, -50]
      */
     var unfold = _curry2(function unfold(fn, seed) {
@@ -3447,12 +4496,14 @@
     });
 
     /**
-     * Returns a new list containing only one copy of each element in the original list, based
-     * upon the value returned by applying the supplied predicate to two list elements. Prefers
-     * the first item if two items compare equal based on the predicate.
+     * Returns a new list containing only one copy of each element in the original
+     * list, based upon the value returned by applying the supplied predicate to
+     * two list elements. Prefers the first item if two items compare equal based
+     * on the predicate.
      *
      * @func
      * @memberOf R
+     * @since v0.2.0
      * @category List
      * @sig (a, a -> Boolean) -> [a] -> [a]
      * @param {Function} pred A predicate used to test whether two items are equal.
@@ -3460,15 +4511,17 @@
      * @return {Array} The list of unique items.
      * @example
      *
-     *      var strEq = function(a, b) { return String(a) === String(b); };
+     *      var strEq = R.eqBy(String);
      *      R.uniqWith(strEq)([1, '1', 2, 1]); //=> [1, 2]
      *      R.uniqWith(strEq)([{}, {}]);       //=> [{}]
      *      R.uniqWith(strEq)([1, '1', 1]);    //=> [1]
      *      R.uniqWith(strEq)(['1', 1, 1]);    //=> ['1']
      */
     var uniqWith = _curry2(function uniqWith(pred, list) {
-        var idx = 0, len = list.length;
-        var result = [], item;
+        var idx = 0;
+        var len = list.length;
+        var result = [];
+        var item;
         while (idx < len) {
             item = list[idx];
             if (!_containsWith(pred, item, result)) {
@@ -3480,18 +4533,75 @@
     });
 
     /**
-     * Returns a new copy of the array with the element at the
-     * provided index replaced with the given value.
-     * @see R.adjust
+     * Tests the final argument by passing it to the given predicate function. If
+     * the predicate is not satisfied, the function will return the result of
+     * calling the `whenFalseFn` function with the same argument. If the predicate
+     * is satisfied, the argument is returned as is.
      *
      * @func
      * @memberOf R
+     * @since v0.18.0
+     * @category Logic
+     * @sig (a -> Boolean) -> (a -> a) -> a -> a
+     * @param {Function} pred        A predicate function
+     * @param {Function} whenFalseFn A function to invoke when the `pred` evaluates
+     *                               to a falsy value.
+     * @param {*}        x           An object to test with the `pred` function and
+     *                               pass to `whenFalseFn` if necessary.
+     * @return {*} Either `x` or the result of applying `x` to `whenFalseFn`.
+     * @see R.ifElse, R.when
+     * @example
+     *
+     *      // coerceArray :: (a|[a]) -> [a]
+     *      var coerceArray = R.unless(R.isArrayLike, R.of);
+     *      coerceArray([1, 2, 3]); //=> [1, 2, 3]
+     *      coerceArray(1);         //=> [1]
+     */
+    var unless = _curry3(function unless(pred, whenFalseFn, x) {
+        return pred(x) ? x : whenFalseFn(x);
+    });
+
+    /**
+     * Takes a predicate, a transformation function, and an initial value,
+     * and returns a value of the same type as the initial value.
+     * It does so by applying the transformation until the predicate is satisfied,
+     * at which point it returns the satisfactory value.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.20.0
+     * @category Logic
+     * @sig (a -> Boolean) -> (a -> a) -> a -> a
+     * @param {Function} pred A predicate function
+     * @param {Function} fn The iterator function
+     * @param {*} init Initial value
+     * @return {*} Final value that satisfies predicate
+     * @example
+     *
+     *      R.until(R.gt(R.__, 100), R.multiply(2))(1) // => 128
+     */
+    var until = _curry3(function until(pred, fn, init) {
+        var val = init;
+        while (!pred(val)) {
+            val = fn(val);
+        }
+        return val;
+    });
+
+    /**
+     * Returns a new copy of the array with the element at the provided index
+     * replaced with the given value.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.14.0
      * @category List
      * @sig Number -> a -> [a] -> [a]
      * @param {Number} idx The index to update.
      * @param {*} x The value to exist at the given index of the returned array.
      * @param {Array|Arguments} list The source array-like object to be updated.
      * @return {Array} A copy of `list` with the value at index `idx` replaced with `x`.
+     * @see R.adjust
      * @example
      *
      *      R.update(1, 11, [0, 1, 2]);     //=> [0, 11, 2]
@@ -3502,12 +4612,52 @@
     });
 
     /**
-     * Returns a list of all the enumerable own properties of the supplied object.
-     * Note that the order of the output array is not guaranteed across
-     * different JS platforms.
+     * Accepts a function `fn` and a list of transformer functions and returns a
+     * new curried function. When the new function is invoked, it calls the
+     * function `fn` with parameters consisting of the result of calling each
+     * supplied handler on successive arguments to the new function.
+     *
+     * If more arguments are passed to the returned function than transformer
+     * functions, those arguments are passed directly to `fn` as additional
+     * parameters. If you expect additional arguments that don't need to be
+     * transformed, although you can ignore them, it's best to pass an identity
+     * function so that the new function reports the correct arity.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
+     * @category Function
+     * @sig (x1 -> x2 -> ... -> z) -> [(a -> x1), (b -> x2), ...] -> (a -> b -> ... -> z)
+     * @param {Function} fn The function to wrap.
+     * @param {Array} transformers A list of transformer functions
+     * @return {Function} The wrapped function.
+     * @example
+     *
+     *      R.useWith(Math.pow, [R.identity, R.identity])(3, 4); //=> 81
+     *      R.useWith(Math.pow, [R.identity, R.identity])(3)(4); //=> 81
+     *      R.useWith(Math.pow, [R.dec, R.inc])(3, 4); //=> 32
+     *      R.useWith(Math.pow, [R.dec, R.inc])(3)(4); //=> 32
+     */
+    var useWith = _curry2(function useWith(fn, transformers) {
+        return curryN(transformers.length, function () {
+            var args = [];
+            var idx = 0;
+            while (idx < transformers.length) {
+                args.push(transformers[idx].call(this, arguments[idx]));
+                idx += 1;
+            }
+            return fn.apply(this, args.concat(_slice(arguments, transformers.length)));
+        });
+    });
+
+    /**
+     * Returns a list of all the enumerable own properties of the supplied object.
+     * Note that the order of the output array is not guaranteed across different
+     * JS platforms.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig {k: v} -> [v]
      * @param {Object} obj The object to extract values from
@@ -3529,13 +4679,14 @@
     });
 
     /**
-     * Returns a list of all the properties, including prototype properties,
-     * of the supplied object.
-     * Note that the order of the output array is not guaranteed to be
-     * consistent across different JS platforms.
+     * Returns a list of all the properties, including prototype properties, of the
+     * supplied object.
+     * Note that the order of the output array is not guaranteed to be consistent
+     * across different JS platforms.
      *
      * @func
      * @memberOf R
+     * @since v0.2.0
      * @category Object
      * @sig {k: v} -> [v]
      * @param {Object} obj The object to extract values from
@@ -3548,7 +4699,8 @@
      *      R.valuesIn(f); //=> ['X', 'Y']
      */
     var valuesIn = _curry1(function valuesIn(obj) {
-        var prop, vs = [];
+        var prop;
+        var vs = [];
         for (prop in obj) {
             vs[vs.length] = obj[prop];
         }
@@ -3561,8 +4713,9 @@
      *
      * @func
      * @memberOf R
+     * @since v0.16.0
      * @category Object
-     * @typedef Lens s a = Functor f => (a -> f a) -> s -> f s
+     * @typedefn Lens s a = Functor f => (a -> f a) -> s -> f s
      * @sig Lens s a -> s -> a
      * @param {Lens} lens
      * @param {*} x
@@ -3575,7 +4728,11 @@
      *      R.view(xLens, {x: 1, y: 2});  //=> 1
      *      R.view(xLens, {x: 4, y: 2});  //=> 4
      */
+    // `Const` is a functor that effectively ignores the function given to `map`.
+    // Using `Const` effectively ignores the setter function of the `lens`,
+    // leaving the value returned by the getter function unmodified.
     var view = function () {
+        // `Const` is a functor that effectively ignores the function given to `map`.
         var Const = function (x) {
             return {
                 value: x,
@@ -3585,22 +4742,57 @@
             };
         };
         return _curry2(function view(lens, x) {
+            // Using `Const` effectively ignores the setter function of the `lens`,
+            // leaving the value returned by the getter function unmodified.
             return lens(Const)(x).value;
         });
     }();
 
     /**
+     * Tests the final argument by passing it to the given predicate function. If
+     * the predicate is satisfied, the function will return the result of calling
+     * the `whenTrueFn` function with the same argument. If the predicate is not
+     * satisfied, the argument is returned as is.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.18.0
+     * @category Logic
+     * @sig (a -> Boolean) -> (a -> a) -> a -> a
+     * @param {Function} pred       A predicate function
+     * @param {Function} whenTrueFn A function to invoke when the `condition`
+     *                              evaluates to a truthy value.
+     * @param {*}        x          An object to test with the `pred` function and
+     *                              pass to `whenTrueFn` if necessary.
+     * @return {*} Either `x` or the result of applying `x` to `whenTrueFn`.
+     * @see R.ifElse, R.unless
+     * @example
+     *
+     *      // truncate :: String -> String
+     *      var truncate = R.when(
+     *        R.propSatisfies(R.gt(R.__, 10), 'length'),
+     *        R.pipe(R.take(10), R.append('…'), R.join(''))
+     *      );
+     *      truncate('12345');         //=> '12345'
+     *      truncate('0123456789ABC'); //=> '0123456789…'
+     */
+    var when = _curry3(function when(pred, whenTrueFn, x) {
+        return pred(x) ? whenTrueFn(x) : x;
+    });
+
+    /**
      * Takes a spec object and a test object; returns true if the test satisfies
      * the spec. Each of the spec's own properties must be a predicate function.
-     * Each predicate is applied to the value of the corresponding property of
-     * the test object. `where` returns true if all the predicates return true,
-     * false otherwise.
+     * Each predicate is applied to the value of the corresponding property of the
+     * test object. `where` returns true if all the predicates return true, false
+     * otherwise.
      *
      * `where` is well suited to declaratively expressing constraints for other
      * functions such as `filter` and `find`.
      *
      * @func
      * @memberOf R
+     * @since v0.1.1
      * @category Object
      * @sig {String: (* -> Boolean)} -> {String: *} -> Boolean
      * @param {Object} spec
@@ -3609,11 +4801,11 @@
      * @example
      *
      *      // pred :: Object -> Boolean
-     *      var pred = R.where({
-     *        a: R.equals('foo'),
-     *        b: R.complement(R.equals('bar')),
-     *        x: R.gt(_, 10),
-     *        y: R.lt(_, 20)
+     *      var pred = where({
+     *        a: equals('foo'),
+     *        b: complement(equals('bar')),
+     *        x: gt(__, 10),
+     *        y: lt(__, 20)
      *      });
      *
      *      pred({a: 'foo', b: 'xxx', x: 11, y: 19}); //=> true
@@ -3632,23 +4824,25 @@
     });
 
     /**
-     * Wrap a function inside another to allow you to make adjustments to the parameters, or do
-     * other processing either before the internal function is called or with its results.
+     * Wrap a function inside another to allow you to make adjustments to the
+     * parameters, or do other processing either before the internal function is
+     * called or with its results.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (a... -> b) -> ((a... -> b) -> a... -> c) -> (a... -> c)
      * @param {Function} fn The function to wrap.
      * @param {Function} wrapper The wrapper function.
      * @return {Function} The wrapped function.
+     * @deprecated since v0.22.0
      * @example
      *
-     *      var greet = function(name) {return 'Hello ' + name;};
+     *      var greet = name => 'Hello ' + name;
      *
-     *      var shoutedGreet = R.wrap(greet, function(gr, name) {
-     *        return gr(name).toUpperCase();
-     *      });
+     *      var shoutedGreet = R.wrap(greet, (gr, name) => gr(name).toUpperCase());
+     *
      *      shoutedGreet("Kathy"); //=> "HELLO KATHY"
      *
      *      var shortenedGreet = R.wrap(greet, function(gr, name) {
@@ -3663,11 +4857,12 @@
     });
 
     /**
-     * Creates a new list out of the two supplied by creating each possible
-     * pair from the lists.
+     * Creates a new list out of the two supplied by creating each possible pair
+     * from the lists.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig [a] -> [b] -> [[a,b]]
      * @param {Array} as The first list.
@@ -3701,13 +4896,14 @@
     });
 
     /**
-     * Creates a new list out of the two supplied by pairing up
-     * equally-positioned items from both lists.  The returned list is
-     * truncated to the length of the shorter of the two input lists.
+     * Creates a new list out of the two supplied by pairing up equally-positioned
+     * items from both lists. The returned list is truncated to the length of the
+     * shorter of the two input lists.
      * Note: `zip` is equivalent to `zipWith(function(a, b) { return [a, b] })`.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig [a] -> [b] -> [[a,b]]
      * @param {Array} list1 The first array to consider.
@@ -3733,9 +4929,12 @@
 
     /**
      * Creates a new object out of a list of keys and a list of values.
+     * Key/value pairing is truncated to the length of the shorter of the two lists.
+     * Note: `zipObj` is equivalent to `pipe(zipWith(pair), fromPairs)`.
      *
      * @func
      * @memberOf R
+     * @since v0.3.0
      * @category List
      * @sig [String] -> [*] -> {String: *}
      * @param {Array} keys The array that will be properties on the output object.
@@ -3746,7 +4945,9 @@
      *      R.zipObj(['a', 'b', 'c'], [1, 2, 3]); //=> {a: 1, b: 2, c: 3}
      */
     var zipObj = _curry2(function zipObj(keys, values) {
-        var idx = 0, len = keys.length, out = {};
+        var idx = 0;
+        var len = Math.min(keys.length, values.length);
+        var out = {};
         while (idx < len) {
             out[keys[idx]] = values[idx];
             idx += 1;
@@ -3755,12 +4956,13 @@
     });
 
     /**
-     * Creates a new list out of the two supplied by applying the function to
-     * each equally-positioned pair in the lists. The returned list is
-     * truncated to the length of the shorter of the two input lists.
+     * Creates a new list out of the two supplied by applying the function to each
+     * equally-positioned pair in the lists. The returned list is truncated to the
+     * length of the shorter of the two input lists.
      *
      * @function
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig (a,b -> c) -> [a] -> [b] -> [c]
      * @param {Function} fn The function used to combine the two elements into one value.
@@ -3770,14 +4972,16 @@
      *         using `fn`.
      * @example
      *
-     *      var f = function(x, y) {
+     *      var f = (x, y) => {
      *        // ...
      *      };
      *      R.zipWith(f, [1, 2, 3], ['a', 'b', 'c']);
      *      //=> [f(1, 'a'), f(2, 'b'), f(3, 'c')]
      */
     var zipWith = _curry3(function zipWith(fn, a, b) {
-        var rv = [], idx = 0, len = Math.min(a.length, b.length);
+        var rv = [];
+        var idx = 0;
+        var len = Math.min(a.length, b.length);
         while (idx < len) {
             rv[idx] = fn(a[idx], b[idx]);
             idx += 1;
@@ -3790,9 +4994,11 @@
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Function
-     * @sig * -> false
-     * @return {Boolean} false
+     * @sig * -> Boolean
+     * @param {*}
+     * @return {Boolean}
      * @see R.always, R.T
      * @example
      *
@@ -3805,9 +5011,11 @@
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Function
-     * @sig * -> true
-     * @return {Boolean} `true`.
+     * @sig * -> Boolean
+     * @param {*}
+     * @return {Boolean}
      * @see R.always, R.F
      * @example
      *
@@ -3816,36 +5024,16 @@
     var T = always(true);
 
     /**
-     * Similar to hasMethod, this checks whether a function has a [methodname]
-     * function. If it isn't an array it will execute that function otherwise it will
-     * default to the ramda implementation.
-     *
-     * @private
-     * @param {Function} fn ramda implemtation
-     * @param {String} methodname property to check for a custom implementation
-     * @return {Object} Whatever the return value of the method is.
-     */
-    var _checkForMethod = function _checkForMethod(methodname, fn) {
-        return function () {
-            var length = arguments.length;
-            if (length === 0) {
-                return fn();
-            }
-            var obj = arguments[length - 1];
-            return _isArray(obj) || typeof obj[methodname] !== 'function' ? fn.apply(this, arguments) : obj[methodname].apply(obj, _slice(arguments, 0, length - 1));
-        };
-    };
-
-    /**
      * Copies an object.
      *
      * @private
      * @param {*} value The value to be copied
      * @param {Array} refFrom Array containing the source references
      * @param {Array} refTo Array containing the copied source references
+     * @param {Boolean} deep Whether or not to perform deep cloning.
      * @return {*} The copied value.
      */
-    var _clone = function _clone(value, refFrom, refTo) {
+    var _clone = function _clone(value, refFrom, refTo, deep) {
         var copy = function copy(copiedValue) {
             var len = refFrom.length;
             var idx = 0;
@@ -3858,7 +5046,7 @@
             refFrom[idx + 1] = value;
             refTo[idx + 1] = copiedValue;
             for (var key in value) {
-                copiedValue[key] = _clone(value[key], refFrom, refTo);
+                copiedValue[key] = deep ? _clone(value[key], refFrom, refTo, true) : value[key];
             }
             return copiedValue;
         };
@@ -3868,7 +5056,7 @@
         case 'Array':
             return copy([]);
         case 'Date':
-            return new Date(value);
+            return new Date(value.valueOf());
         case 'RegExp':
             return _cloneRegExp(value);
         default:
@@ -3877,129 +5065,118 @@
     };
 
     var _createPartialApplicator = function _createPartialApplicator(concat) {
-        return function (fn) {
-            var args = _slice(arguments, 1);
+        return _curry2(function (fn, args) {
             return _arity(Math.max(0, fn.length - args.length), function () {
                 return fn.apply(this, concat(args, arguments));
             });
-        };
+        });
     };
 
-    /**
-     * Returns a function that dispatches with different strategies based on the
-     * object in list position (last argument). If it is an array, executes [fn].
-     * Otherwise, if it has a  function with [methodname], it will execute that
-     * function (functor case). Otherwise, if it is a transformer, uses transducer
-     * [xf] to return a new transformer (transducer case). Otherwise, it will
-     * default to executing [fn].
-     *
-     * @private
-     * @param {String} methodname property to check for a custom implementation
-     * @param {Function} xf transducer to initialize if object is transformer
-     * @param {Function} fn default ramda implementation
-     * @return {Function} A function that dispatches on object in list position
-     */
-    var _dispatchable = function _dispatchable(methodname, xf, fn) {
-        return function () {
-            var length = arguments.length;
-            if (length === 0) {
-                return fn();
-            }
-            var obj = arguments[length - 1];
-            if (!_isArray(obj)) {
-                var args = _slice(arguments, 0, length - 1);
-                if (typeof obj[methodname] === 'function') {
-                    return obj[methodname].apply(obj, args);
-                }
-                if (_isTransformer(obj)) {
-                    var transducer = xf.apply(null, args);
-                    return transducer(obj);
-                }
-            }
-            return fn.apply(this, arguments);
-        };
+    var _dropLast = function dropLast(n, xs) {
+        return take(n < xs.length ? xs.length - n : 0, xs);
     };
 
-    // The algorithm used to handle cyclic structures is
-    // inspired by underscore's isEqual
-    // RegExp equality algorithm: http://stackoverflow.com/a/10776635
+    // Values of other types are only equal if identical.
     var _equals = function _equals(a, b, stackA, stackB) {
-        var typeA = type(a);
-        if (typeA !== type(b)) {
-            return false;
-        }
-        if (typeA === 'Boolean' || typeA === 'Number' || typeA === 'String') {
-            return typeof a === 'object' ? typeof b === 'object' && identical(a.valueOf(), b.valueOf()) : identical(a, b);
-        }
         if (identical(a, b)) {
             return true;
         }
-        if (typeA === 'RegExp') {
-            // RegExp equality algorithm: http://stackoverflow.com/a/10776635
-            return a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky && a.unicode === b.unicode;
+        if (type(a) !== type(b)) {
+            return false;
         }
-        if (Object(a) === a) {
-            if (typeA === 'Date' && a.getTime() !== b.getTime()) {
+        if (a == null || b == null) {
+            return false;
+        }
+        if (typeof a.equals === 'function' || typeof b.equals === 'function') {
+            return typeof a.equals === 'function' && a.equals(b) && typeof b.equals === 'function' && b.equals(a);
+        }
+        switch (type(a)) {
+        case 'Arguments':
+        case 'Array':
+        case 'Object':
+            if (typeof a.constructor === 'function' && _functionName(a.constructor) === 'Promise') {
+                return a === b;
+            }
+            break;
+        case 'Boolean':
+        case 'Number':
+        case 'String':
+            if (!(typeof a === typeof b && identical(a.valueOf(), b.valueOf()))) {
                 return false;
             }
-            var keysA = keys(a);
-            if (keysA.length !== keys(b).length) {
+            break;
+        case 'Date':
+            if (!identical(a.valueOf(), b.valueOf())) {
                 return false;
             }
-            var idx = stackA.length - 1;
-            while (idx >= 0) {
-                if (stackA[idx] === a) {
-                    return stackB[idx] === b;
-                }
-                idx -= 1;
+            break;
+        case 'Error':
+            return a.name === b.name && a.message === b.message;
+        case 'RegExp':
+            if (!(a.source === b.source && a.global === b.global && a.ignoreCase === b.ignoreCase && a.multiline === b.multiline && a.sticky === b.sticky && a.unicode === b.unicode)) {
+                return false;
             }
-            stackA[stackA.length] = a;
-            stackB[stackB.length] = b;
-            idx = keysA.length - 1;
-            while (idx >= 0) {
-                var key = keysA[idx];
-                if (!_has(key, b) || !_equals(b[key], a[key], stackA, stackB)) {
-                    return false;
-                }
-                idx -= 1;
+            break;
+        case 'Map':
+        case 'Set':
+            if (!_equals(_arrayFromIterator(a.entries()), _arrayFromIterator(b.entries()), stackA, stackB)) {
+                return false;
             }
-            stackA.pop();
-            stackB.pop();
-            return true;
+            break;
+        case 'Int8Array':
+        case 'Uint8Array':
+        case 'Uint8ClampedArray':
+        case 'Int16Array':
+        case 'Uint16Array':
+        case 'Int32Array':
+        case 'Uint32Array':
+        case 'Float32Array':
+        case 'Float64Array':
+            break;
+        case 'ArrayBuffer':
+            break;
+        default:
+            // Values of other types are only equal if identical.
+            return false;
         }
-        return false;
+        var keysA = keys(a);
+        if (keysA.length !== keys(b).length) {
+            return false;
+        }
+        var idx = stackA.length - 1;
+        while (idx >= 0) {
+            if (stackA[idx] === a) {
+                return stackB[idx] === b;
+            }
+            idx -= 1;
+        }
+        stackA.push(a);
+        stackB.push(b);
+        idx = keysA.length - 1;
+        while (idx >= 0) {
+            var key = keysA[idx];
+            if (!(_has(key, b) && _equals(b[key], a[key], stackA, stackB))) {
+                return false;
+            }
+            idx -= 1;
+        }
+        stackA.pop();
+        stackB.pop();
+        return true;
     };
 
     /**
-     * Private function that determines whether or not a provided object has a given method.
-     * Does not ignore methods stored on the object's prototype chain. Used for dynamically
-     * dispatching Ramda methods to non-Array objects.
-     *
-     * @private
-     * @param {String} methodName The name of the method to check for.
-     * @param {Object} obj The object to test.
-     * @return {Boolean} `true` has a given method, `false` otherwise.
-     * @example
-     *
-     *      var person = { name: 'John' };
-     *      person.shout = function() { alert(this.name); };
-     *
-     *      _hasMethod('shout', person); //=> true
-     *      _hasMethod('foo', person); //=> false
-     */
-    var _hasMethod = function _hasMethod(methodName, obj) {
-        return obj != null && !_isArray(obj) && typeof obj[methodName] === 'function';
-    };
-
-    /**
-     * `_makeFlat` is a helper function that returns a one-level or fully recursive function
-     * based on the flag passed in.
+     * `_makeFlat` is a helper function that returns a one-level or fully recursive
+     * function based on the flag passed in.
      *
      * @private
      */
     var _makeFlat = function _makeFlat(recursive) {
         return function flatt(list) {
-            var value, result = [], idx = 0, j, ilen = list.length, jlen;
+            var value, jlen, j;
+            var result = [];
+            var idx = 0;
+            var ilen = list.length;
             while (idx < ilen) {
                 if (isArrayLike(list[idx])) {
                     value = recursive ? flatt(list[idx]) : list[idx];
@@ -4020,7 +5197,8 @@
 
     var _reduce = function () {
         function _arrayReduce(xf, acc, list) {
-            var idx = 0, len = list.length;
+            var idx = 0;
+            var len = list.length;
             while (idx < len) {
                 acc = xf['@@transducer/step'](acc, list[idx]);
                 if (acc && acc['@@transducer/reduced']) {
@@ -4071,7 +5249,8 @@
         var _stepCatArray = {
             '@@transducer/init': Array,
             '@@transducer/step': function (xs, x) {
-                return _concat(xs, [x]);
+                xs.push(x);
+                return xs;
             },
             '@@transducer/result': _identity
         };
@@ -4085,7 +5264,7 @@
         var _stepCatObject = {
             '@@transducer/init': Object,
             '@@transducer/step': function (result, input) {
-                return merge(result, isArrayLike(input) ? createMapEntry(input[0], input[1]) : input);
+                return _assign(result, isArrayLike(input) ? objOf(input[0], input[1]) : input);
             },
             '@@transducer/result': _identity
         };
@@ -4106,141 +5285,47 @@
         };
     }();
 
-    var _xall = function () {
-        function XAll(f, xf) {
+    var _xdropLastWhile = function () {
+        function XDropLastWhile(fn, xf) {
+            this.f = fn;
+            this.retained = [];
             this.xf = xf;
-            this.f = f;
-            this.all = true;
         }
-        XAll.prototype['@@transducer/init'] = _xfBase.init;
-        XAll.prototype['@@transducer/result'] = function (result) {
-            if (this.all) {
-                result = this.xf['@@transducer/step'](result, true);
-            }
+        XDropLastWhile.prototype['@@transducer/init'] = _xfBase.init;
+        XDropLastWhile.prototype['@@transducer/result'] = function (result) {
+            this.retained = null;
             return this.xf['@@transducer/result'](result);
         };
-        XAll.prototype['@@transducer/step'] = function (result, input) {
-            if (!this.f(input)) {
-                this.all = false;
-                result = _reduced(this.xf['@@transducer/step'](result, false));
-            }
-            return result;
+        XDropLastWhile.prototype['@@transducer/step'] = function (result, input) {
+            return this.f(input) ? this.retain(result, input) : this.flush(result, input);
         };
-        return _curry2(function _xall(f, xf) {
-            return new XAll(f, xf);
-        });
-    }();
-
-    var _xany = function () {
-        function XAny(f, xf) {
-            this.xf = xf;
-            this.f = f;
-            this.any = false;
-        }
-        XAny.prototype['@@transducer/init'] = _xfBase.init;
-        XAny.prototype['@@transducer/result'] = function (result) {
-            if (!this.any) {
-                result = this.xf['@@transducer/step'](result, false);
-            }
-            return this.xf['@@transducer/result'](result);
-        };
-        XAny.prototype['@@transducer/step'] = function (result, input) {
-            if (this.f(input)) {
-                this.any = true;
-                result = _reduced(this.xf['@@transducer/step'](result, true));
-            }
-            return result;
-        };
-        return _curry2(function _xany(f, xf) {
-            return new XAny(f, xf);
-        });
-    }();
-
-    var _xdrop = function () {
-        function XDrop(n, xf) {
-            this.xf = xf;
-            this.n = n;
-        }
-        XDrop.prototype['@@transducer/init'] = _xfBase.init;
-        XDrop.prototype['@@transducer/result'] = _xfBase.result;
-        XDrop.prototype['@@transducer/step'] = function (result, input) {
-            if (this.n > 0) {
-                this.n -= 1;
-                return result;
-            }
+        XDropLastWhile.prototype.flush = function (result, input) {
+            result = _reduce(this.xf['@@transducer/step'], result, this.retained);
+            this.retained = [];
             return this.xf['@@transducer/step'](result, input);
         };
-        return _curry2(function _xdrop(n, xf) {
-            return new XDrop(n, xf);
-        });
-    }();
-
-    var _xdropWhile = function () {
-        function XDropWhile(f, xf) {
-            this.xf = xf;
-            this.f = f;
-        }
-        XDropWhile.prototype['@@transducer/init'] = _xfBase.init;
-        XDropWhile.prototype['@@transducer/result'] = _xfBase.result;
-        XDropWhile.prototype['@@transducer/step'] = function (result, input) {
-            if (this.f) {
-                if (this.f(input)) {
-                    return result;
-                }
-                this.f = null;
-            }
-            return this.xf['@@transducer/step'](result, input);
-        };
-        return _curry2(function _xdropWhile(f, xf) {
-            return new XDropWhile(f, xf);
-        });
-    }();
-
-    var _xgroupBy = function () {
-        function XGroupBy(f, xf) {
-            this.xf = xf;
-            this.f = f;
-            this.inputs = {};
-        }
-        XGroupBy.prototype['@@transducer/init'] = _xfBase.init;
-        XGroupBy.prototype['@@transducer/result'] = function (result) {
-            var key;
-            for (key in this.inputs) {
-                if (_has(key, this.inputs)) {
-                    result = this.xf['@@transducer/step'](result, this.inputs[key]);
-                    if (result['@@transducer/reduced']) {
-                        result = result['@@transducer/value'];
-                        break;
-                    }
-                }
-            }
-            return this.xf['@@transducer/result'](result);
-        };
-        XGroupBy.prototype['@@transducer/step'] = function (result, input) {
-            var key = this.f(input);
-            this.inputs[key] = this.inputs[key] || [
-                key,
-                []
-            ];
-            this.inputs[key][1] = append(input, this.inputs[key][1]);
+        XDropLastWhile.prototype.retain = function (result, input) {
+            this.retained.push(input);
             return result;
         };
-        return _curry2(function _xgroupBy(f, xf) {
-            return new XGroupBy(f, xf);
+        return _curry2(function _xdropLastWhile(fn, xf) {
+            return new XDropLastWhile(fn, xf);
         });
     }();
 
     /**
-     * Creates a new list iteration function from an existing one by adding two new parameters
-     * to its callback function: the current index, and the entire list.
+     * Creates a new list iteration function from an existing one by adding two new
+     * parameters to its callback function: the current index, and the entire list.
      *
-     * This would turn, for instance, Ramda's simple `map` function into one that more closely
-     * resembles `Array.prototype.map`.  Note that this will only work for functions in which
-     * the iteration callback function is the first parameter, and where the list is the last
-     * parameter.  (This latter might be unimportant if the list parameter is not used.)
+     * This would turn, for instance, Ramda's simple `map` function into one that
+     * more closely resembles `Array.prototype.map`. Note that this will only work
+     * for functions in which the iteration callback function is the first
+     * parameter, and where the list is the last parameter. (This latter might be
+     * unimportant if the list parameter is not used.)
      *
      * @func
      * @memberOf R
+     * @since v0.15.0
      * @category Function
      * @category List
      * @sig ((a ... -> b) ... -> [a] -> *) -> (a ..., Int, [a] -> b) ... -> [a] -> *)
@@ -4249,7 +5334,7 @@
      * @example
      *
      *      var mapIndexed = R.addIndex(R.map);
-     *      mapIndexed(function(val, idx) {return idx + '-' + val;}, ['f', 'o', 'o', 'b', 'a', 'r']);
+     *      mapIndexed((val, idx) => idx + '-' + val, ['f', 'o', 'o', 'b', 'a', 'r']);
      *      //=> ['0-f', '1-o', '2-o', '3-b', '4-a', '5-r']
      */
     var addIndex = _curry1(function addIndex(fn) {
@@ -4271,104 +5356,13 @@
     });
 
     /**
-     * Returns `true` if all elements of the list match the predicate, `false` if there are any
-     * that don't.
-     *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
+     * Wraps a function of any arity (including nullary) in a function that accepts
+     * exactly 2 parameters. Any extraneous parameters will not be passed to the
+     * supplied function.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> Boolean
-     * @param {Function} fn The predicate function.
-     * @param {Array} list The array to consider.
-     * @return {Boolean} `true` if the predicate is satisfied by every element, `false`
-     *         otherwise.
-     * @see R.any, R.none
-     * @example
-     *
-     *      var lessThan2 = R.flip(R.lt)(2);
-     *      var lessThan3 = R.flip(R.lt)(3);
-     *      R.all(lessThan2)([1, 2]); //=> false
-     *      R.all(lessThan3)([1, 2]); //=> true
-     */
-    var all = _curry2(_dispatchable('all', _xall, function all(fn, list) {
-        var idx = 0;
-        while (idx < list.length) {
-            if (!fn(list[idx])) {
-                return false;
-            }
-            idx += 1;
-        }
-        return true;
-    }));
-
-    /**
-     * A function that returns the first argument if it's falsy otherwise the second
-     * argument. Note that this is NOT short-circuited, meaning that if expressions
-     * are passed they are both evaluated.
-     *
-     * Dispatches to the `and` method of the first argument if applicable.
-     *
-     * @func
-     * @memberOf R
-     * @category Logic
-     * @sig * -> * -> *
-     * @param {*} a any value
-     * @param {*} b any other value
-     * @return {*} the first argument if falsy otherwise the second argument.
-     * @see R.both
-     * @example
-     *
-     *      R.and(false, true); //=> false
-     *      R.and(0, []); //=> 0
-     *      R.and(null, ''); => null
-     */
-    var and = _curry2(function and(a, b) {
-        return _hasMethod('and', a) ? a.and(b) : a && b;
-    });
-
-    /**
-     * Returns `true` if at least one of elements of the list match the predicate, `false`
-     * otherwise.
-     *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> Boolean
-     * @param {Function} fn The predicate function.
-     * @param {Array} list The array to consider.
-     * @return {Boolean} `true` if the predicate is satisfied by at least one element, `false`
-     *         otherwise.
-     * @see R.all, R.none
-     * @example
-     *
-     *      var lessThan0 = R.flip(R.lt)(0);
-     *      var lessThan2 = R.flip(R.lt)(2);
-     *      R.any(lessThan0)([1, 2]); //=> false
-     *      R.any(lessThan2)([1, 2]); //=> true
-     */
-    var any = _curry2(_dispatchable('any', _xany, function any(fn, list) {
-        var idx = 0;
-        while (idx < list.length) {
-            if (fn(list[idx])) {
-                return true;
-            }
-            idx += 1;
-        }
-        return false;
-    }));
-
-    /**
-     * Wraps a function of any arity (including nullary) in a function that accepts exactly 2
-     * parameters. Any extraneous parameters will not be passed to the supplied function.
-     *
-     * @func
-     * @memberOf R
+     * @since v0.2.0
      * @category Function
      * @sig (* -> c) -> (a, b -> c)
      * @param {Function} fn The function to wrap.
@@ -4393,11 +5387,14 @@
 
     /**
      * Creates a deep copy of the value which may contain (nested) `Array`s and
-     * `Object`s, `Number`s, `String`s, `Boolean`s and `Date`s. `Function`s are
-     * not copied, but assigned by their reference.
+     * `Object`s, `Number`s, `String`s, `Boolean`s and `Date`s. `Function`s are not
+     * copied, but assigned by their reference.
+     *
+     * Dispatches to a `clone` method if present.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig {*} -> {*}
      * @param {*} value The object or array to clone
@@ -4409,45 +5406,14 @@
      *      objects[0] === objectsClone[0]; //=> false
      */
     var clone = _curry1(function clone(value) {
-        return _clone(value, [], []);
+        return value != null && typeof value.clone === 'function' ? value.clone() : _clone(value, [], [], true);
     });
 
     /**
-     * Returns a new list consisting of the elements of the first list followed by the elements
-     * of the second.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig [a] -> [a] -> [a]
-     * @param {Array} list1 The first list to merge.
-     * @param {Array} list2 The second set to merge.
-     * @return {Array} A new array consisting of the contents of `list1` followed by the
-     *         contents of `list2`. If, instead of an Array for `list1`, you pass an
-     *         object with a `concat` method on it, `concat` will call `list1.concat`
-     *         and pass it the value of `list2`.
-     *
-     * @example
-     *
-     *      R.concat([], []); //=> []
-     *      R.concat([4, 5, 6], [1, 2, 3]); //=> [4, 5, 6, 1, 2, 3]
-     *      R.concat('ABC', 'DEF'); // 'ABCDEF'
-     */
-    var concat = _curry2(function concat(set1, set2) {
-        if (_isArray(set2)) {
-            return _concat(set1, set2);
-        } else if (_hasMethod('concat', set1)) {
-            return set1.concat(set2);
-        } else {
-            throw new TypeError('can\'t concat ' + typeof set1);
-        }
-    });
-
-    /**
-     * Returns a curried equivalent of the provided function. The curried
-     * function has two unusual capabilities. First, its arguments needn't
-     * be provided one at a time. If `f` is a ternary function and `g` is
-     * `R.curry(f)`, the following are equivalent:
+     * Returns a curried equivalent of the provided function. The curried function
+     * has two unusual capabilities. First, its arguments needn't be provided one
+     * at a time. If `f` is a ternary function and `g` is `R.curry(f)`, the
+     * following are equivalent:
      *
      *   - `g(1)(2)(3)`
      *   - `g(1)(2, 3)`
@@ -4456,8 +5422,8 @@
      *
      * Secondly, the special placeholder value `R.__` may be used to specify
      * "gaps", allowing partial application of any combination of arguments,
-     * regardless of their positions. If `g` is as above and `_` is `R.__`,
-     * the following are equivalent:
+     * regardless of their positions. If `g` is as above and `_` is `R.__`, the
+     * following are equivalent:
      *
      *   - `g(1, 2, 3)`
      *   - `g(_, 2, 3)(1)`
@@ -4469,6 +5435,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (* -> a) -> (* -> a)
      * @param {Function} fn The function to curry.
@@ -4476,9 +5443,7 @@
      * @see R.curryN
      * @example
      *
-     *      var addFourNumbers = function(a, b, c, d) {
-     *        return a + b + c + d;
-     *      };
+     *      var addFourNumbers = (a, b, c, d) => a + b + c + d;
      *
      *      var curriedAddFourNumbers = R.curry(addFourNumbers);
      *      var f = curriedAddFourNumbers(1, 2);
@@ -4490,44 +5455,90 @@
     });
 
     /**
-     * Returns a new list containing the last `n` elements of a given list, passing each value
-     * to the supplied predicate function, skipping elements while the predicate function returns
-     * `true`. The predicate function is passed one argument: *(value)*.
+     * Returns all but the first `n` elements of the given list, string, or
+     * transducer/transformer (or object with a `drop` method).
      *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
+     * Dispatches to the `drop` method of the second argument, if present.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig Number -> [a] -> [a]
+     * @sig Number -> String -> String
+     * @param {Number} n
+     * @param {*} list
+     * @return {*}
+     * @see R.take, R.transduce
+     * @example
+     *
+     *      R.drop(1, ['foo', 'bar', 'baz']); //=> ['bar', 'baz']
+     *      R.drop(2, ['foo', 'bar', 'baz']); //=> ['baz']
+     *      R.drop(3, ['foo', 'bar', 'baz']); //=> []
+     *      R.drop(4, ['foo', 'bar', 'baz']); //=> []
+     *      R.drop(3, 'ramda');               //=> 'da'
+     */
+    var drop = _curry2(_dispatchable('drop', _xdrop, function drop(n, xs) {
+        return slice(Math.max(0, n), Infinity, xs);
+    }));
+
+    /**
+     * Returns a list containing all but the last `n` elements of the given `list`.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.16.0
+     * @category List
+     * @sig Number -> [a] -> [a]
+     * @sig Number -> String -> String
+     * @param {Number} n The number of elements of `xs` to skip.
+     * @param {Array} xs The collection to consider.
+     * @return {Array}
+     * @see R.takeLast
+     * @example
+     *
+     *      R.dropLast(1, ['foo', 'bar', 'baz']); //=> ['foo', 'bar']
+     *      R.dropLast(2, ['foo', 'bar', 'baz']); //=> ['foo']
+     *      R.dropLast(3, ['foo', 'bar', 'baz']); //=> []
+     *      R.dropLast(4, ['foo', 'bar', 'baz']); //=> []
+     *      R.dropLast(3, 'ramda');               //=> 'ra'
+     */
+    var dropLast = _curry2(_dispatchable('dropLast', _xdropLast, _dropLast));
+
+    /**
+     * Returns a new list excluding all the tailing elements of a given list which
+     * satisfy the supplied predicate function. It passes each value from the right
+     * to the supplied predicate function, skipping elements while the predicate
+     * function returns `true`. The predicate function is applied to one argument:
+     * *(value)*.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.16.0
      * @category List
      * @sig (a -> Boolean) -> [a] -> [a]
      * @param {Function} fn The function called per iteration.
      * @param {Array} list The collection to iterate over.
      * @return {Array} A new array.
-     * @see R.takeWhile
+     * @see R.takeLastWhile, R.addIndex
      * @example
      *
-     *      var lteTwo = function(x) {
-     *        return x <= 2;
-     *      };
+     *      var lteThree = x => x <= 3;
      *
-     *      R.dropWhile(lteTwo, [1, 2, 3, 4, 3, 2, 1]); //=> [3, 4, 3, 2, 1]
+     *      R.dropLastWhile(lteThree, [1, 2, 3, 4, 3, 2, 1]); //=> [1, 2, 3, 4]
      */
-    var dropWhile = _curry2(_dispatchable('dropWhile', _xdropWhile, function dropWhile(pred, list) {
-        var idx = 0, len = list.length;
-        while (idx < len && pred(list[idx])) {
-            idx += 1;
-        }
-        return _slice(list, idx);
-    }));
+    var dropLastWhile = _curry2(_dispatchable('dropLastWhile', _xdropLastWhile, _dropLastWhile));
 
     /**
-     * Returns `true` if its arguments are equivalent, `false` otherwise.
-     * Dispatches to an `equals` method if present. Handles cyclical data
-     * structures.
+     * Returns `true` if its arguments are equivalent, `false` otherwise. Handles
+     * cyclical data structures.
+     *
+     * Dispatches symmetrically to the `equals` methods of both arguments, if
+     * present.
      *
      * @func
      * @memberOf R
+     * @since v0.15.0
      * @category Relation
      * @sig a -> b -> Boolean
      * @param {*} a
@@ -4544,171 +5555,53 @@
      *      R.equals(a, b); //=> true
      */
     var equals = _curry2(function equals(a, b) {
-        return _hasMethod('equals', a) ? a.equals(b) : _hasMethod('equals', b) ? b.equals(a) : _equals(a, b, [], []);
+        return _equals(a, b, [], []);
     });
 
     /**
-     * Returns a new list containing only those items that match a given predicate function.
-     * The predicate function is passed one argument: *(value)*.
+     * Takes a predicate and a "filterable", and returns a new filterable of the
+     * same type containing the members of the given filterable which satisfy the
+     * given predicate.
      *
-     * Note that `R.filter` does not skip deleted or unassigned indices, unlike the native
-     * `Array.prototype.filter` method. For more details on this behavior, see:
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter#Description
+     * Dispatches to the `filter` method of the second argument, if present.
      *
      * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
-     * @sig (a -> Boolean) -> [a] -> [a]
-     * @param {Function} fn The function called per iteration.
-     * @param {Array} list The collection to iterate over.
-     * @return {Array} The new filtered array.
-     * @see R.reject
+     * @sig Filterable f => (a -> Boolean) -> f a -> f a
+     * @param {Function} pred
+     * @param {Array} filterable
+     * @return {Array}
+     * @see R.reject, R.transduce, R.addIndex
      * @example
      *
-     *      var isEven = function(n) {
-     *        return n % 2 === 0;
-     *      };
+     *      var isEven = n => n % 2 === 0;
+     *
      *      R.filter(isEven, [1, 2, 3, 4]); //=> [2, 4]
+     *
+     *      R.filter(isEven, {a: 1, b: 2, c: 3, d: 4}); //=> {b: 2, d: 4}
      */
-    var filter = _curry2(_dispatchable('filter', _xfilter, _filter));
-
-    /**
-     * Returns the first element of the list which matches the predicate, or `undefined` if no
-     * element matches.
-     *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> a | undefined
-     * @param {Function} fn The predicate function used to determine if the element is the
-     *        desired one.
-     * @param {Array} list The array to consider.
-     * @return {Object} The element found, or `undefined`.
-     * @example
-     *
-     *      var xs = [{a: 1}, {a: 2}, {a: 3}];
-     *      R.find(R.propEq('a', 2))(xs); //=> {a: 2}
-     *      R.find(R.propEq('a', 4))(xs); //=> undefined
-     */
-    var find = _curry2(_dispatchable('find', _xfind, function find(fn, list) {
-        var idx = 0;
-        var len = list.length;
-        while (idx < len) {
-            if (fn(list[idx])) {
-                return list[idx];
+    // else
+    var filter = _curry2(_dispatchable('filter', _xfilter, function (pred, filterable) {
+        return _isObject(filterable) ? _reduce(function (acc, key) {
+            if (pred(filterable[key])) {
+                acc[key] = filterable[key];
             }
-            idx += 1;
-        }
+            return acc;
+        }, {}, keys(filterable)) : // else
+        _filter(pred, filterable);
     }));
 
     /**
-     * Returns the index of the first element of the list which matches the predicate, or `-1`
-     * if no element matches.
-     *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
+     * Returns a new list by pulling every item out of it (and all its sub-arrays)
+     * and putting them in a new array, depth-first.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> Number
-     * @param {Function} fn The predicate function used to determine if the element is the
-     * desired one.
-     * @param {Array} list The array to consider.
-     * @return {Number} The index of the element found, or `-1`.
-     * @example
-     *
-     *      var xs = [{a: 1}, {a: 2}, {a: 3}];
-     *      R.findIndex(R.propEq('a', 2))(xs); //=> 1
-     *      R.findIndex(R.propEq('a', 4))(xs); //=> -1
-     */
-    var findIndex = _curry2(_dispatchable('findIndex', _xfindIndex, function findIndex(fn, list) {
-        var idx = 0;
-        var len = list.length;
-        while (idx < len) {
-            if (fn(list[idx])) {
-                return idx;
-            }
-            idx += 1;
-        }
-        return -1;
-    }));
-
-    /**
-     * Returns the last element of the list which matches the predicate, or `undefined` if no
-     * element matches.
-     *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> a | undefined
-     * @param {Function} fn The predicate function used to determine if the element is the
-     * desired one.
-     * @param {Array} list The array to consider.
-     * @return {Object} The element found, or `undefined`.
-     * @example
-     *
-     *      var xs = [{a: 1, b: 0}, {a:1, b: 1}];
-     *      R.findLast(R.propEq('a', 1))(xs); //=> {a: 1, b: 1}
-     *      R.findLast(R.propEq('a', 4))(xs); //=> undefined
-     */
-    var findLast = _curry2(_dispatchable('findLast', _xfindLast, function findLast(fn, list) {
-        var idx = list.length - 1;
-        while (idx >= 0) {
-            if (fn(list[idx])) {
-                return list[idx];
-            }
-            idx -= 1;
-        }
-    }));
-
-    /**
-     * Returns the index of the last element of the list which matches the predicate, or
-     * `-1` if no element matches.
-     *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> Number
-     * @param {Function} fn The predicate function used to determine if the element is the
-     * desired one.
-     * @param {Array} list The array to consider.
-     * @return {Number} The index of the element found, or `-1`.
-     * @example
-     *
-     *      var xs = [{a: 1, b: 0}, {a:1, b: 1}];
-     *      R.findLastIndex(R.propEq('a', 1))(xs); //=> 1
-     *      R.findLastIndex(R.propEq('a', 4))(xs); //=> -1
-     */
-    var findLastIndex = _curry2(_dispatchable('findLastIndex', _xfindLastIndex, function findLastIndex(fn, list) {
-        var idx = list.length - 1;
-        while (idx >= 0) {
-            if (fn(list[idx])) {
-                return idx;
-            }
-            idx -= 1;
-        }
-        return -1;
-    }));
-
-    /**
-     * Returns a new list by pulling every item out of it (and all its sub-arrays) and putting
-     * them in a new array, depth-first.
-     *
-     * @func
-     * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig [a] -> [b]
      * @param {Array} list The array to consider.
@@ -4722,20 +5615,19 @@
     var flatten = _curry1(_makeFlat(true));
 
     /**
-     * Returns a new function much like the supplied one, except that the first two arguments'
-     * order is reversed.
+     * Returns a new function much like the supplied one, except that the first two
+     * arguments' order is reversed.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (a -> b -> c -> ... -> z) -> (b -> a -> c -> ... -> z)
      * @param {Function} fn The function to invoke with its first two parameters reversed.
      * @return {*} The result of invoking `fn` with its first two parameters' order reversed.
      * @example
      *
-     *      var mergeThree = function(a, b, c) {
-     *        return ([]).concat(a, b, c);
-     *      };
+     *      var mergeThree = (a, b, c) => [].concat(a, b, c);
      *
      *      mergeThree(1, 2, 3); //=> [1, 2, 3]
      *
@@ -4751,140 +5643,18 @@
     });
 
     /**
-     * Iterate over an input `list`, calling a provided function `fn` for each element in the
-     * list.
-     *
-     * `fn` receives one argument: *(value)*.
-     *
-     * Note: `R.forEach` does not skip deleted or unassigned indices (sparse arrays), unlike
-     * the native `Array.prototype.forEach` method. For more details on this behavior, see:
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach#Description
-     *
-     * Also note that, unlike `Array.prototype.forEach`, Ramda's `forEach` returns the original
-     * array. In some libraries this function is named `each`.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a -> *) -> [a] -> [a]
-     * @param {Function} fn The function to invoke. Receives one argument, `value`.
-     * @param {Array} list The list to iterate over.
-     * @return {Array} The original list.
-     * @example
-     *
-     *      var printXPlusFive = function(x) { console.log(x + 5); };
-     *      R.forEach(printXPlusFive, [1, 2, 3]); //=> [1, 2, 3]
-     *      //-> 6
-     *      //-> 7
-     *      //-> 8
-     */
-    var forEach = _curry2(_checkForMethod('forEach', function forEach(fn, list) {
-        var len = list.length;
-        var idx = 0;
-        while (idx < len) {
-            fn(list[idx]);
-            idx += 1;
-        }
-        return list;
-    }));
-
-    /**
-     * Returns a list of function names of object's own functions
-     *
-     * @func
-     * @memberOf R
-     * @category Object
-     * @sig {*} -> [String]
-     * @param {Object} obj The objects with functions in it
-     * @return {Array} A list of the object's own properties that map to functions.
-     * @example
-     *
-     *      R.functions(R); // returns list of ramda's own function names
-     *
-     *      var F = function() { this.x = function(){}; this.y = 1; }
-     *      F.prototype.z = function() {};
-     *      F.prototype.a = 100;
-     *      R.functions(new F()); //=> ["x"]
-     */
-    var functions = _curry1(_functionsWith(keys));
-
-    /**
-     * Returns a list of function names of object's own and prototype functions
-     *
-     * @func
-     * @memberOf R
-     * @category Object
-     * @sig {*} -> [String]
-     * @param {Object} obj The objects with functions in it
-     * @return {Array} A list of the object's own properties and prototype
-     *         properties that map to functions.
-     * @example
-     *
-     *      R.functionsIn(R); // returns list of ramda's own and prototype function names
-     *
-     *      var F = function() { this.x = function(){}; this.y = 1; }
-     *      F.prototype.z = function() {};
-     *      F.prototype.a = 100;
-     *      R.functionsIn(new F()); //=> ["x", "z"]
-     */
-    var functionsIn = _curry1(_functionsWith(keysIn));
-
-    /**
-     * Splits a list into sub-lists stored in an object, based on the result of calling a String-returning function
-     * on each element, and grouping the results according to values returned.
-     *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a -> String) -> [a] -> {String: [a]}
-     * @param {Function} fn Function :: a -> String
-     * @param {Array} list The array to group
-     * @return {Object} An object with the output of `fn` for keys, mapped to arrays of elements
-     *         that produced that key when passed to `fn`.
-     * @example
-     *
-     *      var byGrade = R.groupBy(function(student) {
-     *        var score = student.score;
-     *        return score < 65 ? 'F' :
-     *               score < 70 ? 'D' :
-     *               score < 80 ? 'C' :
-     *               score < 90 ? 'B' : 'A';
-     *      });
-     *      var students = [{name: 'Abby', score: 84},
-     *                      {name: 'Eddy', score: 58},
-     *                      // ...
-     *                      {name: 'Jack', score: 69}];
-     *      byGrade(students);
-     *      // {
-     *      //   'A': [{name: 'Dianne', score: 99}],
-     *      //   'B': [{name: 'Abby', score: 84}]
-     *      //   // ...,
-     *      //   'F': [{name: 'Eddy', score: 58}]
-     *      // }
-     */
-    var groupBy = _curry2(_dispatchable('groupBy', _xgroupBy, function groupBy(fn, list) {
-        return _reduce(function (acc, elt) {
-            var key = fn(elt);
-            acc[key] = append(elt, acc[key] || (acc[key] = []));
-            return acc;
-        }, {}, list);
-    }));
-
-    /**
      * Returns the first element of the given list or string. In some libraries
      * this function is named `first`.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
-     * @see R.tail, R.init, R.last
      * @sig [a] -> a | Undefined
      * @sig String -> String
-     * @param {*} list
+     * @param {Array|String} list
      * @return {*}
+     * @see R.tail, R.init, R.last
      * @example
      *
      *      R.head(['fi', 'fo', 'fum']); //=> 'fi'
@@ -4896,21 +5666,47 @@
     var head = nth(0);
 
     /**
-     * Combines two lists into a set (i.e. no duplicates) composed of those
-     * elements common to both lists.  Duplication is determined according
-     * to the value returned by applying the supplied predicate to two list
-     * elements.
+     * Returns all but the last element of the given list or string.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
+     * @category List
+     * @sig [a] -> [a]
+     * @sig String -> String
+     * @param {*} list
+     * @return {*}
+     * @see R.last, R.head, R.tail
+     * @example
+     *
+     *      R.init([1, 2, 3]);  //=> [1, 2]
+     *      R.init([1, 2]);     //=> [1]
+     *      R.init([1]);        //=> []
+     *      R.init([]);         //=> []
+     *
+     *      R.init('abc');  //=> 'ab'
+     *      R.init('ab');   //=> 'a'
+     *      R.init('a');    //=> ''
+     *      R.init('');     //=> ''
+     */
+    var init = slice(0, -1);
+
+    /**
+     * Combines two lists into a set (i.e. no duplicates) composed of those
+     * elements common to both lists. Duplication is determined according to the
+     * value returned by applying the supplied predicate to two list elements.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category Relation
-     * @sig (a,a -> Boolean) -> [a] -> [a] -> [a]
+     * @sig (a -> a -> Boolean) -> [*] -> [*] -> [*]
      * @param {Function} pred A predicate function that determines whether
      *        the two supplied elements are equal.
      * @param {Array} list1 One list of items to compare
      * @param {Array} list2 A second list of items to compare
-     * @see R.intersection
      * @return {Array} A new list containing those elements common to both lists.
+     * @see R.intersection
      * @example
      *
      *      var buffaloSpringfield = [
@@ -4927,16 +5723,23 @@
      *        {id: 177, name: 'Neil Young'}
      *      ];
      *
-     *      var sameId = function(o1, o2) {return o1.id === o2.id;};
-     *
-     *      R.intersectionWith(sameId, buffaloSpringfield, csny);
+     *      R.intersectionWith(R.eqBy(R.prop('id')), buffaloSpringfield, csny);
      *      //=> [{id: 456, name: 'Stephen Stills'}, {id: 177, name: 'Neil Young'}]
      */
     var intersectionWith = _curry3(function intersectionWith(pred, list1, list2) {
-        var results = [], idx = 0;
-        while (idx < list1.length) {
-            if (_containsWith(pred, list1[idx], list2)) {
-                results[results.length] = list1[idx];
+        var lookupList, filteredList;
+        if (list1.length > list2.length) {
+            lookupList = list1;
+            filteredList = list2;
+        } else {
+            lookupList = list2;
+            filteredList = list1;
+        }
+        var results = [];
+        var idx = 0;
+        while (idx < filteredList.length) {
+            if (_containsWith(pred, filteredList[idx], lookupList)) {
+                results[results.length] = filteredList[idx];
             }
             idx += 1;
         }
@@ -4944,52 +5747,26 @@
     });
 
     /**
-     * Creates a new list with the separator interposed between elements.
+     * Transforms the items of the list with the transducer and appends the
+     * transformed items to the accumulator using an appropriate iterator function
+     * based on the accumulator type.
      *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig a -> [a] -> [a]
-     * @param {*} separator The element to add to the list.
-     * @param {Array} list The list to be interposed.
-     * @return {Array} The new list.
-     * @example
+     * The accumulator can be an array, string, object or a transformer. Iterated
+     * items will be appended to arrays and concatenated to strings. Objects will
+     * be merged directly or 2-item arrays will be merged as key, value pairs.
      *
-     *      R.intersperse('n', ['ba', 'a', 'a']); //=> ['ba', 'n', 'a', 'n', 'a']
-     */
-    var intersperse = _curry2(_checkForMethod('intersperse', function intersperse(separator, list) {
-        var out = [];
-        var idx = 0;
-        var length = list.length;
-        while (idx < length) {
-            if (idx === length - 1) {
-                out.push(list[idx]);
-            } else {
-                out.push(list[idx], separator);
-            }
-            idx += 1;
-        }
-        return out;
-    }));
-
-    /**
-     * Transforms the items of the list with the transducer and appends the transformed items to
-     * the accumulator using an appropriate iterator function based on the accumulator type.
-     *
-     * The accumulator can be an array, string, object or a transformer. Iterated items will
-     * be appended to arrays and concatenated to strings. Objects will be merged directly or 2-item
-     * arrays will be merged as key, value pairs.
-     *
-     * The accumulator can also be a transformer object that provides a 2-arity reducing iterator
-     * function, step, 0-arity initial value function, init, and 1-arity result extraction function
-     * result. The step function is used as the iterator function in reduce. The result function is
-     * used to convert the final accumulator into the return type and in most cases is R.identity.
-     * The init function is used to provide the initial accumulator.
+     * The accumulator can also be a transformer object that provides a 2-arity
+     * reducing iterator function, step, 0-arity initial value function, init, and
+     * 1-arity result extraction function result. The step function is used as the
+     * iterator function in reduce. The result function is used to convert the
+     * final accumulator into the return type and in most cases is R.identity. The
+     * init function is used to provide the initial accumulator.
      *
      * The iteration is performed with R.reduce after initializing the transducer.
      *
      * @func
      * @memberOf R
+     * @since v0.12.0
      * @category List
      * @sig a -> (b -> b) -> [c] -> a
      * @param {*} acc The initial accumulator value.
@@ -5007,16 +5784,16 @@
      *      intoArray(transducer, numbers); //=> [2, 3]
      */
     var into = _curry3(function into(acc, xf, list) {
-        return _isTransformer(acc) ? _reduce(xf(acc), acc['@@transducer/init'](), list) : _reduce(xf(_stepCat(acc)), acc, list);
+        return _isTransformer(acc) ? _reduce(xf(acc), acc['@@transducer/init'](), list) : _reduce(xf(_stepCat(acc)), _clone(acc, [], [], false), list);
     });
 
     /**
-     * Same as R.invertObj, however this accounts for objects
-     * with duplicate values by putting the values into an
-     * array.
+     * Same as R.invertObj, however this accounts for objects with duplicate values
+     * by putting the values into an array.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Object
      * @sig {s: x} -> {x: [ s, ... ]}
      * @param {Object} obj The object or array to invert
@@ -5048,11 +5825,13 @@
     });
 
     /**
-     * Returns a new object with the keys of the given object
-     * as values, and the values of the given object as keys.
+     * Returns a new object with the keys of the given object as values, and the
+     * values of the given object, which are coerced to strings, as keys. Note
+     * that the last key found is preferred when handling the same value.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Object
      * @sig {s: x} -> {x: s}
      * @param {Object} obj The object or array to invert
@@ -5085,16 +5864,42 @@
     });
 
     /**
+     * Returns `true` if the given value is its type's empty value; `false`
+     * otherwise.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category Logic
+     * @sig a -> Boolean
+     * @param {*} x
+     * @return {Boolean}
+     * @see R.empty
+     * @example
+     *
+     *      R.isEmpty([1, 2, 3]);   //=> false
+     *      R.isEmpty([]);          //=> true
+     *      R.isEmpty('');          //=> true
+     *      R.isEmpty(null);        //=> false
+     *      R.isEmpty({});          //=> true
+     *      R.isEmpty({length: 0}); //=> false
+     */
+    var isEmpty = _curry1(function isEmpty(x) {
+        return x != null && equals(x, empty(x));
+    });
+
+    /**
      * Returns the last element of the given list or string.
      *
      * @func
      * @memberOf R
+     * @since v0.1.4
      * @category List
-     * @see R.init, R.head, R.tail
      * @sig [a] -> a | Undefined
      * @sig String -> String
      * @param {*} list
      * @return {*}
+     * @see R.init, R.head, R.tail
      * @example
      *
      *      R.last(['fi', 'fo', 'fum']); //=> 'fum'
@@ -5106,12 +5911,13 @@
     var last = nth(-1);
 
     /**
-     * Returns the position of the last occurrence of an item in
-     * an array, or -1 if the item is not included in the array.
-     * `R.equals` is used to determine equality.
+     * Returns the position of the last occurrence of an item in an array, or -1 if
+     * the item is not included in the array. `R.equals` is used to determine
+     * equality.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig a -> [a] -> Number
      * @param {*} target The item to find.
@@ -5124,7 +5930,7 @@
      *      R.lastIndexOf(10, [1,2,3,4]); //=> -1
      */
     var lastIndexOf = _curry2(function lastIndexOf(target, xs) {
-        if (_hasMethod('lastIndexOf', xs)) {
+        if (typeof xs.lastIndexOf === 'function' && !_isArray(xs)) {
             return xs.lastIndexOf(target);
         } else {
             var idx = xs.length - 1;
@@ -5139,82 +5945,71 @@
     });
 
     /**
-     * Returns a new list, constructed by applying the supplied function to every element of the
-     * supplied list.
+     * Takes a function and
+     * a [functor](https://github.com/fantasyland/fantasy-land#functor),
+     * applies the function to each of the functor's values, and returns
+     * a functor of the same shape.
      *
-     * Note: `R.map` does not skip deleted or unassigned indices (sparse arrays), unlike the
-     * native `Array.prototype.map` method. For more details on this behavior, see:
-     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map#Description
+     * Ramda provides suitable `map` implementations for `Array` and `Object`,
+     * so this function may be applied to `[1, 2, 3]` or `{x: 1, y: 2, z: 3}`.
+     *
+     * Dispatches to the `map` method of the second argument, if present.
      *
      * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
+     *
+     * Also treats functions as functors and will compose them together.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
-     * @sig (a -> b) -> [a] -> [b]
+     * @sig Functor f => (a -> b) -> f a -> f b
      * @param {Function} fn The function to be called on every element of the input `list`.
      * @param {Array} list The list to be iterated over.
      * @return {Array} The new list.
+     * @see R.transduce, R.addIndex
      * @example
      *
-     *      var double = function(x) {
-     *        return x * 2;
-     *      };
+     *      var double = x => x * 2;
      *
      *      R.map(double, [1, 2, 3]); //=> [2, 4, 6]
+     *
+     *      R.map(double, {x: 1, y: 2, z: 3}); //=> {x: 2, y: 4, z: 6}
      */
-    var map = _curry2(_dispatchable('map', _xmap, _map));
+    var map = _curry2(_dispatchable('map', _xmap, function map(fn, functor) {
+        switch (Object.prototype.toString.call(functor)) {
+        case '[object Function]':
+            return curryN(functor.length, function () {
+                return fn.call(this, functor.apply(this, arguments));
+            });
+        case '[object Object]':
+            return _reduce(function (acc, key) {
+                acc[key] = fn(functor[key]);
+                return acc;
+            }, {}, keys(functor));
+        default:
+            return _map(fn, functor);
+        }
+    }));
 
     /**
-     * Map, but for objects. Creates an object with the same keys as `obj` and values
-     * generated by running each property of `obj` through `fn`. `fn` is passed one argument:
-     * *(value)*.
+     * An Object-specific version of `map`. The function is applied to three
+     * arguments: *(value, key, obj)*. If only the value is significant, use
+     * `map` instead.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Object
-     * @sig (v -> v) -> {k: v} -> {k: v}
-     * @param {Function} fn A function called for each property in `obj`. Its return value will
-     * become a new property on the return object.
-     * @param {Object} obj The object to iterate over.
-     * @return {Object} A new object with the same keys as `obj` and values that are the result
-     *         of running each property through `fn`.
+     * @sig ((*, String, Object) -> *) -> Object -> Object
+     * @param {Function} fn
+     * @param {Object} obj
+     * @return {Object}
+     * @see R.map
      * @example
      *
      *      var values = { x: 1, y: 2, z: 3 };
-     *      var double = function(num) {
-     *        return num * 2;
-     *      };
-     *
-     *      R.mapObj(double, values); //=> { x: 2, y: 4, z: 6 }
-     */
-    var mapObj = _curry2(function mapObj(fn, obj) {
-        return _reduce(function (acc, key) {
-            acc[key] = fn(obj[key]);
-            return acc;
-        }, {}, keys(obj));
-    });
-
-    /**
-     * Like `mapObj`, but but passes additional arguments to the predicate function. The
-     * predicate function is passed three arguments: *(value, key, obj)*.
-     *
-     * @func
-     * @memberOf R
-     * @category Object
-     * @sig (v, k, {k: v} -> v) -> {k: v} -> {k: v}
-     * @param {Function} fn A function called for each property in `obj`. Its return value will
-     *        become a new property on the return object.
-     * @param {Object} obj The object to iterate over.
-     * @return {Object} A new object with the same keys as `obj` and values that are the result
-     *         of running each property through `fn`.
-     * @example
-     *
-     *      var values = { x: 1, y: 2, z: 3 };
-     *      var prependKeyAndDouble = function(num, key, obj) {
-     *        return key + (num * 2);
-     *      };
+     *      var prependKeyAndDouble = (num, key, obj) => key + (num * 2);
      *
      *      R.mapObjIndexed(prependKeyAndDouble, values); //=> { x: 'x2', y: 'y4', z: 'z6' }
      */
@@ -5226,138 +6021,96 @@
     });
 
     /**
-     * Returns `true` if no elements of the list match the predicate,
-     * `false` otherwise.
+     * Creates a new object with the own properties of the two provided objects. If
+     * a key exists in both objects, the provided function is applied to the values
+     * associated with the key in each object, with the result being used as the
+     * value associated with the key in the returned object. The key will be
+     * excluded from the returned object if the resulting value is `undefined`.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> Boolean
-     * @param {Function} fn The predicate function.
-     * @param {Array} list The array to consider.
-     * @return {Boolean} `true` if the predicate is not satisfied by every element, `false` otherwise.
-     * @see R.all, R.any
+     * @since v0.19.0
+     * @category Object
+     * @sig (a -> a -> a) -> {a} -> {a} -> {a}
+     * @param {Function} fn
+     * @param {Object} l
+     * @param {Object} r
+     * @return {Object}
+     * @see R.merge, R.mergeWithKey
      * @example
      *
-     *      R.none(R.isNaN, [1, 2, 3]); //=> true
-     *      R.none(R.isNaN, [1, 2, 3, NaN]); //=> false
+     *      R.mergeWith(R.concat,
+     *                  { a: true, values: [10, 20] },
+     *                  { b: true, values: [15, 35] });
+     *      //=> { a: true, b: true, values: [10, 20, 15, 35] }
      */
-    var none = _curry2(_complement(_dispatchable('any', _xany, any)));
-
-    /**
-     * A function that returns the first truthy of two arguments otherwise the
-     * last argument. Note that this is NOT short-circuited, meaning that if
-     * expressions are passed they are both evaluated.
-     *
-     * Dispatches to the `or` method of the first argument if applicable.
-     *
-     * @func
-     * @memberOf R
-     * @category Logic
-     * @sig * -> * -> *
-     * @param {*} a any value
-     * @param {*} b any other value
-     * @return {*} the first truthy argument, otherwise the last argument.
-     * @see R.either
-     * @example
-     *
-     *      R.or(false, true); //=> true
-     *      R.or(0, []); //=> []
-     *      R.or(null, ''); => ''
-     */
-    var or = _curry2(function or(a, b) {
-        return _hasMethod('or', a) ? a.or(b) : a || b;
+    var mergeWith = _curry3(function mergeWith(fn, l, r) {
+        return mergeWithKey(function (_, _l, _r) {
+            return fn(_l, _r);
+        }, l, r);
     });
 
     /**
-     * Accepts as its arguments a function and any number of values and returns a function that,
-     * when invoked, calls the original function with all of the values prepended to the
-     * original function's arguments list. In some libraries this function is named `applyLeft`.
+     * Takes a function `f` and a list of arguments, and returns a function `g`.
+     * When applied, `g` returns the result of applying `f` to the arguments
+     * provided initially followed by the arguments provided to `g`.
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category Function
-     * @sig (a -> b -> ... -> i -> j -> ... -> m -> n) -> a -> b-> ... -> i -> (j -> ... -> m -> n)
-     * @param {Function} fn The function to invoke.
-     * @param {...*} [args] Arguments to prepend to `fn` when the returned function is invoked.
-     * @return {Function} A new function wrapping `fn`. When invoked, it will call `fn`
-     *         with `args` prepended to `fn`'s arguments list.
+     * @sig ((a, b, c, ..., n) -> x) -> [a, b, c, ...] -> ((d, e, f, ..., n) -> x)
+     * @param {Function} f
+     * @param {Array} args
+     * @return {Function}
+     * @see R.partialRight
      * @example
      *
-     *      var multiply = function(a, b) { return a * b; };
-     *      var double = R.partial(multiply, 2);
+     *      var multiply = (a, b) => a * b;
+     *      var double = R.partial(multiply, [2]);
      *      double(2); //=> 4
      *
-     *      var greet = function(salutation, title, firstName, lastName) {
-     *        return salutation + ', ' + title + ' ' + firstName + ' ' + lastName + '!';
-     *      };
-     *      var sayHello = R.partial(greet, 'Hello');
-     *      var sayHelloToMs = R.partial(sayHello, 'Ms.');
+     *      var greet = (salutation, title, firstName, lastName) =>
+     *        salutation + ', ' + title + ' ' + firstName + ' ' + lastName + '!';
+     *
+     *      var sayHello = R.partial(greet, ['Hello']);
+     *      var sayHelloToMs = R.partial(sayHello, ['Ms.']);
      *      sayHelloToMs('Jane', 'Jones'); //=> 'Hello, Ms. Jane Jones!'
      */
-    var partial = curry(_createPartialApplicator(_concat));
+    var partial = _createPartialApplicator(_concat);
 
     /**
-     * Accepts as its arguments a function and any number of values and returns a function that,
-     * when invoked, calls the original function with all of the values appended to the original
-     * function's arguments list.
-     *
-     * Note that `partialRight` is the opposite of `partial`: `partialRight` fills `fn`'s arguments
-     * from the right to the left.  In some libraries this function is named `applyRight`.
+     * Takes a function `f` and a list of arguments, and returns a function `g`.
+     * When applied, `g` returns the result of applying `f` to the arguments
+     * provided to `g` followed by the arguments provided initially.
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category Function
-     * @sig (a -> b-> ... -> i -> j -> ... -> m -> n) -> j -> ... -> m -> n -> (a -> b-> ... -> i)
-     * @param {Function} fn The function to invoke.
-     * @param {...*} [args] Arguments to append to `fn` when the returned function is invoked.
-     * @return {Function} A new function wrapping `fn`. When invoked, it will call `fn` with
-     *         `args` appended to `fn`'s arguments list.
+     * @sig ((a, b, c, ..., n) -> x) -> [d, e, f, ..., n] -> ((a, b, c, ...) -> x)
+     * @param {Function} f
+     * @param {Array} args
+     * @return {Function}
+     * @see R.partial
      * @example
      *
-     *      var greet = function(salutation, title, firstName, lastName) {
-     *        return salutation + ', ' + title + ' ' + firstName + ' ' + lastName + '!';
-     *      };
-     *      var greetMsJaneJones = R.partialRight(greet, 'Ms.', 'Jane', 'Jones');
+     *      var greet = (salutation, title, firstName, lastName) =>
+     *        salutation + ', ' + title + ' ' + firstName + ' ' + lastName + '!';
+     *
+     *      var greetMsJaneJones = R.partialRight(greet, ['Ms.', 'Jane', 'Jones']);
      *
      *      greetMsJaneJones('Hello'); //=> 'Hello, Ms. Jane Jones!'
      */
-    var partialRight = curry(_createPartialApplicator(flip(_concat)));
+    var partialRight = _createPartialApplicator(flip(_concat));
 
     /**
-     * Takes a predicate and a list and returns the pair of lists of
-     * elements which do and do not satisfy the predicate, respectively.
+     * Determines whether a nested path on an object has a specific value, in
+     * `R.equals` terms. Most likely used to filter a list.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> [[a],[a]]
-     * @param {Function} pred A predicate to determine which array the element belongs to.
-     * @param {Array} list The array to partition.
-     * @return {Array} A nested array, containing first an array of elements that satisfied the predicate,
-     *         and second an array of elements that did not satisfy.
-     * @example
-     *
-     *      R.partition(R.contains('s'), ['sss', 'ttt', 'foo', 'bars']);
-     *      //=> [ [ 'sss', 'bars' ],  [ 'ttt', 'foo' ] ]
-     */
-    var partition = _curry2(function partition(pred, list) {
-        return _reduce(function (acc, elt) {
-            var xs = acc[pred(elt) ? 0 : 1];
-            xs[xs.length] = elt;
-            return acc;
-        }, [
-            [],
-            []
-        ], list);
-    });
-
-    /**
-     * Determines whether a nested path on an object has a specific value,
-     * in `R.equals` terms. Most likely used to filter a list.
-     *
-     * @func
-     * @memberOf R
+     * @since v0.7.0
      * @category Relation
      * @sig [String] -> * -> {String: *} -> Boolean
      * @param {Array} path The path of the nested property to use
@@ -5379,15 +6132,18 @@
     });
 
     /**
-     * Returns a new list by plucking the same named property off all objects in the list supplied.
+     * Returns a new list by plucking the same named property off all objects in
+     * the list supplied.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig k -> [{k: v}] -> [v]
      * @param {Number|String} key The key name to pluck off of each object.
      * @param {Array} list The array to consider.
      * @return {Array} The list of values for the given key.
+     * @see R.props
      * @example
      *
      *      R.pluck('a')([{a: 1}, {a: 2}]); //=> [1, 2]
@@ -5398,11 +6154,37 @@
     });
 
     /**
+     * Reasonable analog to SQL `select` statement.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category Object
+     * @category Relation
+     * @sig [k] -> [{k: v}] -> [{k: v}]
+     * @param {Array} props The property names to project
+     * @param {Array} objs The objects to query
+     * @return {Array} An array of objects with just the `props` properties.
+     * @example
+     *
+     *      var abby = {name: 'Abby', age: 7, hair: 'blond', grade: 2};
+     *      var fred = {name: 'Fred', age: 12, hair: 'brown', grade: 7};
+     *      var kids = [abby, fred];
+     *      R.project(['name', 'grade'], kids); //=> [{name: 'Abby', grade: 2}, {name: 'Fred', grade: 7}]
+     */
+    // passing `identity` gives correct arity
+    var project = useWith(_map, [
+        pickAll,
+        identity
+    ]);
+
+    /**
      * Returns `true` if the specified object property is equal, in `R.equals`
      * terms, to the given value; `false` otherwise.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
      * @sig String -> a -> Object -> Boolean
      * @param {String} name
@@ -5421,90 +6203,155 @@
      *      R.filter(hasBrownHair, kids); //=> [fred, rusty]
      */
     var propEq = _curry3(function propEq(name, val, obj) {
-        return propSatisfies(equals(val), name, obj);
+        return equals(val, obj[name]);
     });
 
     /**
-     * Returns `true` if the specified object property is of the given type;
-     * `false` otherwise.
+     * Returns a single item by iterating through the list, successively calling
+     * the iterator function and passing it an accumulator value and the current
+     * value from the array, and then passing the result to the next call.
      *
-     * @func
-     * @memberOf R
-     * @category Type
-     * @sig Type -> String -> Object -> Boolean
-     * @param {Function} type
-     * @param {String} name
-     * @param {*} obj
-     * @return {Boolean}
-     * @see R.is
-     * @see R.propSatisfies
-     * @example
+     * The iterator function receives two values: *(acc, value)*. It may use
+     * `R.reduced` to shortcut the iteration.
      *
-     *      R.propIs(Number, 'x', {x: 1, y: 2});  //=> true
-     *      R.propIs(Number, 'x', {x: 'foo'});    //=> false
-     *      R.propIs(Number, 'x', {});            //=> false
-     */
-    var propIs = _curry3(function propIs(type, name, obj) {
-        return propSatisfies(is(type), name, obj);
-    });
-
-    /**
-     * Returns a single item by iterating through the list, successively calling the iterator
-     * function and passing it an accumulator value and the current value from the array, and
-     * then passing the result to the next call.
-     *
-     * The iterator function receives two values: *(acc, value)*.  It may use `R.reduced` to
-     * shortcut the iteration.
-     *
-     * Note: `R.reduce` does not skip deleted or unassigned indices (sparse arrays), unlike
-     * the native `Array.prototype.reduce` method. For more details on this behavior, see:
+     * Note: `R.reduce` does not skip deleted or unassigned indices (sparse
+     * arrays), unlike the native `Array.prototype.reduce` method. For more details
+     * on this behavior, see:
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce#Description
-     * @see R.reduced
+     *
+     * Dispatches to the `reduce` method of the third argument, if present.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
-     * @sig (a,b -> a) -> a -> [b] -> a
+     * @sig ((a, b) -> a) -> a -> [b] -> a
      * @param {Function} fn The iterator function. Receives two values, the accumulator and the
      *        current element from the array.
      * @param {*} acc The accumulator value.
      * @param {Array} list The list to iterate over.
      * @return {*} The final, accumulated value.
+     * @see R.reduced, R.addIndex
      * @example
      *
      *      var numbers = [1, 2, 3];
-     *      var add = function(a, b) {
-     *        return a + b;
-     *      };
+     *      var plus = (a, b) => a + b;
      *
-     *      R.reduce(add, 10, numbers); //=> 16
+     *      R.reduce(plus, 10, numbers); //=> 16
      */
     var reduce = _curry3(_reduce);
 
     /**
-     * Similar to `filter`, except that it keeps only values for which the given predicate
-     * function returns falsy. The predicate function is passed one argument: *(value)*.
+     * Groups the elements of the list according to the result of calling
+     * the String-returning function `keyFn` on each element and reduces the elements
+     * of each group to a single value via the reducer function `valueFn`.
+     *
+     * This function is basically a more general `groupBy` function.
      *
      * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
      *
      * @func
      * @memberOf R
+     * @since v0.20.0
      * @category List
-     * @sig (a -> Boolean) -> [a] -> [a]
-     * @param {Function} fn The function called per iteration.
-     * @param {Array} list The collection to iterate over.
-     * @return {Array} The new filtered array.
-     * @see R.filter
+     * @sig ((a, b) -> a) -> a -> (b -> String) -> [b] -> {String: a}
+     * @param {Function} valueFn The function that reduces the elements of each group to a single
+     *        value. Receives two values, accumulator for a particular group and the current element.
+     * @param {*} acc The (initial) accumulator value for each group.
+     * @param {Function} keyFn The function that maps the list's element into a key.
+     * @param {Array} list The array to group.
+     * @return {Object} An object with the output of `keyFn` for keys, mapped to the output of
+     *         `valueFn` for elements which produced that key when passed to `keyFn`.
+     * @see R.groupBy, R.reduce
      * @example
      *
-     *      var isOdd = function(n) {
-     *        return n % 2 === 1;
-     *      };
-     *      R.reject(isOdd, [1, 2, 3, 4]); //=> [2, 4]
+     *      var reduceToNamesBy = R.reduceBy((acc, student) => acc.concat(student.name), []);
+     *      var namesByGrade = reduceToNamesBy(function(student) {
+     *        var score = student.score;
+     *        return score < 65 ? 'F' :
+     *               score < 70 ? 'D' :
+     *               score < 80 ? 'C' :
+     *               score < 90 ? 'B' : 'A';
+     *      });
+     *      var students = [{name: 'Lucy', score: 92},
+     *                      {name: 'Drew', score: 85},
+     *                      // ...
+     *                      {name: 'Bart', score: 62}];
+     *      namesByGrade(students);
+     *      // {
+     *      //   'A': ['Lucy'],
+     *      //   'B': ['Drew']
+     *      //   // ...,
+     *      //   'F': ['Bart']
+     *      // }
      */
-    var reject = _curry2(function reject(fn, list) {
-        return filter(_complement(fn), list);
+    var reduceBy = _curryN(4, [], _dispatchable('reduceBy', _xreduceBy, function reduceBy(valueFn, valueAcc, keyFn, list) {
+        return _reduce(function (acc, elt) {
+            var key = keyFn(elt);
+            acc[key] = valueFn(_has(key, acc) ? acc[key] : valueAcc, elt);
+            return acc;
+        }, {}, list);
+    }));
+
+    /**
+     * Like `reduce`, `reduceWhile` returns a single item by iterating through
+     * the list, successively calling the iterator function. `reduceWhile` also
+     * takes a predicate that is evaluated before each step. If the predicate returns
+     * `false`, it "short-circuits" the iteration and returns the current value
+     * of the accumulator.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.22.0
+     * @category List
+     * @sig ((a, b) -> Boolean) -> ((a, b) -> a) -> a -> [b] -> a
+     * @param {Function} pred The predicate. It is passed the accumulator and the
+     *        current element.
+     * @param {Function} fn The iterator function. Receives two values, the
+     *        accumulator and the current element.
+     * @param {*} a The accumulator value.
+     * @param {Array} list The list to iterate over.
+     * @return {*} The final, accumulated value.
+     * @see R.reduce, R.reduced
+     * @example
+     *
+     *      var isOdd = (acc, x) => x % 2 === 1;
+     *      var xs = [1, 3, 5, 60, 777, 800];
+     *      R.reduceWhile(isOdd, R.add, 0, xs); //=> 9
+     *
+     *      var ys = [2, 4, 6]
+     *      R.reduceWhile(isOdd, R.add, 111, ys); //=> 111
+     */
+    var reduceWhile = _curryN(4, [], function _reduceWhile(pred, fn, a, list) {
+        return _reduce(function (acc, x) {
+            return pred(acc, x) ? fn(acc, x) : _reduced(acc);
+        }, a, list);
+    });
+
+    /**
+     * The complement of `filter`.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig Filterable f => (a -> Boolean) -> f a -> f a
+     * @param {Function} pred
+     * @param {Array} filterable
+     * @return {Array}
+     * @see R.filter, R.transduce, R.addIndex
+     * @example
+     *
+     *      var isOdd = (n) => n % 2 === 1;
+     *
+     *      R.reject(isOdd, [1, 2, 3, 4]); //=> [2, 4]
+     *
+     *      R.reject(isOdd, {a: 1, b: 2, c: 3, d: 4}); //=> {b: 2, d: 4}
+     */
+    var reject = _curry2(function reject(pred, filterable) {
+        return filter(_complement(pred), filterable);
     });
 
     /**
@@ -5512,6 +6359,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.1
      * @category List
      * @sig a -> n -> [a]
      * @param {*} value The value to repeat.
@@ -5530,63 +6378,11 @@
     });
 
     /**
-     * Returns the elements of the given list or string (or object with a `slice`
-     * method) from `fromIndex` (inclusive) to `toIndex` (exclusive).
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig Number -> Number -> [a] -> [a]
-     * @sig Number -> Number -> String -> String
-     * @param {Number} fromIndex The start index (inclusive).
-     * @param {Number} toIndex The end index (exclusive).
-     * @param {*} list
-     * @return {*}
-     * @example
-     *
-     *      R.slice(1, 3, ['a', 'b', 'c', 'd']);        //=> ['b', 'c']
-     *      R.slice(1, Infinity, ['a', 'b', 'c', 'd']); //=> ['b', 'c', 'd']
-     *      R.slice(0, -1, ['a', 'b', 'c', 'd']);       //=> ['a', 'b', 'c']
-     *      R.slice(-3, -1, ['a', 'b', 'c', 'd']);      //=> ['b', 'c']
-     *      R.slice(0, 3, 'ramda');                     //=> 'ram'
-     */
-    var slice = _curry3(_checkForMethod('slice', function slice(fromIndex, toIndex, list) {
-        return Array.prototype.slice.call(list, fromIndex, toIndex);
-    }));
-
-    /**
-     * Splits a collection into slices of the specified length.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig Number -> [a] -> [[a]]
-     * @sig Number -> String -> [String]
-     * @param {Number} n
-     * @param {Array} list
-     * @return {Array}
-     * @example
-     *
-     *      R.splitEvery(3, [1, 2, 3, 4, 5, 6, 7]); //=> [[1, 2, 3], [4, 5, 6], [7]]
-     *      R.splitEvery(3, 'foobarbaz'); //=> ['foo', 'bar', 'baz']
-     */
-    var splitEvery = _curry2(function splitEvery(n, list) {
-        if (n <= 0) {
-            throw new Error('First argument to splitEvery must be a positive integer');
-        }
-        var result = [];
-        var idx = 0;
-        while (idx < list.length) {
-            result.push(slice(idx, idx += n, list));
-        }
-        return result;
-    });
-
-    /**
      * Adds together all the elements of a list.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Math
      * @sig [Number] -> Number
      * @param {Array} list An array of numbers
@@ -5599,130 +6395,59 @@
     var sum = reduce(add, 0);
 
     /**
-     * Returns all but the first element of the given list or string (or object
-     * with a `tail` method).
+     * Returns a new list containing the last `n` elements of the given list.
+     * If `n > list.length`, returns a list of `list.length` elements.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @see R.head, R.init, R.last
-     * @sig [a] -> [a]
-     * @sig String -> String
-     * @param {*} list
-     * @return {*}
-     * @example
-     *
-     *      R.tail([1, 2, 3]);  //=> [2, 3]
-     *      R.tail([1, 2]);     //=> [2]
-     *      R.tail([1]);        //=> []
-     *      R.tail([]);         //=> []
-     *
-     *      R.tail('abc');  //=> 'bc'
-     *      R.tail('ab');   //=> 'b'
-     *      R.tail('a');    //=> ''
-     *      R.tail('');     //=> ''
-     */
-    var tail = _checkForMethod('tail', slice(1, Infinity));
-
-    /**
-     * Returns the first `n` elements of the given list, string, or
-     * transducer/transformer (or object with a `take` method).
-     *
-     * @func
-     * @memberOf R
+     * @since v0.16.0
      * @category List
      * @sig Number -> [a] -> [a]
      * @sig Number -> String -> String
-     * @param {Number} n
-     * @param {*} list
-     * @return {*}
-     * @see R.drop
+     * @param {Number} n The number of elements to return.
+     * @param {Array} xs The collection to consider.
+     * @return {Array}
+     * @see R.dropLast
      * @example
      *
-     *      R.take(1, ['foo', 'bar', 'baz']); //=> ['foo']
-     *      R.take(2, ['foo', 'bar', 'baz']); //=> ['foo', 'bar']
-     *      R.take(3, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
-     *      R.take(4, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
-     *      R.take(3, 'ramda');               //=> 'ram'
-     *
-     *      var personnel = [
-     *        'Dave Brubeck',
-     *        'Paul Desmond',
-     *        'Eugene Wright',
-     *        'Joe Morello',
-     *        'Gerry Mulligan',
-     *        'Bob Bates',
-     *        'Joe Dodge',
-     *        'Ron Crotty'
-     *      ];
-     *
-     *      var takeFive = R.take(5);
-     *      takeFive(personnel);
-     *      //=> ['Dave Brubeck', 'Paul Desmond', 'Eugene Wright', 'Joe Morello', 'Gerry Mulligan']
+     *      R.takeLast(1, ['foo', 'bar', 'baz']); //=> ['baz']
+     *      R.takeLast(2, ['foo', 'bar', 'baz']); //=> ['bar', 'baz']
+     *      R.takeLast(3, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
+     *      R.takeLast(4, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
+     *      R.takeLast(3, 'ramda');               //=> 'mda'
      */
-    var take = _curry2(_dispatchable('take', _xtake, function take(n, xs) {
-        return slice(0, n < 0 ? Infinity : n, xs);
-    }));
+    var takeLast = _curry2(function takeLast(n, xs) {
+        return drop(n >= 0 ? xs.length - n : 0, xs);
+    });
 
     /**
-     * Returns a new list containing the first `n` elements of a given list, passing each value
-     * to the supplied predicate function, and terminating when the predicate function returns
-     * `false`. Excludes the element that caused the predicate function to fail. The predicate
-     * function is passed one argument: *(value)*.
+     * Initializes a transducer using supplied iterator function. Returns a single
+     * item by iterating through the list, successively calling the transformed
+     * iterator function and passing it an accumulator value and the current value
+     * from the array, and then passing the result to the next call.
      *
-     * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
+     * The iterator function receives two values: *(acc, value)*. It will be
+     * wrapped as a transformer to initialize the transducer. A transformer can be
+     * passed directly in place of an iterator function. In both cases, iteration
+     * may be stopped early with the `R.reduced` function.
      *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig (a -> Boolean) -> [a] -> [a]
-     * @param {Function} fn The function called per iteration.
-     * @param {Array} list The collection to iterate over.
-     * @return {Array} A new array.
-     * @see R.dropWhile
-     * @example
+     * A transducer is a function that accepts a transformer and returns a
+     * transformer and can be composed directly.
      *
-     *      var isNotFour = function(x) {
-     *        return !(x === 4);
-     *      };
-     *
-     *      R.takeWhile(isNotFour, [1, 2, 3, 4]); //=> [1, 2, 3]
-     */
-    var takeWhile = _curry2(_dispatchable('takeWhile', _xtakeWhile, function takeWhile(fn, list) {
-        var idx = 0, len = list.length;
-        while (idx < len && fn(list[idx])) {
-            idx += 1;
-        }
-        return _slice(list, 0, idx);
-    }));
-
-    /**
-     * Initializes a transducer using supplied iterator function. Returns a single item by
-     * iterating through the list, successively calling the transformed iterator function and
-     * passing it an accumulator value and the current value from the array, and then passing
-     * the result to the next call.
-     *
-     * The iterator function receives two values: *(acc, value)*. It will be wrapped as a
-     * transformer to initialize the transducer. A transformer can be passed directly in place
-     * of an iterator function.  In both cases, iteration may be stopped early with the
-     * `R.reduced` function.
-     *
-     * A transducer is a function that accepts a transformer and returns a transformer and can
-     * be composed directly.
-     *
-     * A transformer is an an object that provides a 2-arity reducing iterator function, step,
-     * 0-arity initial value function, init, and 1-arity result extraction function, result.
-     * The step function is used as the iterator function in reduce. The result function is used
-     * to convert the final accumulator into the return type and in most cases is R.identity.
-     * The init function can be used to provide an initial accumulator, but is ignored by transduce.
+     * A transformer is an an object that provides a 2-arity reducing iterator
+     * function, step, 0-arity initial value function, init, and 1-arity result
+     * extraction function, result. The step function is used as the iterator
+     * function in reduce. The result function is used to convert the final
+     * accumulator into the return type and in most cases is R.identity. The init
+     * function can be used to provide an initial accumulator, but is ignored by
+     * transduce.
      *
      * The iteration is performed with R.reduce after initializing the transducer.
      *
      * @func
      * @memberOf R
+     * @since v0.12.0
      * @category List
-     * @see R.reduce, R.reduced, R.into
      * @sig (c -> c) -> (a,b -> a) -> a -> [b] -> a
      * @param {Function} xf The transducer function. Receives a transformer and returns a transformer.
      * @param {Function} fn The iterator function. Receives two values, the accumulator and the
@@ -5731,6 +6456,7 @@
      * @param {*} acc The initial accumulator value.
      * @param {Array} list The list to iterate over.
      * @return {*} The final, accumulated value.
+     * @see R.reduce, R.reduced, R.into
      * @example
      *
      *      var numbers = [1, 2, 3, 4];
@@ -5743,13 +6469,15 @@
     });
 
     /**
-     * Combines two lists into a set (i.e. no duplicates) composed of the elements of each list.  Duplication is
-     * determined according to the value returned by applying the supplied predicate to two list elements.
+     * Combines two lists into a set (i.e. no duplicates) composed of the elements
+     * of each list. Duplication is determined according to the value returned by
+     * applying the supplied predicate to two list elements.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
-     * @sig (a,a -> Boolean) -> [a] -> [a] -> [a]
+     * @sig (a -> a -> Boolean) -> [*] -> [*] -> [*]
      * @param {Function} pred A predicate used to test whether two items are equal.
      * @param {Array} list1 The first list.
      * @param {Array} list2 The second list.
@@ -5758,109 +6486,12 @@
      * @see R.union
      * @example
      *
-     *      function cmp(x, y) { return x.a === y.a; }
      *      var l1 = [{a: 1}, {a: 2}];
      *      var l2 = [{a: 1}, {a: 4}];
-     *      R.unionWith(cmp, l1, l2); //=> [{a: 1}, {a: 2}, {a: 4}]
+     *      R.unionWith(R.eqBy(R.prop('a')), l1, l2); //=> [{a: 1}, {a: 2}, {a: 4}]
      */
     var unionWith = _curry3(function unionWith(pred, list1, list2) {
         return uniqWith(pred, _concat(list1, list2));
-    });
-
-    /**
-     * Returns a new list containing only one copy of each element in the original list.
-     * `R.equals` is used to determine equality.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig [a] -> [a]
-     * @param {Array} list The array to consider.
-     * @return {Array} The list of unique items.
-     * @example
-     *
-     *      R.uniq([1, 1, 2, 1]); //=> [1, 2]
-     *      R.uniq([1, '1']);     //=> [1, '1']
-     *      R.uniq([[42], [42]]); //=> [[42]]
-     */
-    var uniq = uniqWith(equals);
-
-    /**
-     * Returns a new list by pulling every item at the first level of nesting out, and putting
-     * them in a new array.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig [a] -> [b]
-     * @param {Array} list The array to consider.
-     * @return {Array} The flattened list.
-     * @see R.flatten
-     * @example
-     *
-     *      R.unnest([1, [2], [[3]]]); //=> [1, 2, [3]]
-     *      R.unnest([[1, 2], [3, 4], [5, 6]]); //=> [1, 2, 3, 4, 5, 6]
-     */
-    var unnest = _curry1(_makeFlat(false));
-
-    /**
-     * Accepts a function `fn` and any number of transformer functions and returns a new
-     * function. When the new function is invoked, it calls the function `fn` with parameters
-     * consisting of the result of calling each supplied handler on successive arguments to the
-     * new function.
-     *
-     * If more arguments are passed to the returned function than transformer functions, those
-     * arguments are passed directly to `fn` as additional parameters. If you expect additional
-     * arguments that don't need to be transformed, although you can ignore them, it's best to
-     * pass an identity function so that the new function reports the correct arity.
-     *
-     * @func
-     * @memberOf R
-     * @category Function
-     * @sig (x1 -> x2 -> ... -> z) -> ((a -> x1), (b -> x2), ...) -> (a -> b -> ... -> z)
-     * @param {Function} fn The function to wrap.
-     * @param {...Function} transformers A variable number of transformer functions
-     * @return {Function} The wrapped function.
-     * @example
-     *
-     *      var double = function(y) { return y * 2; };
-     *      var square = function(x) { return x * x; };
-     *      var add = function(a, b) { return a + b; };
-     *      // Adds any number of arguments together
-     *      var addAll = function() {
-     *        return R.reduce(add, 0, arguments);
-     *      };
-     *
-     *      // Basic example
-     *      var addDoubleAndSquare = R.useWith(addAll, double, square);
-     *
-     *      //? addAll(double(10), square(5));
-     *      addDoubleAndSquare(10, 5); //=> 45
-     *
-     *      // Example of passing more arguments than transformers
-     *      //? addAll(double(10), square(5), 100);
-     *      addDoubleAndSquare(10, 5, 100); //=> 145
-     *
-     *      // If there are extra _expected_ arguments that don't need to be transformed, although
-     *      // you can ignore them, it might be best to pass in the identity function so that the new
-     *      // function correctly reports arity.
-     *      var addDoubleAndSquareWithExtraParams = R.useWith(addAll, double, square, R.identity);
-     *      // addDoubleAndSquareWithExtraParams.length //=> 3
-     *      //? addAll(double(10), square(5), R.identity(100));
-     *      addDoubleAndSquare(10, 5, 100); //=> 145
-     */
-    /*, transformers */
-    var useWith = curry(function useWith(fn) {
-        var transformers = _slice(arguments, 1);
-        var tlen = transformers.length;
-        return curry(_arity(tlen, function () {
-            var args = [], idx = 0;
-            while (idx < tlen) {
-                args[idx] = transformers[idx](arguments[idx]);
-                idx += 1;
-            }
-            return fn.apply(this, args.concat(_slice(arguments, tlen)));
-        }));
     });
 
     /**
@@ -5873,6 +6504,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category Object
      * @sig {String: *} -> {String: *} -> Boolean
      * @param {Object} spec
@@ -5890,7 +6522,7 @@
      *      pred({a: 1, b: 1});        //=> false
      */
     var whereEq = _curry2(function whereEq(spec, testObj) {
-        return where(mapObj(equals, spec), testObj);
+        return where(map(equals, spec), testObj);
     });
 
     var _flatCat = function () {
@@ -5920,10 +6552,59 @@
         };
     }();
 
-    var _indexOf = function _indexOf(list, item, from) {
-        var idx = from;
+    // Array.prototype.indexOf doesn't exist below IE9
+    // manually crawl the list to distinguish between +0 and -0
+    // NaN
+    // non-zero numbers can utilise Set
+    // all these types can utilise Set
+    // null can utilise Set
+    // anything else not covered above, defer to R.equals
+    var _indexOf = function _indexOf(list, a, idx) {
+        var inf, item;
+        // Array.prototype.indexOf doesn't exist below IE9
+        if (typeof list.indexOf === 'function') {
+            switch (typeof a) {
+            case 'number':
+                if (a === 0) {
+                    // manually crawl the list to distinguish between +0 and -0
+                    inf = 1 / a;
+                    while (idx < list.length) {
+                        item = list[idx];
+                        if (item === 0 && 1 / item === inf) {
+                            return idx;
+                        }
+                        idx += 1;
+                    }
+                    return -1;
+                } else if (a !== a) {
+                    // NaN
+                    while (idx < list.length) {
+                        item = list[idx];
+                        if (typeof item === 'number' && item !== item) {
+                            return idx;
+                        }
+                        idx += 1;
+                    }
+                    return -1;
+                }
+                // non-zero numbers can utilise Set
+                return list.indexOf(a, idx);
+            // all these types can utilise Set
+            case 'string':
+            case 'boolean':
+            case 'function':
+            case 'undefined':
+                return list.indexOf(a, idx);
+            case 'object':
+                if (a === null) {
+                    // null can utilise Set
+                    return list.indexOf(a, idx);
+                }
+            }
+        }
+        // anything else not covered above, defer to R.equals
         while (idx < list.length) {
-            if (equals(list[idx], item)) {
+            if (equals(list[idx], a)) {
                 return idx;
             }
             idx += 1;
@@ -5931,85 +6612,99 @@
         return -1;
     };
 
-    /**
-     * Create a predicate wrapper which will call a pick function (all/any) for each predicate
-     *
-     * @private
-     * @see R.all
-     * @see R.any
-     */
-    // Call function immediately if given arguments
-    // Return a function which will call the predicates with the provided arguments
-    var _predicateWrap = function _predicateWrap(predPicker) {
-        return function (preds) {
-            var predIterator = function () {
-                var args = arguments;
-                return predPicker(function (predicate) {
-                    return predicate.apply(null, args);
-                }, preds);
-            };
-            return arguments.length > 1 ? // Call function immediately if given arguments
-            predIterator.apply(null, _slice(arguments, 1)) : // Return a function which will call the predicates with the provided arguments
-            _arity(Math.max.apply(Math, pluck('length', preds)), predIterator);
-        };
-    };
-
     var _xchain = _curry2(function _xchain(f, xf) {
         return map(f, _flatCat(xf));
     });
 
     /**
-     * Given a list of predicates, returns a new predicate that will be true exactly when all of them are.
+     * Takes a list of predicates and returns a predicate that returns true for a
+     * given list of arguments if every one of the provided predicates is satisfied
+     * by those arguments.
+     *
+     * The function returned is a curried function whose arity matches that of the
+     * highest-arity predicate.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Logic
      * @sig [(*... -> Boolean)] -> (*... -> Boolean)
-     * @param {Array} list An array of predicate functions
-     * @param {*} optional Any arguments to pass into the predicates
-     * @return {Function} a function that applies its arguments to each of
-     *         the predicates, returning `true` if all are satisfied.
+     * @param {Array} preds
+     * @return {Function}
      * @see R.anyPass
      * @example
      *
-     *      var gt10 = function(x) { return x > 10; };
-     *      var even = function(x) { return x % 2 === 0};
-     *      var f = R.allPass([gt10, even]);
-     *      f(11); //=> false
-     *      f(12); //=> true
+     *      var isQueen = R.propEq('rank', 'Q');
+     *      var isSpade = R.propEq('suit', '♠︎');
+     *      var isQueenOfSpades = R.allPass([isQueen, isSpade]);
+     *
+     *      isQueenOfSpades({rank: 'Q', suit: '♣︎'}); //=> false
+     *      isQueenOfSpades({rank: 'Q', suit: '♠︎'}); //=> true
      */
-    var allPass = _curry1(_predicateWrap(all));
+    var allPass = _curry1(function allPass(preds) {
+        return curryN(reduce(max, 0, pluck('length', preds)), function () {
+            var idx = 0;
+            var len = preds.length;
+            while (idx < len) {
+                if (!preds[idx].apply(this, arguments)) {
+                    return false;
+                }
+                idx += 1;
+            }
+            return true;
+        });
+    });
 
     /**
-     * Given a list of predicates returns a new predicate that will be true exactly when any one of them is.
+     * Takes a list of predicates and returns a predicate that returns true for a
+     * given list of arguments if at least one of the provided predicates is
+     * satisfied by those arguments.
+     *
+     * The function returned is a curried function whose arity matches that of the
+     * highest-arity predicate.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Logic
      * @sig [(*... -> Boolean)] -> (*... -> Boolean)
-     * @param {Array} list An array of predicate functions
-     * @param {*} optional Any arguments to pass into the predicates
-     * @return {Function} A function that applies its arguments to each of the predicates, returning
-     *         `true` if all are satisfied.
+     * @param {Array} preds
+     * @return {Function}
      * @see R.allPass
      * @example
      *
-     *      var gt10 = function(x) { return x > 10; };
-     *      var even = function(x) { return x % 2 === 0};
-     *      var f = R.anyPass([gt10, even]);
-     *      f(11); //=> true
-     *      f(8); //=> true
-     *      f(9); //=> false
+     *      var gte = R.anyPass([R.gt, R.equals]);
+     *
+     *      gte(3, 2); //=> true
+     *      gte(2, 2); //=> true
+     *      gte(2, 3); //=> false
      */
-    var anyPass = _curry1(_predicateWrap(any));
+    var anyPass = _curry1(function anyPass(preds) {
+        return curryN(reduce(max, 0, pluck('length', preds)), function () {
+            var idx = 0;
+            var len = preds.length;
+            while (idx < len) {
+                if (preds[idx].apply(this, arguments)) {
+                    return true;
+                }
+                idx += 1;
+            }
+            return false;
+        });
+    });
 
     /**
      * ap applies a list of functions to a list of values.
      *
+     * Dispatches to the `ap` method of the second argument, if present. Also
+     * treats curried functions as applicatives.
+     *
      * @func
      * @memberOf R
+     * @since v0.3.0
      * @category Function
-     * @sig [f] -> [a] -> [f a]
+     * @sig [a -> b] -> [a] -> [b]
+     * @sig Apply f => f (a -> b) -> f a -> f b
      * @param {Array} fns An array of functions
      * @param {Array} vs An array of values
      * @return {Array} An array of results of applying each of `fns` to all of `vs` in turn.
@@ -6017,20 +6712,61 @@
      *
      *      R.ap([R.multiply(2), R.add(3)], [1,2,3]); //=> [2, 4, 6, 4, 5, 6]
      */
-    var ap = _curry2(function ap(fns, vs) {
-        return _hasMethod('ap', fns) ? fns.ap(vs) : _reduce(function (acc, fn) {
-            return _concat(acc, map(fn, vs));
-        }, [], fns);
+    // else
+    var ap = _curry2(function ap(applicative, fn) {
+        return typeof applicative.ap === 'function' ? applicative.ap(fn) : typeof applicative === 'function' ? function (x) {
+            return applicative(x)(fn(x));
+        } : // else
+        _reduce(function (acc, f) {
+            return _concat(acc, map(f, fn));
+        }, [], applicative);
+    });
+
+    /**
+     * Given a spec object recursively mapping properties to functions, creates a
+     * function producing an object of the same structure, by mapping each property
+     * to the result of calling its associated function with the supplied arguments.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.20.0
+     * @category Function
+     * @sig {k: ((a, b, ..., m) -> v)} -> ((a, b, ..., m) -> {k: v})
+     * @param {Object} spec an object recursively mapping properties to functions for
+     *        producing the values for these properties.
+     * @return {Function} A function that returns an object of the same structure
+     * as `spec', with each property set to the value returned by calling its
+     * associated function with the supplied arguments.
+     * @see R.converge, R.juxt
+     * @example
+     *
+     *      var getMetrics = R.applySpec({
+     *                                      sum: R.add,
+     *                                      nested: { mul: R.multiply }
+     *                                   });
+     *      getMetrics(2, 4); // => { sum: 6, nested: { mul: 8 } }
+     */
+    var applySpec = _curry1(function applySpec(spec) {
+        spec = map(function (v) {
+            return typeof v == 'function' ? v : applySpec(v);
+        }, spec);
+        return curryN(reduce(max, 0, pluck('length', values(spec))), function () {
+            var args = arguments;
+            return map(function (f) {
+                return apply(f, args);
+            }, spec);
+        });
     });
 
     /**
      * Returns the result of calling its first argument with the remaining
      * arguments. This is occasionally useful as a converging function for
-     * `R.converge`: the left branch can produce a function while the right
-     * branch produces a value to be passed to that function as an argument.
+     * `R.converge`: the left branch can produce a function while the right branch
+     * produces a value to be passed to that function as an argument.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category Function
      * @sig (*... -> a),*... -> a
      * @param {Function} fn The function to apply to the remaining arguments.
@@ -6043,9 +6779,10 @@
      *                           R.join(''),
      *                           R.replace(/^(?!$)/gm));
      *
-     *      var format = R.converge(R.call,
-     *                              R.pipe(R.prop('indent'), indentN),
-     *                              R.prop('value'));
+     *      var format = R.converge(R.call, [
+     *                                  R.pipe(R.prop('indent'), indentN),
+     *                                  R.prop('value')
+     *                              ]);
      *
      *      format({indent: 2, value: 'foo\nbar\nbaz\n'}); //=> '  foo\n  bar\n  baz\n'
      */
@@ -6054,64 +6791,83 @@
     });
 
     /**
-     * `chain` maps a function over a list and concatenates the results.
-     * This implementation is compatible with the
-     * Fantasy-land Chain spec, and will work with types that implement that spec.
-     * `chain` is also known as `flatMap` in some libraries
+     * `chain` maps a function over a list and concatenates the results. `chain`
+     * is also known as `flatMap` in some libraries
+     *
+     * Dispatches to the `chain` method of the second argument, if present,
+     * according to the [FantasyLand Chain spec](https://github.com/fantasyland/fantasy-land#chain).
      *
      * @func
      * @memberOf R
+     * @since v0.3.0
      * @category List
-     * @sig (a -> [b]) -> [a] -> [b]
+     * @sig Chain m => (a -> m b) -> m a -> m b
      * @param {Function} fn
      * @param {Array} list
      * @return {Array}
      * @example
      *
-     *      var duplicate = function(n) {
-     *        return [n, n];
-     *      };
+     *      var duplicate = n => [n, n];
      *      R.chain(duplicate, [1, 2, 3]); //=> [1, 1, 2, 2, 3, 3]
      */
-    var chain = _curry2(_dispatchable('chain', _xchain, function chain(fn, list) {
-        return unnest(map(fn, list));
+    var chain = _curry2(_dispatchable('chain', _xchain, function chain(fn, monad) {
+        if (typeof monad === 'function') {
+            return function () {
+                return monad.call(this, fn.apply(this, arguments)).apply(this, arguments);
+            };
+        }
+        return _makeFlat(false)(map(fn, monad));
     }));
 
     /**
-     * Turns a list of Functors into a Functor of a list, applying
-     * a mapping function to the elements of the list along the way.
+     * Returns a function, `fn`, which encapsulates if/else-if/else logic.
+     * `R.cond` takes a list of [predicate, transform] pairs. All of the arguments
+     * to `fn` are applied to each of the predicates in turn until one returns a
+     * "truthy" value, at which point `fn` returns the result of applying its
+     * arguments to the corresponding transformer. If none of the predicates
+     * matches, `fn` returns undefined.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @see R.commute
-     * @sig Functor f => (f a -> f b) -> (x -> f x) -> [f a] -> f [b]
-     * @param {Function} fn The transformation function
-     * @param {Function} of A function that returns the data type to return
-     * @param {Array} list An array of functors of the same type
-     * @return {*}
+     * @since v0.6.0
+     * @category Logic
+     * @sig [[(*... -> Boolean),(*... -> *)]] -> (*... -> *)
+     * @param {Array} pairs
+     * @return {Function}
      * @example
      *
-     *      R.commuteMap(R.map(R.add(10)), R.of, [[1], [2, 3]]);   //=> [[11, 12], [11, 13]]
-     *      R.commuteMap(R.map(R.add(10)), R.of, [[1, 2], [3]]);   //=> [[11, 13], [12, 13]]
-     *      R.commuteMap(R.map(R.add(10)), R.of, [[1], [2], [3]]); //=> [[11, 12, 13]]
-     *      R.commuteMap(R.map(R.add(10)), Maybe.of, [Just(1), Just(2), Just(3)]);   //=> Just([11, 12, 13])
-     *      R.commuteMap(R.map(R.add(10)), Maybe.of, [Just(1), Just(2), Nothing()]); //=> Nothing()
+     *      var fn = R.cond([
+     *        [R.equals(0),   R.always('water freezes at 0°C')],
+     *        [R.equals(100), R.always('water boils at 100°C')],
+     *        [R.T,           temp => 'nothing special happens at ' + temp + '°C']
+     *      ]);
+     *      fn(0); //=> 'water freezes at 0°C'
+     *      fn(50); //=> 'nothing special happens at 50°C'
+     *      fn(100); //=> 'water boils at 100°C'
      */
-    var commuteMap = _curry3(function commuteMap(fn, of, list) {
-        function consF(acc, ftor) {
-            return ap(map(append, fn(ftor)), acc);
-        }
-        return _reduce(consF, of([]), list);
+    var cond = _curry1(function cond(pairs) {
+        var arity = reduce(max, 0, map(function (pair) {
+            return pair[0].length;
+        }, pairs));
+        return _arity(arity, function () {
+            var idx = 0;
+            while (idx < pairs.length) {
+                if (pairs[idx][0].apply(this, arguments)) {
+                    return pairs[idx][1].apply(this, arguments);
+                }
+                idx += 1;
+            }
+        });
     });
 
     /**
-     * Wraps a constructor function inside a curried function that can be called with the same
-     * arguments and returns the same type. The arity of the function returned is specified
-     * to allow using variadic constructor functions.
+     * Wraps a constructor function inside a curried function that can be called
+     * with the same arguments and returns the same type. The arity of the function
+     * returned is specified to allow using variadic constructor functions.
      *
      * @func
      * @memberOf R
+     * @since v0.4.0
      * @category Function
      * @sig Number -> (* -> {*}) -> (* -> {*})
      * @param {Number} n The arity of the constructor function.
@@ -6120,7 +6876,7 @@
      * @example
      *
      *      // Variadic constructor function
-     *      var Widget = function() {
+     *      var Widget = () => {
      *        this.children = Array.prototype.slice.call(arguments);
      *        // ...
      *      };
@@ -6168,34 +6924,35 @@
     });
 
     /**
-     * Accepts at least three functions and returns a new function. When invoked, this new
-     * function will invoke the first function, `after`, passing as its arguments the
-     * results of invoking the subsequent functions with whatever arguments are passed to
-     * the new function.
+     * Accepts a converging function and a list of branching functions and returns
+     * a new function. When invoked, this new function is applied to some
+     * arguments, each branching function is applied to those same arguments. The
+     * results of each branching function are passed as arguments to the converging
+     * function to produce the return value.
      *
      * @func
      * @memberOf R
+     * @since v0.4.2
      * @category Function
-     * @sig (x1 -> x2 -> ... -> z) -> ((a -> b -> ... -> x1), (a -> b -> ... -> x2), ...) -> (a -> b -> ... -> z)
+     * @sig (x1 -> x2 -> ... -> z) -> [(a -> b -> ... -> x1), (a -> b -> ... -> x2), ...] -> (a -> b -> ... -> z)
      * @param {Function} after A function. `after` will be invoked with the return values of
      *        `fn1` and `fn2` as its arguments.
-     * @param {...Function} functions A variable number of functions.
+     * @param {Array} functions A list of functions.
      * @return {Function} A new function.
      * @example
      *
-     *      var add = function(a, b) { return a + b; };
-     *      var multiply = function(a, b) { return a * b; };
-     *      var subtract = function(a, b) { return a - b; };
+     *      var add = (a, b) => a + b;
+     *      var multiply = (a, b) => a * b;
+     *      var subtract = (a, b) => a - b;
      *
-     *      //? multiply( add(1, 2), subtract(1, 2) );
-     *      R.converge(multiply, add, subtract)(1, 2); //=> -3
+     *      //≅ multiply( add(1, 2), subtract(1, 2) );
+     *      R.converge(multiply, [add, subtract])(1, 2); //=> -3
      *
-     *      var add3 = function(a, b, c) { return a + b + c; };
-     *      R.converge(add3, multiply, add, subtract)(1, 2); //=> 4
+     *      var add3 = (a, b, c) => a + b + c;
+     *      R.converge(add3, [multiply, add, subtract])(1, 2); //=> 4
      */
-    var converge = curryN(3, function converge(after) {
-        var fns = _slice(arguments, 1);
-        return curryN(Math.max.apply(Math, pluck('length', fns)), function () {
+    var converge = _curry2(function converge(after, fns) {
+        return curryN(reduce(max, 0, pluck('length', fns)), function () {
             var args = arguments;
             var context = this;
             return after.apply(context, _map(function (fn) {
@@ -6205,75 +6962,54 @@
     });
 
     /**
-     * Returns all but the first `n` elements of the given list, string, or
-     * transducer/transformer (or object with a `drop` method).
+     * Counts the elements of a list according to how many match each value of a
+     * key generated by the supplied function. Returns an object mapping the keys
+     * produced by `fn` to the number of occurrences in the list. Note that all
+     * keys are coerced to strings because of how JavaScript objects work.
+     *
+     * Acts as a transducer if a transformer is given in list position.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @see R.transduce
-     * @sig Number -> [a] -> [a]
-     * @sig Number -> String -> String
-     * @param {Number} n
-     * @param {*} list
-     * @return {*}
-     * @see R.take
+     * @since v0.1.0
+     * @category Relation
+     * @sig (a -> String) -> [a] -> {*}
+     * @param {Function} fn The function used to map values to keys.
+     * @param {Array} list The list to count elements from.
+     * @return {Object} An object mapping keys to number of occurrences in the list.
      * @example
      *
-     *      R.drop(1, ['foo', 'bar', 'baz']); //=> ['bar', 'baz']
-     *      R.drop(2, ['foo', 'bar', 'baz']); //=> ['baz']
-     *      R.drop(3, ['foo', 'bar', 'baz']); //=> []
-     *      R.drop(4, ['foo', 'bar', 'baz']); //=> []
-     *      R.drop(3, 'ramda');               //=> 'da'
+     *      var numbers = [1.0, 1.1, 1.2, 2.0, 3.0, 2.2];
+     *      var letters = R.split('', 'abcABCaaaBBc');
+     *      R.countBy(Math.floor)(numbers);    //=> {'1': 3, '2': 2, '3': 1}
+     *      R.countBy(R.toLower)(letters);   //=> {'a': 5, 'b': 4, 'c': 3}
      */
-    var drop = _curry2(_dispatchable('drop', _xdrop, function drop(n, xs) {
-        return slice(Math.max(0, n), Infinity, xs);
-    }));
-
-    /**
-     * Returns a list containing all but the last `n` elements of the given `list`.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig Number -> [a] -> [a]
-     * @sig Number -> String -> String
-     * @param {Number} n The number of elements of `xs` to skip.
-     * @param {Array} xs The collection to consider.
-     * @return {Array}
-     * @see R.takeLast
-     * @example
-     *
-     *      R.dropLast(1, ['foo', 'bar', 'baz']); //=> ['foo', 'bar']
-     *      R.dropLast(2, ['foo', 'bar', 'baz']); //=> ['foo']
-     *      R.dropLast(3, ['foo', 'bar', 'baz']); //=> []
-     *      R.dropLast(4, ['foo', 'bar', 'baz']); //=> []
-     *      R.dropLast(3, 'ramda');               //=> 'ra'
-     */
-    var dropLast = _curry2(function dropLast(n, xs) {
-        return take(n < xs.length ? xs.length - n : 0, xs);
-    });
+    var countBy = reduceBy(function (acc, elem) {
+        return acc + 1;
+    }, 0);
 
     /**
      * Returns a new list without any consecutively repeating elements. Equality is
-     * determined by applying the supplied predicate two consecutive elements.
-     * The first element in a series of equal element is the one being preserved.
+     * determined by applying the supplied predicate two consecutive elements. The
+     * first element in a series of equal element is the one being preserved.
+     *
+     * Dispatches to the `dropRepeatsWith` method of the second argument, if present.
      *
      * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category List
      * @sig (a, a -> Boolean) -> [a] -> [a]
      * @param {Function} pred A predicate used to test whether two items are equal.
      * @param {Array} list The array to consider.
      * @return {Array} `list` without repeating elements.
+     * @see R.transduce
      * @example
      *
-     *      function lengthEq(x, y) { return Math.abs(x) === Math.abs(y); };
      *      var l = [1, -1, 1, 3, 4, -4, -4, -5, 5, 3, 3];
-     *      R.dropRepeatsWith(lengthEq, l); //=> [1, 3, 4, -5, 3]
+     *      R.dropRepeatsWith(R.eqBy(Math.abs), l); //=> [1, 3, 4, -5, 3]
      */
     var dropRepeatsWith = _curry2(_dispatchable('dropRepeatsWith', _xdropRepeatsWith, function dropRepeatsWith(pred, list) {
         var result = [];
@@ -6292,11 +7028,33 @@
     }));
 
     /**
-     * Reports whether two objects have the same value, in `R.equals` terms,
-     * for the specified property. Useful as a curried predicate.
+     * Takes a function and two values in its domain and returns `true` if the
+     * values map to the same value in the codomain; `false` otherwise.
      *
      * @func
      * @memberOf R
+     * @since v0.18.0
+     * @category Relation
+     * @sig (a -> b) -> a -> a -> Boolean
+     * @param {Function} f
+     * @param {*} x
+     * @param {*} y
+     * @return {Boolean}
+     * @example
+     *
+     *      R.eqBy(Math.abs, 5, -5); //=> true
+     */
+    var eqBy = _curry3(function eqBy(f, x, y) {
+        return equals(f(x), f(y));
+    });
+
+    /**
+     * Reports whether two objects have the same value, in `R.equals` terms, for
+     * the specified property. Useful as a curried predicate.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig k -> {k: v} -> {k: v} -> Boolean
      * @param {String} prop The name of the property to compare
@@ -6316,12 +7074,87 @@
     });
 
     /**
-     * Returns the position of the first occurrence of an item in an array,
-     * or -1 if the item is not included in the array. `R.equals` is used to
-     * determine equality.
+     * Splits a list into sub-lists stored in an object, based on the result of
+     * calling a String-returning function on each element, and grouping the
+     * results according to values returned.
+     *
+     * Dispatches to the `groupBy` method of the second argument, if present.
+     *
+     * Acts as a transducer if a transformer is given in list position.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig (a -> String) -> [a] -> {String: [a]}
+     * @param {Function} fn Function :: a -> String
+     * @param {Array} list The array to group
+     * @return {Object} An object with the output of `fn` for keys, mapped to arrays of elements
+     *         that produced that key when passed to `fn`.
+     * @see R.transduce
+     * @example
+     *
+     *      var byGrade = R.groupBy(function(student) {
+     *        var score = student.score;
+     *        return score < 65 ? 'F' :
+     *               score < 70 ? 'D' :
+     *               score < 80 ? 'C' :
+     *               score < 90 ? 'B' : 'A';
+     *      });
+     *      var students = [{name: 'Abby', score: 84},
+     *                      {name: 'Eddy', score: 58},
+     *                      // ...
+     *                      {name: 'Jack', score: 69}];
+     *      byGrade(students);
+     *      // {
+     *      //   'A': [{name: 'Dianne', score: 99}],
+     *      //   'B': [{name: 'Abby', score: 84}]
+     *      //   // ...,
+     *      //   'F': [{name: 'Eddy', score: 58}]
+     *      // }
+     */
+    var groupBy = _curry2(_checkForMethod('groupBy', reduceBy(function (acc, item) {
+        if (acc == null) {
+            acc = [];
+        }
+        acc.push(item);
+        return acc;
+    }, null)));
+
+    /**
+     * Given a function that generates a key, turns a list of objects into an
+     * object indexing the objects by the given key. Note that if multiple
+     * objects generate the same value for the indexing key only the last value
+     * will be included in the generated object.
+     *
+     * Acts as a transducer if a transformer is given in list position.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category List
+     * @sig (a -> String) -> [{k: v}] -> {k: {k: v}}
+     * @param {Function} fn Function :: a -> String
+     * @param {Array} array The array of objects to index
+     * @return {Object} An object indexing each array element by the given property.
+     * @example
+     *
+     *      var list = [{id: 'xyz', title: 'A'}, {id: 'abc', title: 'B'}];
+     *      R.indexBy(R.prop('id'), list);
+     *      //=> {abc: {id: 'abc', title: 'B'}, xyz: {id: 'xyz', title: 'A'}}
+     */
+    var indexBy = reduceBy(function (acc, elem) {
+        return elem;
+    }, null);
+
+    /**
+     * Returns the position of the first occurrence of an item in an array, or -1
+     * if the item is not included in the array. `R.equals` is used to determine
+     * equality.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig a -> [a] -> Number
      * @param {*} target The item to find.
@@ -6334,60 +7167,27 @@
      *      R.indexOf(10, [1,2,3,4]); //=> -1
      */
     var indexOf = _curry2(function indexOf(target, xs) {
-        return _hasMethod('indexOf', xs) ? xs.indexOf(target) : _indexOf(xs, target, 0);
+        return typeof xs.indexOf === 'function' && !_isArray(xs) ? xs.indexOf(target) : _indexOf(xs, target, 0);
     });
 
     /**
-     * Returns all but the last element of the given list or string.
+     * juxt applies a list of functions to a list of values.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @see R.last, R.head, R.tail
-     * @sig [a] -> [a]
-     * @sig String -> String
-     * @param {*} list
-     * @return {*}
+     * @since v0.19.0
+     * @category Function
+     * @sig [(a, b, ..., m) -> n] -> ((a, b, ..., m) -> [n])
+     * @param {Array} fns An array of functions
+     * @return {Function} A function that returns a list of values after applying each of the original `fns` to its parameters.
+     * @see R.applySpec
      * @example
      *
-     *      R.init([1, 2, 3]);  //=> [1, 2]
-     *      R.init([1, 2]);     //=> [1]
-     *      R.init([1]);        //=> []
-     *      R.init([]);         //=> []
-     *
-     *      R.init('abc');  //=> 'ab'
-     *      R.init('ab');   //=> 'a'
-     *      R.init('a');    //=> ''
-     *      R.init('');     //=> ''
+     *      var getRange = R.juxt([Math.min, Math.max]);
+     *      getRange(3, 4, 9, -3); //=> [-3, 9]
      */
-    var init = slice(0, -1);
-
-    /**
-     * Returns `true` if all elements are unique, in `R.equals` terms,
-     * otherwise `false`.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @sig [a] -> Boolean
-     * @param {Array} list The array to consider.
-     * @return {Boolean} `true` if all elements are unique, else `false`.
-     * @example
-     *
-     *      R.isSet(['1', 1]); //=> true
-     *      R.isSet([1, 1]);   //=> false
-     *      R.isSet([[42], [42]]); //=> false
-     */
-    var isSet = _curry1(function isSet(list) {
-        var len = list.length;
-        var idx = 0;
-        while (idx < len) {
-            if (_indexOf(list, list[idx], idx + 1) >= 0) {
-                return false;
-            }
-            idx += 1;
-        }
-        return true;
+    var juxt = _curry1(function juxt(fns) {
+        return converge(_arrayOf, fns);
     });
 
     /**
@@ -6397,8 +7197,9 @@
      *
      * @func
      * @memberOf R
+     * @since v0.8.0
      * @category Object
-     * @typedef Lens s a = Functor f => (a -> f a) -> s -> f s
+     * @typedefn Lens s a = Functor f => (a -> f a) -> s -> f s
      * @sig (s -> a) -> ((a, s) -> s) -> Lens s a
      * @param {Function} getter
      * @param {Function} setter
@@ -6413,11 +7214,11 @@
      *      R.over(xLens, R.negate, {x: 1, y: 2});  //=> {x: -1, y: 2}
      */
     var lens = _curry2(function lens(getter, setter) {
-        return function (f) {
-            return function (s) {
-                return map(function (v) {
-                    return setter(v, s);
-                }, f(getter(s)));
+        return function (toFunctorFn) {
+            return function (target) {
+                return map(function (focus) {
+                    return setter(focus, target);
+                }, toFunctorFn(getter(target)));
             };
         };
     });
@@ -6427,8 +7228,9 @@
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category Object
-     * @typedef Lens s a = Functor f => (a -> f a) -> s -> f s
+     * @typedefn Lens s a = Functor f => (a -> f a) -> s -> f s
      * @sig Number -> Lens s a
      * @param {Number} n
      * @return {Lens}
@@ -6446,12 +7248,37 @@
     });
 
     /**
+     * Returns a lens whose focus is the specified path.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category Object
+     * @typedefn Lens s a = Functor f => (a -> f a) -> s -> f s
+     * @sig [String] -> Lens s a
+     * @param {Array} path The path to use.
+     * @return {Lens}
+     * @see R.view, R.set, R.over
+     * @example
+     *
+     *      var xyLens = R.lensPath(['x', 'y']);
+     *
+     *      R.view(xyLens, {x: {y: 2, z: 3}});            //=> 2
+     *      R.set(xyLens, 4, {x: {y: 2, z: 3}});          //=> {x: {y: 4, z: 3}}
+     *      R.over(xyLens, R.negate, {x: {y: 2, z: 3}});  //=> {x: {y: -2, z: 3}}
+     */
+    var lensPath = _curry1(function lensPath(p) {
+        return lens(path(p), assocPath(p));
+    });
+
+    /**
      * Returns a lens whose focus is the specified property.
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category Object
-     * @typedef Lens s a = Functor f => (a -> f a) -> s -> f s
+     * @typedefn Lens s a = Functor f => (a -> f a) -> s -> f s
      * @sig String -> Lens s a
      * @param {String} k
      * @return {Lens}
@@ -6469,21 +7296,20 @@
     });
 
     /**
-     * "lifts" a function to be the specified arity, so that it may "map over" that many
-     * lists (or other Functors).
+     * "lifts" a function to be the specified arity, so that it may "map over" that
+     * many lists, Functions or other objects that satisfy the [FantasyLand Apply spec](https://github.com/fantasyland/fantasy-land#apply).
      *
      * @func
      * @memberOf R
-     * @see R.lift
+     * @since v0.7.0
      * @category Function
      * @sig Number -> (*... -> *) -> ([*]... -> [*])
      * @param {Function} fn The function to lift into higher context
-     * @return {Function} The function `fn` applicable to mappable objects.
+     * @return {Function} The lifted function.
+     * @see R.lift, R.ap
      * @example
      *
-     *      var madd3 = R.liftN(3, R.curryN(3, function() {
-     *        return R.reduce(R.add, 0, arguments);
-     *      }));
+     *      var madd3 = R.liftN(3, R.curryN(3, (...args) => R.sum(args)));
      *      madd3([1,2,3], [1,2,3], [1]); //=> [3, 4, 5, 4, 5, 6, 5, 6, 7]
      */
     var liftN = _curry2(function liftN(arity, fn) {
@@ -6498,6 +7324,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category Math
      * @sig [Number] -> Number
      * @param {Array} list
@@ -6516,6 +7343,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category Math
      * @sig [Number] -> Number
      * @param {Array} list
@@ -6539,23 +7367,32 @@
     });
 
     /**
-     * Merges a list of objects together into one object.
+     * Takes a predicate and a list or other "filterable" object and returns the
+     * pair of filterable objects of the same type of elements which do and do not
+     * satisfy, the predicate, respectively.
      *
      * @func
      * @memberOf R
+     * @since v0.1.4
      * @category List
-     * @sig [{k: v}] -> {k: v}
-     * @param {Array} list An array of objects
-     * @return {Object} A merged object.
-     * @see R.reduce
+     * @sig Filterable f => (a -> Boolean) -> f a -> [f a, f a]
+     * @param {Function} pred A predicate to determine which side the element belongs to.
+     * @param {Array} filterable the list (or other filterable) to partition.
+     * @return {Array} An array, containing first the subset of elements that satisfy the
+     *         predicate, and second the subset of elements that do not satisfy.
+     * @see R.filter, R.reject
      * @example
      *
-     *      R.mergeAll([{foo:1},{bar:2},{baz:3}]); //=> {foo:1,bar:2,baz:3}
-     *      R.mergeAll([{foo:1},{foo:2},{bar:2}]); //=> {foo:2,bar:2}
+     *      R.partition(R.contains('s'), ['sss', 'ttt', 'foo', 'bars']);
+     *      // => [ [ 'sss', 'bars' ],  [ 'ttt', 'foo' ] ]
+     *
+     *      R.partition(R.contains('s'), { a: 'sss', b: 'ttt', foo: 'bars' });
+     *      // => [ { a: 'sss', foo: 'bars' }, { b: 'ttt' }  ]
      */
-    var mergeAll = _curry1(function mergeAll(list) {
-        return reduce(merge, {}, list);
-    });
+    var partition = juxt([
+        filter,
+        reject
+    ]);
 
     /**
      * Performs left-to-right function composition. The leftmost function may have
@@ -6563,10 +7400,13 @@
      *
      * In some libraries this function is named `sequence`.
      *
+     * **Note:** The result of pipe is not automatically curried.
+     *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
-     * @sig (((a, b, ..., n) -> o), (o -> p), ..., (x -> y), (y -> z)) -> (a -> b -> ... -> n -> z)
+     * @sig (((a, b, ..., n) -> o), (o -> p), ..., (x -> y), (y -> z)) -> ((a, b, ..., n) -> z)
      * @param {...Function} functions
      * @return {Function}
      * @see R.compose
@@ -6580,16 +7420,17 @@
         if (arguments.length === 0) {
             throw new Error('pipe requires at least one argument');
         }
-        return curryN(arguments[0].length, reduce(_pipe, arguments[0], tail(arguments)));
+        return _arity(arguments[0].length, reduce(_pipe, arguments[0], tail(arguments)));
     };
 
     /**
      * Performs left-to-right composition of one or more Promise-returning
-     * functions. The leftmost function may have any arity; the remaining
-     * functions must be unary.
+     * functions. The leftmost function may have any arity; the remaining functions
+     * must be unary.
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category Function
      * @sig ((a -> Promise b), (b -> Promise c), ..., (y -> Promise z)) -> (a -> Promise z)
      * @param {...Function} functions
@@ -6604,7 +7445,7 @@
         if (arguments.length === 0) {
             throw new Error('pipeP requires at least one argument');
         }
-        return curryN(arguments[0].length, reduce(_pipeP, arguments[0], tail(arguments)));
+        return _arity(arguments[0].length, reduce(_pipeP, arguments[0], tail(arguments)));
     };
 
     /**
@@ -6612,6 +7453,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Math
      * @sig [Number] -> Number
      * @param {Array} list An array of numbers
@@ -6624,57 +7466,89 @@
     var product = reduce(multiply, 1);
 
     /**
-     * Reasonable analog to SQL `select` statement.
+     * Transforms a [Traversable](https://github.com/fantasyland/fantasy-land#traversable)
+     * of [Applicative](https://github.com/fantasyland/fantasy-land#applicative) into an
+     * Applicative of Traversable.
+     *
+     * Dispatches to the `sequence` method of the second argument, if present.
      *
      * @func
      * @memberOf R
-     * @category Object
-     * @category Relation
-     * @sig [k] -> [{k: v}] -> [{k: v}]
-     * @param {Array} props The property names to project
-     * @param {Array} objs The objects to query
-     * @return {Array} An array of objects with just the `props` properties.
+     * @since v0.19.0
+     * @category List
+     * @sig (Applicative f, Traversable t) => (a -> f a) -> t (f a) -> f (t a)
+     * @param {Function} of
+     * @param {*} traversable
+     * @return {*}
+     * @see R.traverse
      * @example
      *
-     *      var abby = {name: 'Abby', age: 7, hair: 'blond', grade: 2};
-     *      var fred = {name: 'Fred', age: 12, hair: 'brown', grade: 7};
-     *      var kids = [abby, fred];
-     *      R.project(['name', 'grade'], kids); //=> [{name: 'Abby', grade: 2}, {name: 'Fred', grade: 7}]
+     *      R.sequence(Maybe.of, [Just(1), Just(2), Just(3)]);   //=> Just([1, 2, 3])
+     *      R.sequence(Maybe.of, [Just(1), Just(2), Nothing()]); //=> Nothing()
+     *
+     *      R.sequence(R.of, Just([1, 2, 3])); //=> [Just(1), Just(2), Just(3)]
+     *      R.sequence(R.of, Nothing());       //=> [Nothing()]
      */
-    // passing `identity` gives correct arity
-    var project = useWith(_map, pickAll, identity);
+    var sequence = _curry2(function sequence(of, traversable) {
+        return typeof traversable.sequence === 'function' ? traversable.sequence(of) : reduceRight(function (acc, x) {
+            return ap(map(prepend, x), acc);
+        }, of([]), traversable);
+    });
 
     /**
-     * Returns a new list containing the last `n` elements of the given list.
-     * If `n > list.length`, returns a list of `list.length` elements.
+     * Maps an [Applicative](https://github.com/fantasyland/fantasy-land#applicative)-returning
+     * function over a [Traversable](https://github.com/fantasyland/fantasy-land#traversable),
+     * then uses [`sequence`](#sequence) to transform the resulting Traversable of Applicative
+     * into an Applicative of Traversable.
+     *
+     * Dispatches to the `sequence` method of the third argument, if present.
      *
      * @func
      * @memberOf R
+     * @since v0.19.0
      * @category List
-     * @sig Number -> [a] -> [a]
-     * @sig Number -> String -> String
-     * @param {Number} n The number of elements to return.
-     * @param {Array} xs The collection to consider.
-     * @return {Array}
-     * @see R.dropLast
+     * @sig (Applicative f, Traversable t) => (a -> f a) -> (a -> f b) -> t a -> f (t b)
+     * @param {Function} of
+     * @param {Function} f
+     * @param {*} traversable
+     * @return {*}
+     * @see R.sequence
      * @example
      *
-     *      R.takeLast(1, ['foo', 'bar', 'baz']); //=> ['baz']
-     *      R.takeLast(2, ['foo', 'bar', 'baz']); //=> ['for', 'baz']
-     *      R.takeLast(3, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
-     *      R.takeLast(4, ['foo', 'bar', 'baz']); //=> ['foo', 'bar', 'baz']
-     *      R.takeLast(3, 'ramda');               //=> 'mda'
+     *      // Returns `Nothing` if the given divisor is `0`
+     *      safeDiv = n => d => d === 0 ? Nothing() : Just(n / d)
+     *
+     *      R.traverse(Maybe.of, safeDiv(10), [2, 4, 5]); //=> Just([5, 2.5, 2])
+     *      R.traverse(Maybe.of, safeDiv(10), [2, 0, 5]); //=> Nothing
      */
-    var takeLast = _curry2(function takeLast(n, xs) {
-        return drop(n >= 0 ? xs.length - n : 0, xs);
+    var traverse = _curry3(function traverse(of, f, traversable) {
+        return sequence(of, map(f, traversable));
     });
+
+    /**
+     * Shorthand for `R.chain(R.identity)`, which removes one level of nesting from
+     * any [Chain](https://github.com/fantasyland/fantasy-land#chain).
+     *
+     * @func
+     * @memberOf R
+     * @since v0.3.0
+     * @category List
+     * @sig Chain c => c (c a) -> c a
+     * @param {*} list
+     * @return {*}
+     * @see R.flatten, R.chain
+     * @example
+     *
+     *      R.unnest([1, [2], [[3]]]); //=> [1, 2, [3]]
+     *      R.unnest([[1, 2], [3, 4], [5, 6]]); //=> [1, 2, 3, 4, 5, 6]
+     */
+    var unnest = chain(_identity);
 
     var _contains = function _contains(a, list) {
         return _indexOf(list, a, 0) >= 0;
     };
 
     //  mapPairs :: (Object, [String]) -> [String]
-    // Function, RegExp, user-defined types
     var _toString = function _toString(x, seen) {
         var recur = function recur(y) {
             var xs = seen.concat([x]);
@@ -6690,11 +7564,13 @@
         case '[object Arguments]':
             return '(function() { return arguments; }(' + _map(recur, x).join(', ') + '))';
         case '[object Array]':
-            return '[' + _map(recur, x).concat(mapPairs(x, reject(test(/^\d+$/), keys(x)))).join(', ') + ']';
+            return '[' + _map(recur, x).concat(mapPairs(x, reject(function (k) {
+                return /^\d+$/.test(k);
+            }, keys(x)))).join(', ') + ']';
         case '[object Boolean]':
             return typeof x === 'object' ? 'new Boolean(' + recur(x.valueOf()) + ')' : x.toString();
         case '[object Date]':
-            return 'new Date(' + _quote(_toISOString(x)) + ')';
+            return 'new Date(' + (isNaN(x.valueOf()) ? recur(NaN) : _quote(_toISOString(x))) + ')';
         case '[object Null]':
             return 'null';
         case '[object Number]':
@@ -6704,40 +7580,27 @@
         case '[object Undefined]':
             return 'undefined';
         default:
-            return typeof x.constructor === 'function' && x.constructor.name !== 'Object' && typeof x.toString === 'function' && x.toString() !== '[object Object]' ? x.toString() : // Function, RegExp, user-defined types
-            '{' + mapPairs(x, keys(x)).join(', ') + '}';
+            if (typeof x.toString === 'function') {
+                var repr = x.toString();
+                if (repr !== '[object Object]') {
+                    return repr;
+                }
+            }
+            return '{' + mapPairs(x, keys(x)).join(', ') + '}';
         }
     };
-
-    /**
-     * Turns a list of Functors into a Functor of a list.
-     *
-     * @func
-     * @memberOf R
-     * @category List
-     * @see R.commuteMap
-     * @sig Functor f => (x -> f x) -> [f a] -> f [a]
-     * @param {Function} of A function that returns the data type to return
-     * @param {Array} list An array of functors of the same type
-     * @return {*}
-     * @example
-     *
-     *      R.commute(R.of, [[1], [2, 3]]);   //=> [[1, 2], [1, 3]]
-     *      R.commute(R.of, [[1, 2], [3]]);   //=> [[1, 3], [2, 3]]
-     *      R.commute(R.of, [[1], [2], [3]]); //=> [[1, 2, 3]]
-     *      R.commute(Maybe.of, [Just(1), Just(2), Just(3)]);   //=> Just([1, 2, 3])
-     *      R.commute(Maybe.of, [Just(1), Just(2), Nothing()]); //=> Nothing()
-     */
-    var commute = commuteMap(identity);
 
     /**
      * Performs right-to-left function composition. The rightmost function may have
      * any arity; the remaining functions must be unary.
      *
+     * **Note:** The result of compose is not automatically curried.
+     *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
-     * @sig ((y -> z), (x -> y), ..., (o -> p), ((a, b, ..., n) -> o)) -> (a -> b -> ... -> n -> z)
+     * @sig ((y -> z), (x -> y), ..., (o -> p), ((a, b, ..., n) -> o)) -> ((a, b, ..., n) -> z)
      * @param {...Function} functions
      * @return {Function}
      * @see R.pipe
@@ -6762,11 +7625,12 @@
      *
      * @func
      * @memberOf R
+     * @since v0.16.0
      * @category Function
-     * @see R.pipeK
      * @sig Chain m => ((y -> m z), (x -> m y), ..., (a -> m b)) -> (m a -> m z)
      * @param {...Function}
      * @return {Function}
+     * @see R.pipeK
      * @example
      *
      *      //  parseJson :: String -> Maybe *
@@ -6787,7 +7651,7 @@
      *      //=> Nothing()
      */
     var composeK = function composeK() {
-        return arguments.length === 0 ? identity : compose.apply(this, map(chain, arguments));
+        return compose.apply(this, prepend(identity, map(chain, arguments)));
     };
 
     /**
@@ -6797,6 +7661,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.10.0
      * @category Function
      * @sig ((y -> Promise z), (x -> Promise y), ..., (a -> Promise b)) -> (a -> Promise z)
      * @param {...Function} functions
@@ -6815,11 +7680,12 @@
     };
 
     /**
-     * Wraps a constructor function inside a curried function that can be called with the same
-     * arguments and returns the same type.
+     * Wraps a constructor function inside a curried function that can be called
+     * with the same arguments and returns the same type.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (* -> {*}) -> (* -> {*})
      * @param {Function} Fn The constructor function to wrap.
@@ -6827,7 +7693,7 @@
      * @example
      *
      *      // Constructor function
-     *      var Widget = function(config) {
+     *      var Widget = config => {
      *        // ...
      *      };
      *      Widget.prototype = {
@@ -6843,17 +7709,18 @@
     });
 
     /**
-     * Returns `true` if the specified value is equal, in `R.equals` terms,
-     * to at least one element of the given list; `false` otherwise.
+     * Returns `true` if the specified value is equal, in `R.equals` terms, to at
+     * least one element of the given list; `false` otherwise.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig a -> [a] -> Boolean
      * @param {Object} a The item to compare against.
      * @param {Array} list The array to consider.
      * @return {Boolean} `true` if the item is in the list, `false` otherwise.
-     *
+     * @see R.any
      * @example
      *
      *      R.contains(3, [1, 2, 3]); //=> true
@@ -6863,16 +7730,18 @@
     var contains = _curry2(_contains);
 
     /**
-     * Finds the set (i.e. no duplicates) of all elements in the first list not contained in the second list.
+     * Finds the set (i.e. no duplicates) of all elements in the first list not
+     * contained in the second list.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Relation
-     * @sig [a] -> [a] -> [a]
+     * @sig [*] -> [*] -> [*]
      * @param {Array} list1 The first list.
      * @param {Array} list2 The second list.
      * @return {Array} The elements in `list1` that are not in `list2`.
-     * @see R.differenceWith
+     * @see R.differenceWith, R.symmetricDifference, R.symmetricDifferenceWith
      * @example
      *
      *      R.difference([1,2,3,4], [7,6,5,4,3]); //=> [1,2]
@@ -6892,18 +7761,21 @@
     });
 
     /**
-     * Returns a new list without any consecutively repeating elements.
-     * `R.equals` is used to determine equality.
+     * Returns a new list without any consecutively repeating elements. `R.equals`
+     * is used to determine equality.
+     *
+     * Dispatches to the `dropRepeats` method of the first argument, if present.
      *
      * Acts as a transducer if a transformer is given in list position.
-     * @see R.transduce
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category List
      * @sig [a] -> [a]
      * @param {Array} list The array to consider.
      * @return {Array} `list` without repeating elements.
+     * @see R.transduce
      * @example
      *
      *     R.dropRepeats([1, 1, 1, 2, 3, 4, 4, 2, 2]); //=> [1, 2, 3, 4, 2]
@@ -6911,45 +7783,25 @@
     var dropRepeats = _curry1(_dispatchable('dropRepeats', _xdropRepeatsWith(equals), dropRepeatsWith(equals)));
 
     /**
-     * Combines two lists into a set (i.e. no duplicates) composed of those elements common to both lists.
+     * "lifts" a function of arity > 1 so that it may "map over" a list, Function or other
+     * object that satisfies the [FantasyLand Apply spec](https://github.com/fantasyland/fantasy-land#apply).
      *
      * @func
      * @memberOf R
-     * @category Relation
-     * @sig [a] -> [a] -> [a]
-     * @param {Array} list1 The first list.
-     * @param {Array} list2 The second list.
-     * @see R.intersectionWith
-     * @return {Array} The list of elements found in both `list1` and `list2`.
-     * @example
-     *
-     *      R.intersection([1,2,3,4], [7,6,5,4,3]); //=> [4, 3]
-     */
-    var intersection = _curry2(function intersection(list1, list2) {
-        return uniq(_filter(flip(_contains)(list1), list2));
-    });
-
-    /**
-     * "lifts" a function of arity > 1 so that it may "map over" an Array or
-     * other Functor.
-     *
-     * @func
-     * @memberOf R
-     * @see R.liftN
+     * @since v0.7.0
      * @category Function
      * @sig (*... -> *) -> ([*]... -> [*])
      * @param {Function} fn The function to lift into higher context
-     * @return {Function} The function `fn` applicable to mappable objects.
+     * @return {Function} The lifted function.
+     * @see R.liftN
      * @example
      *
-     *      var madd3 = R.lift(R.curry(function(a, b, c) {
-     *        return a + b + c;
-     *      }));
+     *      var madd3 = R.lift(R.curry((a, b, c) => a + b + c));
+     *
      *      madd3([1,2,3], [1,2,3], [1]); //=> [3, 4, 5, 4, 5, 6, 5, 6, 7]
      *
-     *      var madd5 = R.lift(R.curry(function(a, b, c, d, e) {
-     *        return a + b + c + d + e;
-     *      }));
+     *      var madd5 = R.lift(R.curry((a, b, c, d, e) => a + b + c + d + e));
+     *
      *      madd5([1,2], [3], [4, 5], [6], [7, 8]); //=> [21, 22, 22, 23, 22, 23, 23, 24]
      */
     var lift = _curry1(function lift(fn) {
@@ -6961,6 +7813,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Object
      * @sig [String] -> {String: *} -> {String: *}
      * @param {Array} names an array of String property names to omit from the new object
@@ -6989,11 +7842,12 @@
      *
      * @func
      * @memberOf R
+     * @since v0.16.0
      * @category Function
-     * @see R.composeK
      * @sig Chain m => ((a -> m b), (b -> m c), ..., (y -> m z)) -> (m a -> m z)
      * @param {...Function}
      * @return {Function}
+     * @see R.composeK
      * @example
      *
      *      //  parseJson :: String -> Maybe *
@@ -7040,6 +7894,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.14.0
      * @category String
      * @sig * -> String
      * @param {*} val
@@ -7057,69 +7912,368 @@
     });
 
     /**
-     * Combines two lists into a set (i.e. no duplicates) composed of the
-     * elements of each list.
+     * Returns a new list without values in the first argument.
+     * `R.equals` is used to determine equality.
+     *
+     * Acts as a transducer if a transformer is given in list position.
      *
      * @func
      * @memberOf R
-     * @category Relation
+     * @since v0.19.0
+     * @category List
      * @sig [a] -> [a] -> [a]
-     * @param {Array} as The first list.
-     * @param {Array} bs The second list.
-     * @return {Array} The first and second lists concatenated, with
-     *         duplicates removed.
+     * @param {Array} list1 The values to be removed from `list2`.
+     * @param {Array} list2 The array to remove values from.
+     * @return {Array} The new array without values in `list1`.
+     * @see R.transduce
      * @example
      *
-     *      R.union([1, 2, 3], [2, 3, 4]); //=> [1, 2, 3, 4]
+     *      R.without([1, 2], [1, 2, 1, 3, 4]); //=> [3, 4]
      */
-    var union = _curry2(compose(uniq, _concat));
+    var without = _curry2(function (xs, list) {
+        return reject(flip(_contains)(xs), list);
+    });
+
+    // A simple Set type that honours R.equals semantics
+    /* globals Set */
+    /**
+       * @param item The item to add to the Set
+       * @returns {boolean} true if the item did not exist prior, otherwise false
+       */
+    /**
+       * @param item The item to check for existence in the Set
+       * @returns {boolean} true if the item exists in the Set, otherwise false
+       */
+    /**
+       * Combines the logic for checking whether an item is a member of the set and
+       * for adding a new item to the set.
+       *
+       * @param item       The item to check or add to the Set instance.
+       * @param shouldAdd  If true, the item will be added to the set if it doesn't
+       *                   already exist.
+       * @param set        The set instance to check or add to.
+       * @return {boolean} true if the item already existed, otherwise false.
+       */
+    // distinguish between +0 and -0
+    // these types can all utilise the native Set
+    // set._items['boolean'] holds a two element array
+    // representing [ falseExists, trueExists ]
+    // compare functions for reference equality
+    /* falls through */
+    // reduce the search size of heterogeneous sets by creating buckets
+    // for each type.
+    // scan through all previously applied items
+    var _Set = function () {
+        function _Set() {
+            /* globals Set */
+            this._nativeSet = typeof Set === 'function' ? new Set() : null;
+            this._items = {};
+        }
+        /**
+       * @param item The item to add to the Set
+       * @returns {boolean} true if the item did not exist prior, otherwise false
+       */
+        _Set.prototype.add = function (item) {
+            return !hasOrAdd(item, true, this);
+        };
+        /**
+       * @param item The item to check for existence in the Set
+       * @returns {boolean} true if the item exists in the Set, otherwise false
+       */
+        _Set.prototype.has = function (item) {
+            return hasOrAdd(item, false, this);
+        };
+        /**
+       * Combines the logic for checking whether an item is a member of the set and
+       * for adding a new item to the set.
+       *
+       * @param item       The item to check or add to the Set instance.
+       * @param shouldAdd  If true, the item will be added to the set if it doesn't
+       *                   already exist.
+       * @param set        The set instance to check or add to.
+       * @return {boolean} true if the item already existed, otherwise false.
+       */
+        function hasOrAdd(item, shouldAdd, set) {
+            var type = typeof item;
+            var prevSize, newSize;
+            switch (type) {
+            case 'string':
+            case 'number':
+                // distinguish between +0 and -0
+                if (item === 0 && 1 / item === -Infinity) {
+                    if (set._items['-0']) {
+                        return true;
+                    } else {
+                        if (shouldAdd) {
+                            set._items['-0'] = true;
+                        }
+                        return false;
+                    }
+                }
+                // these types can all utilise the native Set
+                if (set._nativeSet !== null) {
+                    if (shouldAdd) {
+                        prevSize = set._nativeSet.size;
+                        set._nativeSet.add(item);
+                        newSize = set._nativeSet.size;
+                        return newSize === prevSize;
+                    } else {
+                        return set._nativeSet.has(item);
+                    }
+                } else {
+                    if (!(type in set._items)) {
+                        if (shouldAdd) {
+                            set._items[type] = {};
+                            set._items[type][item] = true;
+                        }
+                        return false;
+                    } else if (item in set._items[type]) {
+                        return true;
+                    } else {
+                        if (shouldAdd) {
+                            set._items[type][item] = true;
+                        }
+                        return false;
+                    }
+                }
+            case 'boolean':
+                // set._items['boolean'] holds a two element array
+                // representing [ falseExists, trueExists ]
+                if (type in set._items) {
+                    var bIdx = item ? 1 : 0;
+                    if (set._items[type][bIdx]) {
+                        return true;
+                    } else {
+                        if (shouldAdd) {
+                            set._items[type][bIdx] = true;
+                        }
+                        return false;
+                    }
+                } else {
+                    if (shouldAdd) {
+                        set._items[type] = item ? [
+                            false,
+                            true
+                        ] : [
+                            true,
+                            false
+                        ];
+                    }
+                    return false;
+                }
+            case 'function':
+                // compare functions for reference equality
+                if (set._nativeSet !== null) {
+                    if (shouldAdd) {
+                        prevSize = set._nativeSet.size;
+                        set._nativeSet.add(item);
+                        newSize = set._nativeSet.size;
+                        return newSize > prevSize;
+                    } else {
+                        return set._nativeSet.has(item);
+                    }
+                } else {
+                    if (!(type in set._items)) {
+                        if (shouldAdd) {
+                            set._items[type] = [item];
+                        }
+                        return false;
+                    }
+                    if (!_contains(item, set._items[type])) {
+                        if (shouldAdd) {
+                            set._items[type].push(item);
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+            case 'undefined':
+                if (set._items[type]) {
+                    return true;
+                } else {
+                    if (shouldAdd) {
+                        set._items[type] = true;
+                    }
+                    return false;
+                }
+            case 'object':
+                if (item === null) {
+                    if (!set._items['null']) {
+                        if (shouldAdd) {
+                            set._items['null'] = true;
+                        }
+                        return false;
+                    }
+                    return true;
+                }
+            /* falls through */
+            default:
+                // reduce the search size of heterogeneous sets by creating buckets
+                // for each type.
+                type = Object.prototype.toString.call(item);
+                if (!(type in set._items)) {
+                    if (shouldAdd) {
+                        set._items[type] = [item];
+                    }
+                    return false;
+                }
+                // scan through all previously applied items
+                if (!_contains(item, set._items[type])) {
+                    if (shouldAdd) {
+                        set._items[type].push(item);
+                    }
+                    return false;
+                }
+                return true;
+            }
+        }
+        return _Set;
+    }();
 
     /**
-     * Returns a new list containing only one copy of each element in the
-     * original list, based upon the value returned by applying the supplied
-     * function to each list element. Prefers the first item if the supplied
-     * function produces the same value on two items. `R.equals` is used for
-     * comparison.
+     * A function wrapping calls to the two functions in an `&&` operation,
+     * returning the result of the first function if it is false-y and the result
+     * of the second function otherwise. Note that this is short-circuited,
+     * meaning that the second function will not be invoked if the first returns a
+     * false-y value.
+     *
+     * In addition to functions, `R.both` also accepts any fantasy-land compatible
+     * applicative functor.
      *
      * @func
      * @memberOf R
-     * @category List
-     * @sig (a -> b) -> [a] -> [a]
-     * @param {Function} fn A function used to produce a value to use during comparisons.
-     * @param {Array} list The array to consider.
-     * @return {Array} The list of unique items.
+     * @since v0.12.0
+     * @category Logic
+     * @sig (*... -> Boolean) -> (*... -> Boolean) -> (*... -> Boolean)
+     * @param {Function} f a predicate
+     * @param {Function} g another predicate
+     * @return {Function} a function that applies its arguments to `f` and `g` and `&&`s their outputs together.
+     * @see R.and
      * @example
      *
-     *      R.uniqBy(Math.abs, [-1, -5, 2, 10, 1, 2]); //=> [-1, -5, 2, 10]
+     *      var gt10 = x => x > 10;
+     *      var even = x => x % 2 === 0;
+     *      var f = R.both(gt10, even);
+     *      f(100); //=> true
+     *      f(101); //=> false
      */
-    var uniqBy = _curry2(function uniqBy(fn, list) {
-        var idx = 0, applied = [], result = [], appliedItem, item;
-        while (idx < list.length) {
-            item = list[idx];
-            appliedItem = fn(item);
-            if (!_contains(appliedItem, applied)) {
-                result.push(item);
-                applied.push(appliedItem);
-            }
-            idx += 1;
-        }
-        return result;
+    var both = _curry2(function both(f, g) {
+        return _isFunction(f) ? function _both() {
+            return f.apply(this, arguments) && g.apply(this, arguments);
+        } : lift(and)(f, g);
     });
 
     /**
-     * Turns a named method with a specified arity into a function
-     * that can be called directly supplied with arguments and a target object.
+     * Takes a function `f` and returns a function `g` such that:
+     *
+     *   - applying `g` to zero or more arguments will give __true__ if applying
+     *     the same arguments to `f` gives a logical __false__ value; and
+     *
+     *   - applying `g` to zero or more arguments will give __false__ if applying
+     *     the same arguments to `f` gives a logical __true__ value.
+     *
+     * `R.complement` will work on all other functors as well.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.12.0
+     * @category Logic
+     * @sig (*... -> *) -> (*... -> Boolean)
+     * @param {Function} f
+     * @return {Function}
+     * @see R.not
+     * @example
+     *
+     *      var isEven = n => n % 2 === 0;
+     *      var isOdd = R.complement(isEven);
+     *      isOdd(21); //=> true
+     *      isOdd(42); //=> false
+     */
+    var complement = lift(not);
+
+    /**
+     * Returns the result of concatenating the given lists or strings.
+     *
+     * Note: `R.concat` expects both arguments to be of the same type,
+     * unlike the native `Array.prototype.concat` method. It will throw
+     * an error if you `concat` an Array with a non-Array value.
+     *
+     * Dispatches to the `concat` method of the first argument, if present.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig [a] -> [a] -> [a]
+     * @sig String -> String -> String
+     * @param {Array|String} a
+     * @param {Array|String} b
+     * @return {Array|String}
+     *
+     * @example
+     *
+     *      R.concat([], []); //=> []
+     *      R.concat([4, 5, 6], [1, 2, 3]); //=> [4, 5, 6, 1, 2, 3]
+     *      R.concat('ABC', 'DEF'); // 'ABCDEF'
+     */
+    var concat = _curry2(function concat(a, b) {
+        if (a == null || !_isFunction(a.concat)) {
+            throw new TypeError(toString(a) + ' does not have a method named "concat"');
+        }
+        if (_isArray(a) && !_isArray(b)) {
+            throw new TypeError(toString(b) + ' is not an array');
+        }
+        return a.concat(b);
+    });
+
+    /**
+     * A function wrapping calls to the two functions in an `||` operation,
+     * returning the result of the first function if it is truth-y and the result
+     * of the second function otherwise. Note that this is short-circuited,
+     * meaning that the second function will not be invoked if the first returns a
+     * truth-y value.
+     *
+     * In addition to functions, `R.either` also accepts any fantasy-land compatible
+     * applicative functor.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.12.0
+     * @category Logic
+     * @sig (*... -> Boolean) -> (*... -> Boolean) -> (*... -> Boolean)
+     * @param {Function} f a predicate
+     * @param {Function} g another predicate
+     * @return {Function} a function that applies its arguments to `f` and `g` and `||`s their outputs together.
+     * @see R.or
+     * @example
+     *
+     *      var gt10 = x => x > 10;
+     *      var even = x => x % 2 === 0;
+     *      var f = R.either(gt10, even);
+     *      f(101); //=> true
+     *      f(8); //=> true
+     */
+    var either = _curry2(function either(f, g) {
+        return _isFunction(f) ? function _either() {
+            return f.apply(this, arguments) || g.apply(this, arguments);
+        } : lift(or)(f, g);
+    });
+
+    /**
+     * Turns a named method with a specified arity into a function that can be
+     * called directly supplied with arguments and a target object.
      *
      * The returned function is curried and accepts `arity + 1` parameters where
      * the final parameter is the target object.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig Number -> String -> (a -> b -> ... -> n -> Object -> *)
      * @param {Number} arity Number of arguments the returned function should take
      *        before the target object.
-     * @param {Function} method Name of the method to call.
+     * @param {String} method Name of the method to call.
      * @return {Function} A new curried function.
      * @example
      *
@@ -7131,7 +8285,7 @@
     var invoker = _curry2(function invoker(arity, method) {
         return curryN(arity + 1, function () {
             var target = arguments[arity];
-            if (target != null && is(Function, target[method])) {
+            if (target != null && _isFunction(target[method])) {
                 return target[method].apply(target, _slice(arguments, 0, arity));
             }
             throw new TypeError(toString(target) + ' does not have a method named "' + method + '"');
@@ -7139,11 +8293,12 @@
     });
 
     /**
-     * Returns a string made by inserting the `separator` between each
-     * element and concatenating all the elements into a single string.
+     * Returns a string made by inserting the `separator` between each element and
+     * concatenating all the elements into a single string.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category List
      * @sig String -> [a] -> String
      * @param {Number|String} separator The string used to separate the elements.
@@ -7159,13 +8314,15 @@
     var join = invoker(1, 'join');
 
     /**
-     * Creates a new function that, when invoked, caches the result of calling `fn` for a given
-     * argument set and returns the result. Subsequent calls to the memoized `fn` with the same
-     * argument set will not result in an additional call to `fn`; instead, the cached result
-     * for that set of arguments will be returned.
+     * Creates a new function that, when invoked, caches the result of calling `fn`
+     * for a given argument set and returns the result. Subsequent calls to the
+     * memoized `fn` with the same argument set will not result in an additional
+     * call to `fn`; instead, the cached result for that set of arguments will be
+     * returned.
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category Function
      * @sig (*... -> a) -> (*... -> a)
      * @param {Function} fn The function to memoize.
@@ -7173,7 +8330,7 @@
      * @example
      *
      *      var count = 0;
-     *      var factorial = R.memoize(function(n) {
+     *      var factorial = R.memoize(n => {
      *        count += 1;
      *        return R.product(R.range(1, n + 1));
      *      });
@@ -7184,13 +8341,13 @@
      */
     var memoize = _curry1(function memoize(fn) {
         var cache = {};
-        return function () {
+        return _arity(fn.length, function () {
             var key = toString(arguments);
             if (!_has(key, cache)) {
                 cache[key] = fn.apply(this, arguments);
             }
             return cache[key];
-        };
+        });
     });
 
     /**
@@ -7199,9 +8356,10 @@
      *
      * @func
      * @memberOf R
+     * @since v0.1.0
      * @category String
-     * @sig String -> String -> [String]
-     * @param {String} sep The separator string.
+     * @sig (String | RegExp) -> String -> [String]
+     * @param {String|RegExp} sep The pattern.
      * @param {String} str The string to separate into an array.
      * @return {Array} The array of strings from `str` separated by `str`.
      * @see R.join
@@ -7215,10 +8373,83 @@
     var split = invoker(1, 'split');
 
     /**
+     * Finds the set (i.e. no duplicates) of all elements contained in the first or
+     * second list, but not both.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category Relation
+     * @sig [*] -> [*] -> [*]
+     * @param {Array} list1 The first list.
+     * @param {Array} list2 The second list.
+     * @return {Array} The elements in `list1` or `list2`, but not both.
+     * @see R.symmetricDifferenceWith, R.difference, R.differenceWith
+     * @example
+     *
+     *      R.symmetricDifference([1,2,3,4], [7,6,5,4,3]); //=> [1,2,7,6,5]
+     *      R.symmetricDifference([7,6,5,4,3], [1,2,3,4]); //=> [7,6,5,1,2]
+     */
+    var symmetricDifference = _curry2(function symmetricDifference(list1, list2) {
+        return concat(difference(list1, list2), difference(list2, list1));
+    });
+
+    /**
+     * Finds the set (i.e. no duplicates) of all elements contained in the first or
+     * second list, but not both. Duplication is determined according to the value
+     * returned by applying the supplied predicate to two list elements.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.19.0
+     * @category Relation
+     * @sig (a -> a -> Boolean) -> [a] -> [a] -> [a]
+     * @param {Function} pred A predicate used to test whether two items are equal.
+     * @param {Array} list1 The first list.
+     * @param {Array} list2 The second list.
+     * @return {Array} The elements in `list1` or `list2`, but not both.
+     * @see R.symmetricDifference, R.difference, R.differenceWith
+     * @example
+     *
+     *      var eqA = R.eqBy(R.prop('a'));
+     *      var l1 = [{a: 1}, {a: 2}, {a: 3}, {a: 4}];
+     *      var l2 = [{a: 3}, {a: 4}, {a: 5}, {a: 6}];
+     *      R.symmetricDifferenceWith(eqA, l1, l2); //=> [{a: 1}, {a: 2}, {a: 5}, {a: 6}]
+     */
+    var symmetricDifferenceWith = _curry3(function symmetricDifferenceWith(pred, list1, list2) {
+        return concat(differenceWith(pred, list1, list2), differenceWith(pred, list2, list1));
+    });
+
+    /**
+     * Determines whether a given string matches a given regular expression.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.12.0
+     * @category String
+     * @sig RegExp -> String -> Boolean
+     * @param {RegExp} pattern
+     * @param {String} str
+     * @return {Boolean}
+     * @see R.match
+     * @example
+     *
+     *      R.test(/^x/, 'xyz'); //=> true
+     *      R.test(/^y/, 'xyz'); //=> false
+     */
+    var test = _curry2(function test(pattern, str) {
+        if (!_isRegExp(pattern)) {
+            throw new TypeError('\u2018test\u2019 requires a value of type RegExp as its first argument; received ' + toString(pattern));
+        }
+        return _cloneRegExp(pattern).test(str);
+    });
+
+    /**
      * The lower case version of a string.
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category String
      * @sig String -> String
      * @param {String} str The string to lower case.
@@ -7235,6 +8466,7 @@
      *
      * @func
      * @memberOf R
+     * @since v0.9.0
      * @category String
      * @sig String -> String
      * @param {String} str The string to upper case.
@@ -7245,6 +8477,107 @@
      *      R.toUpper('abc'); //=> 'ABC'
      */
     var toUpper = invoker(0, 'toUpperCase');
+
+    /**
+     * Returns a new list containing only one copy of each element in the original
+     * list, based upon the value returned by applying the supplied function to
+     * each list element. Prefers the first item if the supplied function produces
+     * the same value on two items. `R.equals` is used for comparison.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.16.0
+     * @category List
+     * @sig (a -> b) -> [a] -> [a]
+     * @param {Function} fn A function used to produce a value to use during comparisons.
+     * @param {Array} list The array to consider.
+     * @return {Array} The list of unique items.
+     * @example
+     *
+     *      R.uniqBy(Math.abs, [-1, -5, 2, 10, 1, 2]); //=> [-1, -5, 2, 10]
+     */
+    var uniqBy = _curry2(function uniqBy(fn, list) {
+        var set = new _Set();
+        var result = [];
+        var idx = 0;
+        var appliedItem, item;
+        while (idx < list.length) {
+            item = list[idx];
+            appliedItem = fn(item);
+            if (set.add(appliedItem)) {
+                result.push(item);
+            }
+            idx += 1;
+        }
+        return result;
+    });
+
+    /**
+     * Returns a new list containing only one copy of each element in the original
+     * list. `R.equals` is used to determine equality.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category List
+     * @sig [a] -> [a]
+     * @param {Array} list The array to consider.
+     * @return {Array} The list of unique items.
+     * @example
+     *
+     *      R.uniq([1, 1, 2, 1]); //=> [1, 2]
+     *      R.uniq([1, '1']);     //=> [1, '1']
+     *      R.uniq([[42], [42]]); //=> [[42]]
+     */
+    var uniq = uniqBy(identity);
+
+    /**
+     * Combines two lists into a set (i.e. no duplicates) composed of those
+     * elements common to both lists.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category Relation
+     * @sig [*] -> [*] -> [*]
+     * @param {Array} list1 The first list.
+     * @param {Array} list2 The second list.
+     * @return {Array} The list of elements found in both `list1` and `list2`.
+     * @see R.intersectionWith
+     * @example
+     *
+     *      R.intersection([1,2,3,4], [7,6,5,4,3]); //=> [4, 3]
+     */
+    var intersection = _curry2(function intersection(list1, list2) {
+        var lookupList, filteredList;
+        if (list1.length > list2.length) {
+            lookupList = list1;
+            filteredList = list2;
+        } else {
+            lookupList = list2;
+            filteredList = list1;
+        }
+        return uniq(_filter(flip(_contains)(lookupList), filteredList));
+    });
+
+    /**
+     * Combines two lists into a set (i.e. no duplicates) composed of the elements
+     * of each list.
+     *
+     * @func
+     * @memberOf R
+     * @since v0.1.0
+     * @category Relation
+     * @sig [*] -> [*] -> [*]
+     * @param {Array} as The first list.
+     * @param {Array} bs The second list.
+     * @return {Array} The first and second lists concatenated, with
+     *         duplicates removed.
+     * @example
+     *
+     *      R.union([1, 2, 3], [2, 3, 4]); //=> [1, 2, 3, 4]
+     */
+    var union = _curry2(compose(uniq, _concat));
 
     var R = {
         F: F,
@@ -7263,6 +8596,7 @@
         aperture: aperture,
         append: append,
         apply: apply,
+        applySpec: applySpec,
         assoc: assoc,
         assocPath: assocPath,
         binary: binary,
@@ -7270,9 +8604,8 @@
         both: both,
         call: call,
         chain: chain,
+        clamp: clamp,
         clone: clone,
-        commute: commute,
-        commuteMap: commuteMap,
         comparator: comparator,
         complement: complement,
         compose: compose,
@@ -7283,10 +8616,8 @@
         construct: construct,
         constructN: constructN,
         contains: contains,
-        containsWith: containsWith,
         converge: converge,
         countBy: countBy,
-        createMapEntry: createMapEntry,
         curry: curry,
         curryN: curryN,
         dec: dec,
@@ -7304,6 +8635,7 @@
         dropWhile: dropWhile,
         either: either,
         empty: empty,
+        eqBy: eqBy,
         eqProps: eqProps,
         equals: equals,
         evolve: evolve,
@@ -7316,9 +8648,8 @@
         flip: flip,
         forEach: forEach,
         fromPairs: fromPairs,
-        functions: functions,
-        functionsIn: functionsIn,
         groupBy: groupBy,
+        groupWith: groupWith,
         gt: gt,
         gte: gte,
         has: has,
@@ -7328,6 +8659,7 @@
         identity: identity,
         ifElse: ifElse,
         inc: inc,
+        indexBy: indexBy,
         indexOf: indexOf,
         init: init,
         insert: insert,
@@ -7343,8 +8675,8 @@
         isArrayLike: isArrayLike,
         isEmpty: isEmpty,
         isNil: isNil,
-        isSet: isSet,
         join: join,
+        juxt: juxt,
         keys: keys,
         keysIn: keysIn,
         last: last,
@@ -7352,6 +8684,7 @@
         length: length,
         lens: lens,
         lensIndex: lensIndex,
+        lensPath: lensPath,
         lensProp: lensProp,
         lift: lift,
         liftN: liftN,
@@ -7360,7 +8693,6 @@
         map: map,
         mapAccum: mapAccum,
         mapAccumRight: mapAccumRight,
-        mapObj: mapObj,
         mapObjIndexed: mapObjIndexed,
         match: match,
         mathMod: mathMod,
@@ -7371,6 +8703,8 @@
         memoize: memoize,
         merge: merge,
         mergeAll: mergeAll,
+        mergeWith: mergeWith,
+        mergeWithKey: mergeWithKey,
         min: min,
         minBy: minBy,
         modulo: modulo,
@@ -7381,18 +8715,20 @@
         not: not,
         nth: nth,
         nthArg: nthArg,
-        nthChar: nthChar,
-        nthCharCode: nthCharCode,
+        objOf: objOf,
         of: of,
         omit: omit,
         once: once,
         or: or,
         over: over,
+        pair: pair,
         partial: partial,
         partialRight: partialRight,
         partition: partition,
         path: path,
         pathEq: pathEq,
+        pathOr: pathOr,
+        pathSatisfies: pathSatisfies,
         pick: pick,
         pickAll: pickAll,
         pickBy: pickBy,
@@ -7411,7 +8747,9 @@
         props: props,
         range: range,
         reduce: reduce,
+        reduceBy: reduceBy,
         reduceRight: reduceRight,
+        reduceWhile: reduceWhile,
         reduced: reduced,
         reject: reject,
         remove: remove,
@@ -7419,14 +8757,19 @@
         replace: replace,
         reverse: reverse,
         scan: scan,
+        sequence: sequence,
         set: set,
         slice: slice,
         sort: sort,
         sortBy: sortBy,
         split: split,
+        splitAt: splitAt,
         splitEvery: splitEvery,
+        splitWhen: splitWhen,
         subtract: subtract,
         sum: sum,
+        symmetricDifference: symmetricDifference,
+        symmetricDifferenceWith: symmetricDifferenceWith,
         tail: tail,
         take: take,
         takeLast: takeLast,
@@ -7441,7 +8784,10 @@
         toString: toString,
         toUpper: toUpper,
         transduce: transduce,
+        transpose: transpose,
+        traverse: traverse,
         trim: trim,
+        tryCatch: tryCatch,
         type: type,
         unapply: unapply,
         unary: unary,
@@ -7452,20 +8798,25 @@
         uniq: uniq,
         uniqBy: uniqBy,
         uniqWith: uniqWith,
+        unless: unless,
         unnest: unnest,
+        until: until,
         update: update,
         useWith: useWith,
         values: values,
         valuesIn: valuesIn,
         view: view,
+        when: when,
         where: where,
         whereEq: whereEq,
+        without: without,
         wrap: wrap,
         xprod: xprod,
         zip: zip,
         zipObj: zipObj,
         zipWith: zipWith
     };
+  /* eslint-env amd */
 
   /* TEST_ENTRY_POINT */
 
