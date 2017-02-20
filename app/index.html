@@ -8,7 +8,7 @@ title: Home
         var TagList = React.createClass({
           render: function() {
             var tagNodes = this.props.data.map(function (tag) {
-              var path = "filter.html?" + facetName + "=" + tag;
+              var path = "filter.html?" + facetName + "[]=" + tag;
               return (
               <div className="tag">
               <a href={path}>
@@ -68,6 +68,6 @@ title: Home
         <h3>Contribute via Github</h3>
         <span>The website-based submission process uses <a href="https://help.github.com/articles/using-pull-requests/">Github pull requests</a> behind the scenes. Of course, you can propose pull requests manually, too. This is the recommended way of contributing large amounts of content at once.</span>
     </div>
-        
-        
+
+
 </div>

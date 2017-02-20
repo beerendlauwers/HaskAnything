@@ -1,9 +1,26 @@
 function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$$)"),
-        results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  var f = function(name,url) {
+    var values = [];
+    if(!url){
+        url = window.location.href;
+    }
+
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+
+    var pattern = name + '=([^&#]+)';
+    var o_reg = new RegExp(pattern,'ig');
+    while(true){
+        var matches = o_reg.exec(url);
+        if(matches && matches[1]){
+            values.push(decodeURIComponent(matches[1]));
+        }
+        else{
+            break;
+        }
+    }
+
+    return values;
+  }
+
+  return f(name,url).concat(f(name+"[]",url));
 }
