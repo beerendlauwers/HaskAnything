@@ -61,7 +61,6 @@ jQuery(document).ready(function() {
         R.map( readQuerystring,facets);
 
         jQuery('.facetlist').each( function() {
-          console.log(this);
           jQuery('input.facet-filter').trigger("keyup");
           buildPager(jQuery(this));
           switchPager( jQuery(this), 0);

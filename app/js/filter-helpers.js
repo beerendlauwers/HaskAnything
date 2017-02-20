@@ -1,3 +1,5 @@
+var gPageSize = 20;
+
 function updateFilterResultsHeader() {
 
   // Update the results header counter.
@@ -68,9 +70,8 @@ function facetUICreatedCommon() {
 
 function buildPager(facetList) {
 
-    var pageSize = 10;
     facetList.find('[data-filtered].facetitem').each( function( index, elem ) {
-      var page = parseInt( (index / pageSize) );
+      var page = parseInt( (index / gPageSize) );
 
       jQuery(this).data( "on-page", page );
     });
@@ -81,7 +82,7 @@ function buildPager(facetList) {
 
     facetList.prepend("<div class='simple-pager'></div>");
 
-    for (var pager = 0; pager < (count / pageSize); pager++) {
+    for (var pager = 0; pager < (count / gPageSize); pager++) {
       facetList.find('.simple-pager').append('<a href="#" class="pager-page pager-page-' + pager + '" onclick="switchPagerFromButton(this,' + pager + ');">' + (pager + 1) + '</a>');
     }
 }
@@ -92,7 +93,7 @@ function switchPagerFromButton(pageButton, pageNumber) {
 
 function switchPager(facetList, pageNumber) {
 
-  var pageSize = 10;
+  var gPageSize = 10;
 
   jQuery(facetList).find('[data-filtered].facetitem').each( function( index, elem ) {
 
@@ -100,7 +101,7 @@ function switchPager(facetList, pageNumber) {
 
       var idx = e.data( "on-page" );
 
-      var page = idx % pageSize;
+      var page = idx % gPageSize;
       (pageNumber == page) ? e.show() : e.hide();
     });
 
