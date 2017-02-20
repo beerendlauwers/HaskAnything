@@ -280,3 +280,15 @@ ol.series-item-picker li.placeholder:before {
   border-left-color: red;
   border-right: none;
 }
+
+.simple-pager {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.pager-page {
+  padding: 3px;
+  margin-left: 2px;
+  margin-right: 2px;
+  border: 1px solid #333;
+}

@@ -47,16 +47,25 @@ jQuery(document).ready(function() {
 
       setTimeout( function() {
         // Read querystring for data.
-        var facets = ['categories','tags','libraries'];
+        var facets = ['categories','tags','libraries','authors'];
 
         var readQuerystring = function(elem) {
           if( getParameterByName(elem) ) {
-            var e = getParameterByName(elem);
-            jQuery('.facetitem:contains("' + e + '")').click();
+            var es = getParameterByName(elem);
+            R.map( function(v) {
+              jQuery('.facetitem:contains("' + v + '")').click();
+            },es);
           }
         };
 
         R.map( readQuerystring,facets);
+
+        jQuery('.facetlist').each( function() {
+          console.log(this);
+          jQuery('input.facet-filter').trigger("keyup");
+          buildPager(jQuery(this));
+          switchPager( jQuery(this), 0);
+        } );
 
       }, 25 );
 
@@ -68,7 +77,50 @@ jQuery(document).ready(function() {
 
 
     jQuery(function(){
+      // Turn on the faceting functionality.
       jQuery.facetelize(settings);
+
+      // Add click handlers to each facet item.
+      jQuery('.facetlist .facetitem').on('click', function() {
+        var settings = jQuery.getFacetSettings();
+
+        var allFilters = [];
+
+        jQuery.each( settings.facets, function(facet) {
+          if (facet in settings.state.filters) {
+            var seperator = facet + '[]=';
+            var url = seperator + R.join( '&' + seperator, settings.state.filters[facet] );
+
+            allFilters.push( R.pair( facet, url ) );
+          }
+        } );
+
+        R.map( function(pair) {
+          var facet = pair[0];
+          var url = pair[1];
+
+          // TODO: FINISH THIS UP
+
+
+
+        }, allFilters);
+
+        // Convert settings.facet object to an array and flatten it.
+        var facets = R.map( function(facetArray) {
+          return facetArray[0];
+        }, R.toPairs( settings.facets ) );
+
+        // Map over the facets and get the
+        R.map( function(facet) {
+          return R.map( function(filter) {
+            return facet in settings.state.filters ? R.map( function(filter) {}, settings.state.filters[facet] ) : [];
+          }, facet);
+        }, facets );
+
+
+
+
+      });
     });
 });
 </script>
