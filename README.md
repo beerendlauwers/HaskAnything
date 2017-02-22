@@ -43,3 +43,9 @@ If it's not, please open an issue over at [Github](https://github.com/beerendlau
 This Github repository serves as both the code repository that generates the website (branch `master`), as well as the host for the website itself (branch `gh-pages`).
 
 **Note:** Pushes are done automatically to `gh-pages` by CircleCI, which overwrites any changes, so never offer pull requests for that branch.
+
+### Sponsorship
+
+![BrowserStack logo](https://raw.githubusercontent.com/beerendlauwers/HaskAnything/master/app/images/browserstack-badge.png)
+
+[BrowserStack](https://www.browserstack.com/) provides me with a free account because of the [open-source nature of the project](https://www.browserstack.com/pricing).
