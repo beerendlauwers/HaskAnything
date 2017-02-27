@@ -2,7 +2,8 @@
 title: A Taste of Haskell - Part 1
 url-video: https://www.youtube.com/watch?v=jLj1QV11o9g
 url-slides: http://www.slideshare.net/oscon2007/os-peytonjones
-authors: Simon Peyton Jones
+authors:
+ - Simon Peyton Jones
 source: https://wiki.haskell.org/Video_presentations
 conference: OSCON 2007
 tags:

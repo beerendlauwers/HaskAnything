@@ -2,7 +2,8 @@
 title: Clutching a grip on AUTOSAR using Haskell
 url-video: https://www.youtube.com/watch?v=4OUwfQga2Jw
 url-slides: http://bobkonf.de/2015/slides/nordlander.pdf
-authors: Johan Nordlander
+authors:
+ - Johan Nordlander
 source: http://bobkonf.de/2015/nordlander.html
 conference: BOB2015
 tags:

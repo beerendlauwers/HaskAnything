@@ -2,7 +2,8 @@
 title: Type the web with Servant!
 url-video: https://www.youtube.com/watch?v=DmiGZ6Ik_C0
 url-slides: http://bobkonf.de/2016/slides/loeh.pdf
-authors: Andres Löh
+authors:
+ - Andres Löh
 source: http://bobkonf.de/2016/loeh-servant.html
 conference: BOB2016
 tags:

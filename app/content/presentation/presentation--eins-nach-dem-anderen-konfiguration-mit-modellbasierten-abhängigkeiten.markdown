@@ -2,7 +2,8 @@
 title: "Eins nach dem anderen: Konfiguration mit modellbasierten Abhängigkeiten"
 url-video: https://www.youtube.com/watch?v=UflO7YBdhYA
 url-slides: http://bobkonf.de/2015/slides/greif.pdftx
-authors: Gabor Greif
+authors:
+ - Gabor Greif
 source: http://bobkonf.de/2015/greif.html
 conference: BOB2015
 tags:

@@ -2,7 +2,8 @@
 title: "LVars: lattice-based data structures for deterministic parallel and distributed programming"
 url-video: https://www.youtube.com/watch?v=8dFO5Ir0xqY
 url-slides: about:blank
-authors: Lindsey Kuper
+authors:
+ - Lindsey Kuper
 source: http://www.composeconference.org/2015/program/index.html
 conference: Compose2015
 tags:

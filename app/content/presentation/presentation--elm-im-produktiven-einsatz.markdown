@@ -2,7 +2,8 @@
 title: Elm im produktiven Einsatz
 url-video: https://www.youtube.com/watch?v=hG6Q8RZKg28
 url-slides: about:blank
-authors: Gregor Große-Bölting
+authors:
+ - Gregor Große-Bölting
 source: http://bobkonf.de/2016/grosse-boelting.html
 conference: BOB2016
 tags:

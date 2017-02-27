@@ -2,7 +2,9 @@
 title: "Functional Programming and the Web: Frontend Development in PureScript"
 url-video: https://www.youtube.com/watch?v=EArV7Uy-TD0
 url-slides: http://bobkonf.de/2016/slides/karg.pdf
-authors: Michael Karg, Jürgen Nicklisch-Franken
+authors:
+ - Michael Karg
+ - Jürgen Nicklisch-Franken
 source: http://bobkonf.de/2016/karg.html
 conference: BOB2016
 tags:

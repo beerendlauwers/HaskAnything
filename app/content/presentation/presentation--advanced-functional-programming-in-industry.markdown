@@ -2,7 +2,8 @@
 title: Advanced functional programming in industry
 url-video: https://www.youtube.com/watch?v=vWiQdZeY2Bk
 url-slides: http://bobkonf.de/2015/slides/magalhaes.pdf
-authors: José Pedro Magalhães
+authors:
+ - José Pedro Magalhães
 source: http://bobkonf.de/2015/magalhaes.html
 conference: BOB2015
 tags:

@@ -2,7 +2,8 @@
 title: Type providers and error reflection in Idris
 url-video: https://www.youtube.com/watch?v=dP2imvL92sY
 url-slides: about:blank
-authors: David Christiansen
+authors:
+ - David Christiansen
 source: http://www.composeconference.org/2015/speakers/
 conference: Compose2015
 tags:

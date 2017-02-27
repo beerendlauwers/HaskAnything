@@ -2,7 +2,8 @@
 title: Functional Reactive Programming
 url-video: https://www.youtube.com/watch?v=-wI-TEKbmxc
 url-slides: http://bobkonf.de/2016/slides/apfelmus.pdf
-authors: Heinrich Apfelmus
+authors:
+ - Heinrich Apfelmus
 source: http://bobkonf.de/2016/apfelmus.html
 conference: BOB2016
 tags:

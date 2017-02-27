@@ -2,7 +2,8 @@
 title: Languages We Love
 url-video: https://www.youtube.com/watch?v=s_72snYo8z8
 url-slides: http://bobkonf.de/2016/slides/huard.pdf
-authors: Elise Huard
+authors:
+ - Elise Huard
 source: http://bobkonf.de/2016/keynote.html
 conference: BOB2016
 tags:

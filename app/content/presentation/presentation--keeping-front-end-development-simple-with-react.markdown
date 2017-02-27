@@ -2,7 +2,8 @@
 title: Keeping Front-end Development Simple with React
 url-video: https://www.youtube.com/watch?v=1275641lpkI
 url-slides: http://bobkonf.de/2016/slides/tsui.pdf
-authors: Tony Tsui
+authors:
+ - Tony Tsui
 source: http://bobkonf.de/2016/tsui.html
 conference: BOB2016
 tags:

@@ -2,7 +2,8 @@
 title: Liquid Types for Haskell
 url-video: https://www.youtube.com/watch?v=LEsEME7JwEE
 url-slides: http://goto.ucsd.edu/~nvazou/compose16/_site/01-index.html
-authors: Niki Vazou
+authors:
+ - Niki Vazou
 source: http://www.composeconference.org/2016/speakers/
 conference: Compose2016
 tags:

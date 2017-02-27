@@ -2,7 +2,8 @@
 title: Mit Monaden die Zukunft im Blick
 url-video: https://www.youtube.com/watch?v=BQzJqdNASyg
 url-slides: http://www.joachim-breitner.de/publications/MonadFix_BobKonf2016_2016-02-19.pdf
-authors: Joachim Breitner
+authors:
+ - Joachim Breitner
 source: http://bobkonf.de/2016/breitner-monaden.html
 conference: BOB2016
 tags:

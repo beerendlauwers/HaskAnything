@@ -2,7 +2,10 @@
 title: "Improving Type Error Localization for Languages with Type Inference"
 url-video: https://www.youtube.com/watch?v=BMT6MZ5zuvw
 url-slides: /files/presentation/presentation--improving-type-error-localization-for-languages-with-type-inference.pdf
-authors: Zvonimir Pavlinovic, Tim King, Thomas Wies
+authors:
+ - Zvonimir Pavlinovic
+ - Tim King
+ - Thomas Wies
 source: http://www.composeconference.org/2016/speakers/
 conference: Compose2016
 tags:

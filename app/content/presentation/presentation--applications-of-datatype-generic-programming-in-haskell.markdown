@@ -2,7 +2,8 @@
 title: Applications of Datatype Generic Programming in Haskell
 url-video: https://www.youtube.com/watch?v=ZtWzh4mBzaI
 url-slides: http://bobkonf.de/2016/slides/hahn.pdf
-authors: Sönke Hahn
+authors:
+ - Sönke Hahn
 source: http://bobkonf.de/2016/hahn.html
 conference: BOB2016
 tags:

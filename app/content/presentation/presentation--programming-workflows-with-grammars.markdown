@@ -2,7 +2,8 @@
 title: Programming Workflows with Grammars
 url-video: https://www.youtube.com/watch?v=vDjg6XPgjxQ
 url-slides: http://bobkonf.de/2015/slides/middelkoop.pptx
-authors: Arie Middelkoop
+authors:
+ - Arie Middelkoop
 source: http://bobkonf.de/2015/middelkoop.html
 conference: BOB2015
 tags:

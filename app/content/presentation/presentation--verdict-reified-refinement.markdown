@@ -2,7 +2,8 @@
 title: Verdict - Reified refinement
 url-video: https://www.youtube.com/watch?v=w9X1I1ySCCM
 url-slides: https://raw.githubusercontent.com/jkarni/bobkonf/master/presentation.md
-authors: Julian Arni
+authors:
+ - Julian Arni
 source: http://bobkonf.de/2016/arni.html
 conference: BOB2016
 tags:

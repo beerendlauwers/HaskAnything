@@ -2,7 +2,8 @@
 title: Synchronisation und Immutability
 url-video: https://www.youtube.com/watch?v=imYJEZJ239I
 url-slides: http://bobkonf.de/2016/slides/bernauer.pdf
-authors: Andreas Bernauer
+authors:
+ - Andreas Bernauer
 source: http://bobkonf.de/2016/bernauer.html
 conference: BOB2016
 tags:

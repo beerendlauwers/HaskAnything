@@ -2,7 +2,8 @@
 title: Functional Programming at LumiGuide
 url-video: https://www.youtube.com/watch?v=IKznN_TYjZk
 url-slides: https://github.com/meiersi/HaskellerZ/raw/master/meetups/20160722-ZuriHac2016_Bas_van_Dijk_FP-at-LumiGuide/Bas_van_Dijk-FP_at_LumiGuide-ZuriHac2016.pptx
-authors: Bas van Dijk
+authors:
+ - Bas van Dijk
 source: https://www.reddit.com/r/haskell/comments/51uaxw/zurihac_2016_functional_programming_at_lumiguide/
 conference: ZuriHac 2016
 tags: GHCJS,Machine Learning,Nix,Computer Vision

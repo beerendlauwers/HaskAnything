@@ -2,7 +2,8 @@
 title: Dynamic programming at ease - with grammars, algebras, products
 url-video: https://www.youtube.com/watch?v=deZx15FSkEE
 url-slides: http://bobkonf.de/2016/slides/schirmer.pdf
-authors: Stefanie Schirmer
+authors:
+ - Stefanie Schirmer
 source: http://bobkonf.de/2016/schirmer.html
 conference: BOB2016
 tags:

@@ -2,7 +2,8 @@
 title: Praktische Erfahrungen mit GPU-Programmierung in Haskell
 url-video: https://www.youtube.com/watch?v=1kCZzDSnVL0
 url-slides: http://bobkonf.de/2015/slides/thielemann.pdf
-authors: Henning Thielemann
+authors:
+ - Henning Thielemann
 source: http://bobkonf.de/2015/thielemann.html
 conference: BOB2015
 tags:
