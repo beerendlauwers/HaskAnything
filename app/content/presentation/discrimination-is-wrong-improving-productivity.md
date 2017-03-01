@@ -9,6 +9,7 @@ tags:
  - Category Theory
  - Contravariance
  - Final Encoding
+ - Library Design
 libraries:
  - discrimination
 ---
