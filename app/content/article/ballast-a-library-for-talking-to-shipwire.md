@@ -8,6 +8,7 @@ authors:
 type: "article"
 tags:
  - "Type Families"
+ - "Library Design"
 libraries:
  - "ballast"
  - "stripe-haskell"
