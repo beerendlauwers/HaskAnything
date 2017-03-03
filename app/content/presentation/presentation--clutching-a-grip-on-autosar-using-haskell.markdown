@@ -8,6 +8,7 @@ source: http://bobkonf.de/2015/nordlander.html
 conference: BOB2015
 tags:
  - DSL
+ - Haskell In Production
 libraries:
 ---
 
