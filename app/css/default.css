@@ -70,6 +70,11 @@ input[type=checkbox] {
     text-align: center;
 }
 
+.intro h1 {
+    font-size: 22px;
+}
+
+
 .ubuntu-font {
     font-family: Ubuntu, sans-serif;
     font-weight: bold;
