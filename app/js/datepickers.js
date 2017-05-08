@@ -3,10 +3,6 @@ function loadDatepickers() {
       multidate: true,
       format: "yyyy-mm-dd"
   });
-
-  jQuery('#date-published').datepicker({
-    format: "yyyy-mm-dd"
-  });
 }
 
 jQuery(document).ready( loadDatepickers );
