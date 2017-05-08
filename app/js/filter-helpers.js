@@ -83,7 +83,7 @@ function buildPager(facetList) {
     facetList.prepend("<div class='simple-pager'></div>");
 
     for (var pager = 0; pager < (count / gPageSize); pager++) {
-      facetList.find('.simple-pager').append('<a href="#" class="pager-page pager-page-' + pager + '" onclick="switchPagerFromButton(this,' + pager + ');">' + (pager + 1) + '</a>');
+      facetList.find('.simple-pager').append('<a href="#/" class="pager-page pager-page-' + pager + '" onclick="switchPagerFromButton(this,' + pager + ');">' + (pager + 1) + '</a>');
     }
 }
 

@@ -135,6 +135,7 @@ input[type=checkbox] {
 }
 
 #facets {
+    flex-direction: column;
     display: flex;
 }
 
@@ -155,9 +156,9 @@ input[type=checkbox] {
   display: block;
 }
 
-.facetsearch {
-    margin: 2em;
-    width: 25%;
+.facetlist {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .facetsearch:first-of-type {
@@ -166,6 +167,9 @@ input[type=checkbox] {
 
 .facetlist .facetitem {
     cursor: pointer;
+    width: 50%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 .facetlist .facetitem:hover {
@@ -187,7 +191,8 @@ input[type=checkbox] {
 }
 
 .bottomline {
-  margin-top: 1em;
+  margin-top: 2em;
+  width: 100%;
 }
 
 .bottomline .facettotalcount {
@@ -196,6 +201,10 @@ input[type=checkbox] {
 
 .bottomline .deselectstartover {
     cursor: pointer;
+    margin-top: 1em;
+    padding: 15px;
+    border: 1px solid #333;
+    display: inline-block;
 }
 
 .bottomline .orderby {
@@ -227,6 +236,47 @@ input[type=checkbox] {
 
 .facetitem-empty {
   color: gray;
+}
+
+.simple-pager {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+.pager-page {
+  padding: 0.5em;
+  margin: 0.5em;
+  border: 1px solid #333;
+}
+
+
+@media (min-width: 992px){
+  #facets {
+    flex-direction: row;
+  }
+
+  .facetsearch {
+      margin: 2em;
+      width: 25%;
+  }
+
+  .facetlist .facetitem {
+      width: 100%;
+      margin: auto;
+  }
+
+  .pager-page {
+    padding: 3px;
+    margin-left: 2px;
+    margin-right: 2px;
+  }
+
+  .bottomline {
+    margin-top: 1em;
+  }
 }
 
 .series-title {
@@ -285,16 +335,4 @@ ol.series-item-picker li.placeholder:before {
   border: 5px solid transparent;
   border-left-color: red;
   border-right: none;
-}
-
-.simple-pager {
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.pager-page {
-  padding: 3px;
-  margin-left: 2px;
-  margin-right: 2px;
-  border: 1px solid #333;
 }
