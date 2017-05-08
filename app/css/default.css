@@ -182,12 +182,17 @@ input[type=checkbox] {
 
 .item .item-header {
     display: flex;
+    flex-wrap: wrap;
+}
+
+.item-header h4 {
+  width: 100%;
 }
 
 .item .item-category {
-    align-self: center;
-    margin-left: 0.5em;
     font-style: italic;
+    font-size: 120%;
+    margin-bottom: 10px;
 }
 
 .bottomline {
@@ -276,6 +281,17 @@ input[type=checkbox] {
 
   .bottomline {
     margin-top: 1em;
+  }
+
+  .item-header h4 {
+    width: auto;
+  }
+
+  .item .item-category {
+      align-self: center;
+      margin-left: 0.5em;
+      font-size: initial;
+      margin-bottom: initial;
   }
 }
 
