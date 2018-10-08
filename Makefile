@@ -1,7 +1,7 @@
 CNAME := haskanything.com
 REPO := git@github.com:beerendlauwers/HaskAnything.git
 
-EXE := /home/ubuntu/.local/bin/hask-anything-exe
+EXE := /home/circleci/.local/bin/hask-anything-exe
 
 all:	build
 	@true
