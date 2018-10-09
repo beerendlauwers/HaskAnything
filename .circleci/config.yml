@@ -33,4 +33,4 @@ jobs:
       - run:
           name: Avoid hosts unknown for github
           command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
-      - run: if [ -z $CI_PULL_REQUEST ]; then make deploy; else echo "Pull request test, skipping push."; fi
+      - run: if [ $CIRCLE_BRANCH = "master" ]; then make deploy; else echo "Pull request test, skipping push."; fi
