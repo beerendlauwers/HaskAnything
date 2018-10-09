@@ -16,12 +16,12 @@ jobs:
       - checkout
       - run: apt-get update && apt-get install git -y
       - restore_cache:
-          key: build-cache
+          key: build-cache-{{ checksum "stack.yaml" }}
       - run: stack setup
       - run: stack build --only-dependencies -j1
       - run: stack install
       - save_cache:
-          key: build-cache
+          key: build-cache-{{ checksum "stack.yaml" }}
           paths:
             - /root/.stack
             - /root/.cabal
