@@ -9,17 +9,23 @@ workflows:
 
 jobs:
   build:
+    docker:
+      - image: romanandreg/stack:latest
+
     machine: true
 
     steps:
       - checkout
-      - run: wget https://github.com/commercialhaskell/stack/releases/download/v1.6.1/stack-1.6.1-linux-x86_64.tar.gz -O /tmp/stack.tar.gz
-      - run: sudo mkdir /tmp/stack-download
-      - run: sudo tar -xzf /tmp/stack.tar.gz -C /tmp/stack-download
-      - run: sudo chmod +x /tmp/stack-download/stack-1.6.1-linux-x86_64/stack
-      - run: sudo mv /tmp/stack-download/stack-1.6.1-linux-x86_64/stack /usr/bin/stack
+      - restore_cache:
+          key: build-cache-{{ checksum "etc/etc.cabal" }}
       - run: stack setup
       - run: stack build --only-dependencies -j1
       - run: stack install
+      - save_cache:
+          key: build-cache-{{ checksum "etc/etc.cabal" }}
+          paths:
+            - /root/.stack
+            - /root/.cabal
+            - .stack-work
       - run: make build
       - run: if [ -z $CI_PULL_REQUEST ]; then make deploy; else echo "Pull request test, skipping push."; fi
