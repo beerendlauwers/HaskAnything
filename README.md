@@ -26,9 +26,8 @@ Hakyll is a static site generator written in Haskell, and it's *great*.
 
 The project uses [Stack](https://docs.haskellstack.org/en/stable/README/), so it *should* just be:
 
-1. `stack build`
-2. Copying the built executable into the `app` folder. (Help on doing this automatically is greatly appreciated)
-3. In `/app`, run `site build`, or `site watch`.
+1. `stack install`, which builds `hask-anything-exe`
+2. In `/app`, run `hask-anything-exe build`, or `site-anything-exe watch` to serve the site locally. 
 
 If it's not, please open an issue over at [Github](https://github.com/beerendlauwers/HaskAnything/issues)!
 
