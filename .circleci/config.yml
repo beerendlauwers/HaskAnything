@@ -12,8 +12,6 @@ jobs:
     docker:
       - image: romanandreg/stack:latest
 
-    machine: true
-
     steps:
       - checkout
       - restore_cache:
