@@ -27,4 +27,7 @@ jobs:
             - /root/.cabal
             - .stack-work
       - run: make build
+      - run:
+          name: Avoid hosts unknown for github
+          command: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run: if [ -z $CI_PULL_REQUEST ]; then make deploy; else echo "Pull request test, skipping push."; fi
