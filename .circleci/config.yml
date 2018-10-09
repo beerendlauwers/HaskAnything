@@ -15,12 +15,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: build-cache-{{ checksum "etc/etc.cabal" }}
+          key: build-cache
       - run: stack setup
       - run: stack build --only-dependencies -j1
       - run: stack install
       - save_cache:
-          key: build-cache-{{ checksum "etc/etc.cabal" }}
+          key: build-cache
           paths:
             - /root/.stack
             - /root/.cabal
