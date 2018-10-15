@@ -1,13 +1,13 @@
 name:                hask-anything
 version:             0.1.0.0
-synopsis:            Initial project template from stack
+synopsis:            Builds the static site that comprises HaskAnything.com with Hakyll.
 description:         Please see README.md
-homepage:            http://github.com/githubuser/hask-anything#readme
+homepage:            https://github.com/beerendlauwers/HaskAnything
 license:             BSD3
 license-file:        LICENSE
 author:              Beerend Lauwers
-maintainer:          beerendlawers@gmail.com
-copyright:           2016 Beerend Lauwers
+maintainer:          beerendlauwers@gmail.com
+copyright:           None
 category:            Web
 build-type:          Simple
 -- extra-source-files:
@@ -26,7 +26,7 @@ library
                      , HaskAnything.Internal.Po.Parse
                      , HaskAnything.Internal.Po
   build-depends:       base >= 4.7 && < 5
-                     , hakyll == 4.8.3.2
+                     , hakyll
                      , blaze-html
                      , containers
                      , aeson
@@ -48,7 +48,7 @@ executable hask-anything-exe
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , hask-anything
-                     , hakyll == 4.8.3.2
+                     , hakyll
                      , text
                      , filepath
                      , aeson
