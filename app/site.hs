@@ -64,28 +64,31 @@ main = hakyll $ do
 
     authors <- buildAuthors "content/*/*" (fromCapture "authors/*")
 
-    matchContent "paper" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx tags categories libraries)
-    matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx tags categories libraries)
-    matchContent "reddit-post" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
-    matchContent "reddit-thread" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
-    matchContent "presentation" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
+    let defCtx = defaultContext' tags categories libraries
+    let postCtx' = postCtx tags categories libraries <> defCtx
+
+    matchContent "paper" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx')
+    matchContent "snippet" (addTags tags $ addCategories categories $ addLibraries libraries $ postCtx')
+    matchContent "reddit-post" (addTags tags $ addCategories categories $ postCtx')
+    matchContent "reddit-thread" (addTags tags $ addCategories categories $ postCtx')
+    matchContent "presentation" (addTags tags $ addCategories categories $ postCtx')
     matchContent "series" (addTags tags $ addCategories categories $ seriesCtx tags categories libraries)
     matchContent "article" (addTags tags $ addCategories categories $ articleCtx tags categories libraries)
     matchContent "package" (addTags tags $ addCategories categories $ packageCtx tags categories libraries)
-    matchContent "how-do-i/simple" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
-    matchContent "how-do-i/advanced" (addTags tags $ addCategories categories $ postCtx tags categories libraries)
+    matchContent "how-do-i/simple" (addTags tags $ addCategories categories $ postCtx')
+    matchContent "how-do-i/advanced" (addTags tags $ addCategories categories $ postCtx')
 
     -- See https://hackage.haskell.org/package/hakyll-4.6.9.0/docs/Hakyll-Web-Tags.html
     tagsRules' tags $ \tag pattern -> do
         let title = "Content tagged with " ++ tag
+
 
         -- Copied from posts, need to refactor
         route idRoute
         compile $ do
             alltags <- loadAll pattern
             let ctx = constField "title" title <>
-                        listField "alltags" (addTags tags $ postCtx tags categories libraries) (return alltags) <>
-                        defaultContext' tags categories libraries
+                        listField "alltags" (addTags tags $ postCtx') (return alltags) <> defCtx
             makeItem ""
                 >>= loadAndApplyTemplate "templates/tag.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
@@ -99,8 +102,7 @@ main = hakyll $ do
         compile $ do
             allLibraries <- loadAll pattern
             let ctx = constField "title" title <>
-                        listField "alllibraries" (addTags tags $ postCtx tags categories libraries) (return allLibraries) <>
-                        defaultContext' tags categories libraries
+                        listField "alllibraries" (addTags tags $ postCtx') (return allLibraries) <> defCtx
             makeItem ""
                 >>= loadAndApplyTemplate "templates/libraries.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
@@ -114,8 +116,7 @@ main = hakyll $ do
         compile $ do
             allCategories <- loadAll pattern
             let ctx = constField "title" title <>
-                        listField "allcategories" (addTags tags $ addCategories categories $ postCtx tags categories libraries) (return allCategories) <>
-                        defaultContext' tags categories libraries
+                        listField "allcategories" (addTags tags $ addCategories categories $ postCtx') (return allCategories) <> defCtx
             makeItem ""
                 >>= addCategoryText category ctx
                 >>= loadAndApplyTemplate "templates/categories.html" ctx
@@ -130,15 +131,15 @@ main = hakyll $ do
     makeJSONFile "permission-files" permissionFiles
     makeJSONFile "authors" authors
 
+    -- Get all the content data as a list field.
+    allIdents <- getContentData
+
     create ["filter.html"] $ do
         route idRoute
         compile $ do
 
-            -- Get all the content data as a list field.
-            allIdents <- getContentData
-
-            -- Add that data structure to our local compilation context.
-            let ctx = allIdents <> constField "title" "Filter by facets" <> defaultContext' tags categories libraries
+            -- Add the allIdents data structure to our local compilation context.
+            let ctx = allIdents <> constField "title" "Filter by facets" <> defCtx
             makeItem ""
                 >>= loadAndApplyTemplate "templates/filter.html" ctx
                 >>= loadAndApplyTemplate "templates/default.html" ctx
@@ -152,8 +153,8 @@ main = hakyll $ do
         route   $ setExtension "html"
         compile $ do
             pandocCompiler
-            >>= loadAndApplyTemplate "templates/permissions.html" (defaultContext' tags categories libraries)
-            >>= loadAndApplyTemplate "templates/default.html" (defaultContext' tags categories libraries)
+            >>= loadAndApplyTemplate "templates/permissions.html" defCtx
+            >>= loadAndApplyTemplate "templates/default.html" defCtx
             >>= relativizeUrls
 
     match "index.html" $ do
@@ -163,12 +164,12 @@ main = hakyll $ do
             dedup <- deduplicateContentBy getRoute (withFilePath takeFileName) howDoIPosts -- It might actually be nice if we filtered this and had two "how-do-i-posts" columns, one advanced, one simple?
 
             let indexContext =
-                    listField "how-do-i-posts" (postCtx tags categories libraries) (return dedup ) <>
+                    listField "how-do-i-posts" postCtx' (return dedup) <>
                     field "categories" (\_ -> return $ toString $ tagsToJSON categories) <>
                     field "allcategories" (\_ -> renderTagList categories) <>
                     field "tags" (\_ -> fmap toString (loadBodyLBS "json/categories.json")) <>
                    -- field "path" (\_ -> fmap fromJust (getRoute "categories/*")) <> -- fix the fromJust -- TODO: find out how we can get that.
-                   defaultContext' tags categories libraries
+                   defCtx
 
 
             getResourceBody
@@ -179,13 +180,11 @@ main = hakyll $ do
     match "ui/submit/*" $ do
         route idRoute
         compile $ do
-            -- Get all the content data as a list field.
-            allIdents <- getContentData
 
             getResourceBody
-                >>= applyAsTemplate (allIdents <> defaultContext' tags categories libraries)
-                >>= loadAndApplyTemplate "templates/submit.html" (defaultContext' tags categories libraries)
-                >>= loadAndApplyTemplate "templates/default.html" (defaultContext' tags categories libraries)
+                >>= applyAsTemplate (allIdents <> defCtx)
+                >>= loadAndApplyTemplate "templates/submit.html" defCtx
+                >>= loadAndApplyTemplate "templates/default.html" defCtx
                 >>= relativizeUrls
 
     match "templates/**" $ compile templateCompiler
@@ -199,7 +198,7 @@ main = hakyll $ do
     match "documentation.md" $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/default.html" (defaultContext' tags categories libraries)
+            >>= loadAndApplyTemplate "templates/default.html" defCtx
             >>= relativizeUrls
 
 
