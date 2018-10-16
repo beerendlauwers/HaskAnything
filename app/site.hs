@@ -131,14 +131,14 @@ main = hakyll $ do
     makeJSONFile "permission-files" permissionFiles
     makeJSONFile "authors" authors
 
-    -- Get all the content data as a list field.
-    allIdents <- getContentData
-
     create ["filter.html"] $ do
         route idRoute
         compile $ do
 
-            -- Add the allIdents data structure to our local compilation context.
+            -- Get all the content data as a list field.
+            allIdents <- getContentData
+
+            -- Add that data structure to our local compilation context.
             let ctx = allIdents <> constField "title" "Filter by facets" <> defCtx
             makeItem ""
                 >>= loadAndApplyTemplate "templates/filter.html" ctx
@@ -180,6 +180,8 @@ main = hakyll $ do
     match "ui/submit/*" $ do
         route idRoute
         compile $ do
+            -- Get all the content data as a list field.
+            allIdents <- getContentData
 
             getResourceBody
                 >>= applyAsTemplate (allIdents <> defCtx)
