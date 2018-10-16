@@ -1,7 +1,8 @@
 ---
 title: 1ML - core and modules united
 paper-url: https://www.mpi-sws.org/~rossberg/papers/Rossberg%20-%201ML%20--%20Core%20and%20modules%20united%20%5BDraft%5D.pdf
-authors: Andreas Rossberg
+authors: 
+ - Andreas Rossberg
 tags: ml
 ---
 

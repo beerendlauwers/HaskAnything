@@ -1,7 +1,8 @@
 ---
 title: Adventures in Three Monads
 paper-url: http://web.mit.edu/~ezyang/Public/threemonads.pdf
-authors: Edward Z. Yang
+authors: 
+ - Edward Z. Yang
 tags: 
 libraries: 
 ---
