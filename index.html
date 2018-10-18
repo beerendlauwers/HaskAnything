@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Hask Anything! - Home</title>
+        <!-- Open Sans -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet" />
+        <!-- Ubuntu font -->
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" type="text/css" rel="stylesheet" />
+        <!-- FontAwesome fonts -->
+        <link rel="stylesheet" href="./vendor/fontawesome/css/font-awesome.min.css" />
+        <!-- Bootstrap CSS -->
+        <link href="./vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+        <!-- jQuery -->
+        <script src="./vendor/jquery/jquery.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="./vendor/bootstrap/bootstrap.min.js"></script>
+        <!-- ReactJS -->
+        <script src="./vendor/react/react.min.js"></script>
+        <script src="./vendor/react/JSXTransformer.js"></script>
+        <!-- RamdaJS -->
+        <script src="./vendor/ramdajs/ramda.js"></script>
+        <!-- Keys.css -->
+        <link rel="stylesheet" type="text/css" href="./vendor/keys/keys.css" />
+        <!-- OAuth.io -->
+        <script src="./vendor/oauth.io/oauth.js"></script>
+        <script src="./js/github-login.js"></script>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="./css/default.css" />
+        <!-- Custom JS -->
+        <script src="./js/getbaseroot.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="./">Hask Anything!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="./filter.html">Filter by facets</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add a new... <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            
+                <li><a href="./ui/submit/article.html">article</a></li>
+            
+                <li><a href="./ui/submit/package.html">package</a></li>
+            
+                <li><a href="./ui/submit/paper.html">paper</a></li>
+            
+                <li><a href="./ui/submit/presentation.html">presentation</a></li>
+            
+                <li><a href="./ui/submit/reddit-post.html">reddit-post</a></li>
+            
+                <li><a href="./ui/submit/series.html">series</a></li>
+            
+          </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="TODO: Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="login-avatar"></span><span id="login-username" < span>You're not logged in. </span><span class="caret"></a>
+          <ul class="dropdown-menu">
+            <li id="login-link"><a href="#" onclick="githubAuthorize();">Login</a></li>
+            <li id="logout-link"><a href="#" onclick="githubLogout();">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+</div>
+
+    <div class="container">
+        <div class="row col-md-12 col-sm-12">
+            <!-- ReactJS -->
+<script type="text/jsx">
+    function renderTag( data, facetPath, facetName ) {
+        var TagList = React.createClass({
+          render: function() {
+            var tagNodes = this.props.data.map(function (tag) {
+              var path = "filter.html?" + facetName + "[]=" + tag;
+              return (
+              <div className="tag">
+              <a href={path}>
+                  {tag}
+              </a>
+              </div>
+              );
+            });
+            return (
+              <div className="tagList">
+                {tagNodes}
+              </div>
+            );
+          }
+        });
+
+        React.render(
+          <TagList data={data} />,
+          document.getElementById(facetName)
+        );
+    }
+</script>
+
+
+<div class="col-md-12 col-sm-12">
+    <div class="col-md-12 col-sm-12 intro">
+        <h1><strong>Hask Anything!</strong> is a website aimed at collecting and organizing the collective knowledge of the Haskell community: papers, blog posts, code snippets, gists, StackOverflow answers, Reddit threads, presentations, videos, tutorials and so on.</h1>
+    </div>
+    <div class="col-md-12 col-sm-12">
+        <h2 class="ubuntu-font center">Discover knowledge</h2>
+    </div>
+    <div class="row">
+    
+        <!-- ReactJS -->
+<script type="text/jsx">
+jQuery(document).ready( function() {
+    var data = ["Algebraic Datatypes (ADTs)","Alternative Prelude","Android","Applicative Functors","Arrows","Attribute Grammars","Benchmark","Best Practices","Category Theory","Cloud Haskell","Compilers","Computer Vision","Contravariance","Core","Cryptography","DSL","Dependent Types","Distributed Computing","Distributed Programming","Dynamic Programming","Dynamic evaluation","Elm","Embedded DSL","Final Encoding","Frege","Functional Reactive Programming (FRP)","Fuzzing","GHC","GHCJS","GPU Programming","Generic Programming","Graphs","Haskell Community","Haskell In Production","Idris","Indexed Monads","Inference","Interpreter","LVars","Library Design","Liquid Types","Machine Learning","Memoization","Monad morphism","Monads","Natural transformation","Nix","OpenGL","Optics","Parallel Programming","Parallelization","Parsing","Performance","Privilege Monad","Program Analysis","Property-based testing","Proxy","Purescript","React","Redux","Refinement Types","Robotics","Software Transactional Memory (STM)","Survey","System FC","Testing","Type Families","Type Inference","Type-level Functions","Web Application","Web Development","XStaticPointers","Z3","conversion","fn","gadts","game","hakyll","job search","ml","nginx","round-robin","routing","statistics","wai"];
+    var facetPath = "tags";
+    var facetName = "tags";
+    renderTag( data, facetPath, facetName );
+});
+</script>
+
+<div class="col-md-4 col-sm-4">
+    <h3>By Tags:</h3>
+    <span id="tags"></span>
+    <span class="all-facets-link">
+    <a href="./filter.html">
+        All Tags
+    </a>
+    </span>
+</div>
+    
+        <!-- ReactJS -->
+<script type="text/jsx">
+jQuery(document).ready( function() {
+    var data = ["article","package","paper","presentation","reddit-post","series"];
+    var facetPath = "categories";
+    var facetName = "categories";
+    renderTag( data, facetPath, facetName );
+});
+</script>
+
+<div class="col-md-4 col-sm-4">
+    <h3>By Categories:</h3>
+    <span id="categories"></span>
+    <span class="all-facets-link">
+    <a href="./filter.html">
+        All Categories
+    </a>
+    </span>
+</div>
+    
+        <!-- ReactJS -->
+<script type="text/jsx">
+jQuery(document).ready( function() {
+    var data = ["FComp","HarmTrace","MemoTrie","Obsidian","Yampa","accelerate","aeson","async","ballast","blaze-react","cuda","discrimination","fitspec","froid","gdiff","haskell-opencv","haskore","hint","inline-c","lens","liquidhaskell","lvish","megaparsec","memoize","mmorph","nginx-haskell-module","oml","raaz","reactive-banana","reflex","reflex-dom","safe-prelude","servant","simple-poll","stripe-haskell","template-haskell","threepenny-gui","verdict","warp"];
+    var facetPath = "libraries";
+    var facetName = "libraries";
+    renderTag( data, facetPath, facetName );
+});
+</script>
+
+<div class="col-md-4 col-sm-4">
+    <h3>By Libraries:</h3>
+    <span id="libraries"></span>
+    <span class="all-facets-link">
+    <a href="./filter.html">
+        All Libraries
+    </a>
+    </span>
+</div>
+    
+    </div>
+    <div class="row col-md-12 col-sm-12">
+        <h3>With Haskell, how do I...</h3>
+        <ul class="how-do-i-list">
+        
+            <li><a href="./content/how-do-i/advanced/read-a-file-from-disk.html">read a file from disk</a> ?</li>
+        
+        </ul>
+    </div>
+    <div class="col-md-12 col-sm-12">
+        <h2 class="ubuntu-font center">Add or improve knowledge</h2>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h3>Add new content via the website</h3>
+        <span>You can submit new entries for content directly via the website via the <i>Add a new...</i> option in the navigation bar.</span>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h3>Improve existing content via the website</h3>
+        <span>Every piece of content has a link to its <a href="https://github.com/beerendlauwers/HaskAnything" target="_blank">Github source</a>. You can modify the plain-text version of the content directly and propose it as an improvement.</span>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h3>Contribute via Github</h3>
+        <span>The website-based submission process uses <a href="https://help.github.com/articles/using-pull-requests/">Github pull requests</a> behind the scenes. Of course, you can propose pull requests manually, too. This is the recommended way of contributing large amounts of content at once.</span>
+    </div>
+
+
+</div>
+
+        </div>
+    </div>
+    </body>
+</html>

@@ -1,0 +1,1190 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Hask Anything! - Filter by facets</title>
+        <!-- Open Sans -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet" />
+        <!-- Ubuntu font -->
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" type="text/css" rel="stylesheet" />
+        <!-- FontAwesome fonts -->
+        <link rel="stylesheet" href="./vendor/fontawesome/css/font-awesome.min.css" />
+        <!-- Bootstrap CSS -->
+        <link href="./vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+        <!-- jQuery -->
+        <script src="./vendor/jquery/jquery.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="./vendor/bootstrap/bootstrap.min.js"></script>
+        <!-- ReactJS -->
+        <script src="./vendor/react/react.min.js"></script>
+        <script src="./vendor/react/JSXTransformer.js"></script>
+        <!-- RamdaJS -->
+        <script src="./vendor/ramdajs/ramda.js"></script>
+        <!-- Keys.css -->
+        <link rel="stylesheet" type="text/css" href="./vendor/keys/keys.css" />
+        <!-- OAuth.io -->
+        <script src="./vendor/oauth.io/oauth.js"></script>
+        <script src="./js/github-login.js"></script>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="./css/default.css" />
+        <!-- Custom JS -->
+        <script src="./js/getbaseroot.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="./">Hask Anything!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="./filter.html">Filter by facets</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add a new... <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            
+                <li><a href="./ui/submit/article.html">article</a></li>
+            
+                <li><a href="./ui/submit/package.html">package</a></li>
+            
+                <li><a href="./ui/submit/paper.html">paper</a></li>
+            
+                <li><a href="./ui/submit/presentation.html">presentation</a></li>
+            
+                <li><a href="./ui/submit/reddit-post.html">reddit-post</a></li>
+            
+                <li><a href="./ui/submit/series.html">series</a></li>
+            
+          </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="TODO: Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="login-avatar"></span><span id="login-username" < span>You're not logged in. </span><span class="caret"></a>
+          <ul class="dropdown-menu">
+            <li id="login-link"><a href="#" onclick="githubAuthorize();">Login</a></li>
+            <li id="logout-link"><a href="#" onclick="githubLogout();">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+</div>
+
+    <div class="container">
+        <div class="row col-md-12 col-sm-12">
+            <link rel="stylesheet" href="./vendor/select2/css/select2.min.css" />
+<script src="./vendor/select2/js/select2.full.min.js"></script>
+<script src="./js/querystring.js"></script>
+<script src="./vendor/underscore/underscore.js"></script>
+<script src="./vendor/facetedsearch//facetedsearch.js"></script>
+<script src="./js/filter-helpers.js"></script>
+<script type="text/javascript">
+
+jQuery(document).ready(function() {
+
+    // This contains the metadata for all content on the site. Auto-generated.
+    var items = [
+    
+    {
+      "title": "2018 Haskell Survey Results",
+      "tags": ["Haskell Community","Survey"],
+      "authors": ["Aaron Contorer"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/2018-haskell-survey-results.html"
+    }
+    ,
+
+    {
+      "title": "Ballast, a library for talking to Shipwire",
+      "tags": ["Type Families","Library Design"],
+      "authors": ["Alexey Zabelin"],
+      "categories": ["article"],
+      "libraries": ["ballast","stripe-haskell"],
+      "url": "content/article/ballast-a-library-for-talking-to-shipwire.html"
+    }
+    ,
+
+    {
+      "title": "Beginner's guide to Megaparsec",
+      "tags": ["Parsing"],
+      "authors": ["Akash Agrawal"],
+      "categories": ["article"],
+      "libraries": ["megaparsec"],
+      "url": "content/article/beginners-guide-to-megaparsec.html"
+    }
+    ,
+
+    {
+      "title": "Compiling Lisp to JavaScript From Scratch in 350 LOC",
+      "tags": ["Parsing","Compilers"],
+      "authors": ["Gil Mizrahi"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/compiling-lisp-to-javascript-from-scratch-in-350-loc.html"
+    }
+    ,
+
+    {
+      "title": "Data.Proxy",
+      "tags": ["Proxy"],
+      "authors": ["Kwang Yul Seo"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/data-proxy.html"
+    }
+    ,
+
+    {
+      "title": "Expressive types, not oppressive types",
+      "tags": [],
+      "authors": ["Chris Ford"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/expressive-types-not-oppressive-types.html"
+    }
+    ,
+
+    {
+      "title": "Fullstack Haskell: Reflex and Servant",
+      "tags": ["Web Development","Nix"],
+      "authors": ["Jappie Klooster"],
+      "categories": ["article"],
+      "libraries": ["reflex","servant"],
+      "url": "content/article/fullstack-haskell-reflex-and-servant.html"
+    }
+    ,
+
+    {
+      "title": "Fun with hint",
+      "tags": ["Dynamic evaluation","Interpreter"],
+      "authors": ["Kwang Yul Seo"],
+      "categories": ["article"],
+      "libraries": ["hint"],
+      "url": "content/article/fun-with-hint.html"
+    }
+    ,
+
+    {
+      "title": "Haskellers.com",
+      "tags": ["job search"],
+      "authors": ["Michael Snoyman"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/haskellers-com.html"
+    }
+    ,
+
+    {
+      "title": "Introducing: Hask Anything!",
+      "tags": ["hakyll"],
+      "authors": ["Beerend Lauwers"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/introducing-hask-anything.html"
+    }
+    ,
+
+    {
+      "title": "An Introduction to the Indexed Privilege Monad in Haskell, Scala, and C+",
+      "tags": ["Indexed Monads","Monads","Privilege Monad"],
+      "authors": ["Alexander Altman"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/introduction-to-the-indexed-privilege-monad.html"
+    }
+    ,
+
+    {
+      "title": "Lazy I/O and graphs: Winterfell to King's Landing",
+      "tags": ["Graphs"],
+      "authors": ["Jasper Van der Jeugt"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/lazy-io-and-graphs-winterfell-to-kings-landing.html"
+    }
+    ,
+
+    {
+      "title": "Lenses Embody Products, Prisms Embody Sums",
+      "tags": ["Algebraic Datatypes (ADTs)","Optics"],
+      "authors": ["Justin Le"],
+      "categories": ["article"],
+      "libraries": ["lens"],
+      "url": "content/article/lenses-embody-products-prisms-embody-sums.html"
+    }
+    ,
+
+    {
+      "title": "Memoization in Haskell",
+      "tags": ["Memoization"],
+      "authors": ["Kwang Yul Seo"],
+      "categories": ["article"],
+      "libraries": ["memoize","MemoTrie"],
+      "url": "content/article/memoization-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "Monads Made Difficult",
+      "tags": ["Category Theory","Monads"],
+      "authors": ["Stephen Diehl"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/monads-made-difficult.html"
+    }
+    ,
+
+    {
+      "title": "Natural transformations in Servant",
+      "tags": ["Natural transformation","Monad morphism"],
+      "authors": ["Kwang Yul Seo"],
+      "categories": ["article"],
+      "libraries": ["servant","mmorph"],
+      "url": "content/article/natural-transformations-in-servant.html"
+    }
+    ,
+
+    {
+      "title": "nginx-haskell-module: labeled media routing example",
+      "tags": ["routing","nginx","round-robin"],
+      "authors": ["garuda"],
+      "categories": ["article"],
+      "libraries": ["aeson","async","nginx-haskell-module"],
+      "url": "content/article/nginx-haskell-module-labeled-media-routing-example.html"
+    }
+    ,
+
+    {
+      "title": "Nix and Haskell in production",
+      "tags": ["Nix"],
+      "authors": ["Gabriel Gonzalez"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/nix-and-haskell-in-production.html"
+    }
+    ,
+
+    {
+      "title": "OpenGL on froid",
+      "tags": ["Frege","Android","OpenGL"],
+      "authors": ["Michael Chavinda"],
+      "categories": ["article"],
+      "libraries": ["froid"],
+      "url": "content/article/opengl-on-froid.html"
+    }
+    ,
+
+    {
+      "title": "safe-prelude: a thought experiment",
+      "tags": ["Alternative Prelude"],
+      "authors": ["Michael Snoyman"],
+      "categories": ["article"],
+      "libraries": ["safe-prelude"],
+      "url": "content/article/safe-prelude-a-thought-experiment.html"
+    }
+    ,
+
+    {
+      "title": "Speeding up a distributed computation in Haskell",
+      "tags": ["Distributed Computing","Parallelization"],
+      "authors": ["Francesco Mazzoli"],
+      "categories": ["article"],
+      "libraries": ["simple-poll"],
+      "url": "content/article/speeding-up-a-distributed-computation-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "The Design and Use of QuickCheck",
+      "tags": ["Dynamic evaluation","Interpreter"],
+      "authors": ["Joe Nelson"],
+      "categories": ["article"],
+      "libraries": ["hint"],
+      "url": "content/article/the-design-and-use-of-quickcheck.html"
+    }
+    ,
+
+    {
+      "title": "Type-level functions using closed type families",
+      "tags": ["Type-level Functions","Type Families"],
+      "authors": ["Kwang Yul Seo"],
+      "categories": ["article"],
+      "libraries": [],
+      "url": "content/article/type-level-functions-using-closed-type-families.html"
+    }
+    ,
+
+    {
+      "title": "Pandoc",
+      "tags": ["conversion"],
+      "authors": ["John MacFarlane"],
+      "categories": ["package"],
+      "libraries": [],
+      "url": "content/package/pandoc.html"
+    }
+    ,
+
+    {
+      "title": "1ML - core and modules united",
+      "tags": ["ml"],
+      "authors": ["Andreas Rossberg"],
+      "categories": ["paper"],
+      "libraries": [],
+      "url": "content/paper/1ML-core-and-modules-united.html"
+    }
+    ,
+
+    {
+      "title": "Adventures in Three Monads",
+      "tags": [],
+      "authors": ["Edward Z. Yang"],
+      "categories": ["paper"],
+      "libraries": [],
+      "url": "content/paper/paper-adventures-in-three-monads.html"
+    }
+    ,
+
+    {
+      "title": "GADTs Meet Their Match",
+      "tags": ["gadts"],
+      "authors": ["Georgios Karachalias","Tom Schrijvers","Dimitrios Vytiniotis","Simon Peyton Jones"],
+      "categories": ["paper"],
+      "libraries": [],
+      "url": "content/paper/paper-gadts-meet-their-match.html"
+    }
+    ,
+
+    {
+      "title": "Theorem Proving For All",
+      "tags": ["Refinement Types"],
+      "authors": ["Niki Vazou","Joachim Breitner","Will Kunkel","David Van Horn","Graham Hutton"],
+      "categories": ["paper"],
+      "libraries": ["liquidhaskell"],
+      "url": "content/paper/theorem-proving-for-all.html"
+    }
+    ,
+
+    {
+      "title": "Adventure with Types in Haskell - Part 1",
+      "tags": [],
+      "authors": ["Simon Peyton Jones"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/adventure-with-types-in-haskell-pt1.html"
+    }
+    ,
+
+    {
+      "title": "Adventure with Types in Haskell - Part 2",
+      "tags": [],
+      "authors": ["Simon Peyton Jones"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/adventure-with-types-in-haskell-pt2.html"
+    }
+    ,
+
+    {
+      "title": "Adventure with Types in Haskell - Part 3",
+      "tags": ["System FC"],
+      "authors": ["Simon Peyton Jones"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/adventure-with-types-in-haskell-pt3.html"
+    }
+    ,
+
+    {
+      "title": "Adventure with Types in Haskell - Part 4",
+      "tags": ["System FC"],
+      "authors": ["Simon Peyton Jones"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/adventure-with-types-in-haskell-pt4.html"
+    }
+    ,
+
+    {
+      "title": "Autobahn: Using Genetic Algorithms to Infer Strictness Annotations",
+      "tags": ["Testing","Inference","Performance"],
+      "authors": ["Yisu Remy Wang","Diogenes Nunez","Kathleen Fisher"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/autobahn-using-gentic-algorithms-to-infer-strictness-annotations.html"
+    }
+    ,
+
+    {
+      "title": "Causal Commutative Arrows Revisited",
+      "tags": ["Arrows"],
+      "authors": ["Jeremy Yallop","Hai Liu"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/causal-commutative-arrows-revisited.html"
+    }
+    ,
+
+    {
+      "title": "Desugaring Haskell's do-Notation into Applicative Operations",
+      "tags": ["GHC","Haskell In Production"],
+      "authors": ["Simon Marlow","Simon Peyton Jones","Edward Kmett","Andrey Mokhov"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/desugaring-haskells-do-notation-into-applicative-operations.html"
+    }
+    ,
+
+    {
+      "title": "Discrimination is Wrong: Improving Productivity",
+      "tags": ["Category Theory","Contravariance","Final Encoding","Library Design"],
+      "authors": ["Edward Kmett"],
+      "categories": ["presentation"],
+      "libraries": ["discrimination"],
+      "url": "content/presentation/discrimination-is-wrong-improving-productivity.html"
+    }
+    ,
+
+    {
+      "title": "Distributed Programming in Haskell",
+      "tags": ["Distributed Programming","Cloud Haskell","XStaticPointers"],
+      "authors": ["Mathieu Boespflug"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/distributed-programming-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "Experience Report: Developing High Performance HTTP/2 Server in Haskell",
+      "tags": ["Haskell In Production","Web Application","Benchmark"],
+      "authors": ["Kazuhiko Yamamoto"],
+      "categories": ["presentation"],
+      "libraries": ["warp"],
+      "url": "content/presentation/experience-report-developing-high-perf-http-server-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "FitSpec: Refining Property Sets for Functional Testing",
+      "tags": ["Property-based testing","Testing"],
+      "authors": ["Rudy Braquehais","Colin Runciman"],
+      "categories": ["presentation"],
+      "libraries": ["fitspec"],
+      "url": "content/presentation/fitspec-refining-property-sets-for-functional-testing.html"
+    }
+    ,
+
+    {
+      "title": "Free Delivery",
+      "tags": ["Distributed Computing","Applicative Functors"],
+      "authors": ["Jeremy Gibbons"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/free-delivery.html"
+    }
+    ,
+
+    {
+      "title": "FRP browser programming with Reflex",
+      "tags": ["GHCJS","Functional Reactive Programming (FRP)","Nix"],
+      "authors": ["Niklas Hambüchen"],
+      "categories": ["presentation"],
+      "libraries": ["reflex","reflex-dom"],
+      "url": "content/presentation/frp-browser-programming-with-reflex.html"
+    }
+    ,
+
+    {
+      "title": "Functional Reactive Programming, Refactored",
+      "tags": ["Functional Reactive Programming (FRP)","Benchmark"],
+      "authors": ["Ivan Perez","Manuel Barenz","Henrik Nilsson"],
+      "categories": ["presentation"],
+      "libraries": ["Yampa"],
+      "url": "content/presentation/functional-reactive-programming-refactored.html"
+    }
+    ,
+
+    {
+      "title": "High-Performance Client-Side Web Applications through Haskell EDSLs",
+      "tags": ["DSL","Embedded DSL","Web Application","Benchmark"],
+      "authors": ["Anton Ekblad"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/high-perf-client-side-web-apps-through-edsls.html"
+    }
+    ,
+
+    {
+      "title": "How to Twist Pointers without Breaking Them",
+      "tags": ["Category Theory","Cryptography"],
+      "authors": ["Satvik Chauhan","Piyush Kurur","Brent Yorgey"],
+      "categories": ["presentation"],
+      "libraries": ["raaz"],
+      "url": "content/presentation/how-to-twist-pointers-without-breaking-them.html"
+    }
+    ,
+
+    {
+      "title": "Pattern Synonyms",
+      "tags": ["GHC"],
+      "authors": ["Matthew Pickering","Gergo Erdi","Simon Peyton Jones","Richard Eisenberg"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/pattern-synonyms.html"
+    }
+    ,
+
+    {
+      "title": "Advanced functional programming in industry",
+      "tags": [],
+      "authors": ["José Pedro Magalhães"],
+      "categories": ["presentation"],
+      "libraries": ["haskore","HarmTrace","FComp"],
+      "url": "content/presentation/presentation--advanced-functional-programming-in-industry.html"
+    }
+    ,
+
+    {
+      "title": "Analyzing Programs with Z3",
+      "tags": ["Z3","Liquid Types","Refinement Types","Program Analysis"],
+      "authors": ["Tikhon Jelvis"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--analyzing-programs-with-z3.html"
+    }
+    ,
+
+    {
+      "title": "Applications of Datatype Generic Programming in Haskell",
+      "tags": ["Generic Programming","Algebraic Datatypes (ADTs)"],
+      "authors": ["Sönke Hahn"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--applications-of-datatype-generic-programming-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "Clutching a grip on AUTOSAR using Haskell",
+      "tags": ["DSL","Haskell In Production"],
+      "authors": ["Johan Nordlander"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--clutching-a-grip-on-autosar-using-haskell.html"
+    }
+    ,
+
+    {
+      "title": "Dynamic programming at ease - with grammars, algebras, products",
+      "tags": ["Dynamic Programming"],
+      "authors": ["Stefanie Schirmer"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--dynamic-programming-at-ease-with-grammars-algebras-products.html"
+    }
+    ,
+
+    {
+      "title": "Eins nach dem anderen: Konfiguration mit modellbasierten Abhängigkeiten",
+      "tags": ["DSL"],
+      "authors": ["Gabor Greif"],
+      "categories": ["presentation"],
+      "libraries": ["gdiff"],
+      "url": "content/presentation/presentation--eins-nach-dem-anderen-konfiguration-mit-modellbasierten-abhängigkeiten.html"
+    }
+    ,
+
+    {
+      "title": "Elm im produktiven Einsatz",
+      "tags": ["Elm","Functional Reactive Programming (FRP)"],
+      "authors": ["Gregor Große-Bölting"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--elm-im-produktiven-einsatz.html"
+    }
+    ,
+
+    {
+      "title": "FLTKHS - Easy native GUIs in Haskell, Today!",
+      "tags": [],
+      "authors": ["Aditya Siram"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--fltkhs-easy-native-guis-in-haskell-today.html"
+    }
+    ,
+
+    {
+      "title": "Fun with GHCJSi",
+      "tags": ["GHCJS"],
+      "authors": ["Luite Stegeman"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--fun-with-GHCJSi.html"
+    }
+    ,
+
+    {
+      "title": "Functional Programming and the Web: Frontend Development in PureScript",
+      "tags": ["Purescript"],
+      "authors": ["Michael Karg","Jürgen Nicklisch-Franken"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--functional-programming-and-the-web-frontend-development-in-purescript.html"
+    }
+    ,
+
+    {
+      "title": "Functional Reactive Programming",
+      "tags": ["Functional Reactive Programming (FRP)"],
+      "authors": ["Heinrich Apfelmus"],
+      "categories": ["presentation"],
+      "libraries": ["reactive-banana","threepenny-gui"],
+      "url": "content/presentation/presentation--functional-reactive-programming.html"
+    }
+    ,
+
+    {
+      "title": "Fundamentals of dependent type theory",
+      "tags": ["Dependent Types"],
+      "authors": ["Stephanie Weirich"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--fundamentals-of-dependent-type-theory.html"
+    }
+    ,
+
+    {
+      "title": "Improving Type Error Localization for Languages with Type Inference",
+      "tags": ["Program Analysis","Type Inference"],
+      "authors": ["Zvonimir Pavlinovic","Tim King","Thomas Wies"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--improving-type-error-localization-for-languages-with-type-inference.html"
+    }
+    ,
+
+    {
+      "title": "Keeping Front-end Development Simple with React",
+      "tags": ["React","Redux"],
+      "authors": ["Tony Tsui"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--keeping-front-end-development-simple-with-react.html"
+    }
+    ,
+
+    {
+      "title": "Liquid Types for Haskell",
+      "tags": ["Liquid Types","Program Analysis"],
+      "authors": ["Niki Vazou"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--liquid-types-for-haskell.html"
+    }
+    ,
+
+    {
+      "title": "LVars: lattice-based data structures for deterministic parallel and distributed programming",
+      "tags": ["Parallel Programming","LVars","Distributed Programming"],
+      "authors": ["Lindsey Kuper"],
+      "categories": ["presentation"],
+      "libraries": ["lvish"],
+      "url": "content/presentation/presentation--lvars-lattice-based-data-structures-for-deterministic-parallel-and-distributed-programming.html"
+    }
+    ,
+
+    {
+      "title": "Mit Monaden die Zukunft im Blick",
+      "tags": ["Monads"],
+      "authors": ["Joachim Breitner"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--mit-monaden-die-zukunft-im-blick.html"
+    }
+    ,
+
+    {
+      "title": "Praktische Erfahrungen mit GPU-Programmierung in Haskell",
+      "tags": ["GPU Programming","DSL"],
+      "authors": ["Henning Thielemann"],
+      "categories": ["presentation"],
+      "libraries": ["accelerate","Obsidian","cuda"],
+      "url": "content/presentation/presentation--praktische-erfahrungen-mit-gpu-programmierung-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "Programming Workflows with Grammars",
+      "tags": ["Attribute Grammars"],
+      "authors": ["Arie Middelkoop"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--programming-workflows-with-grammars.html"
+    }
+    ,
+
+    {
+      "title": "Fundamentals of dependent type theory",
+      "tags": ["Robotics"],
+      "authors": ["Anthony Cowley"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--robots-on-haskell.html"
+    }
+    ,
+
+    {
+      "title": "Synchronisation und Immutability",
+      "tags": [],
+      "authors": ["Andreas Bernauer"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--synchronisation-und-immutability.html"
+    }
+    ,
+
+    {
+      "title": "'There and Back Again' and What Happened After",
+      "tags": [],
+      "authors": ["Kenneth Foner"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--there-and-back-again-and-what-happened-after.html"
+    }
+    ,
+
+    {
+      "title": "Type providers and error reflection in Idris",
+      "tags": ["Idris","Dependent Types"],
+      "authors": ["David Christiansen"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation--type-providers-and-error-reflection-in-idris.html"
+    }
+    ,
+
+    {
+      "title": "Type the web with Servant!",
+      "tags": [],
+      "authors": ["Andres Löh"],
+      "categories": ["presentation"],
+      "libraries": ["servant"],
+      "url": "content/presentation/presentation--type-the-web-with-servant.html"
+    }
+    ,
+
+    {
+      "title": "Verdict - Reified refinement",
+      "tags": ["DSL"],
+      "authors": ["Julian Arni"],
+      "categories": ["presentation"],
+      "libraries": ["verdict"],
+      "url": "content/presentation/presentation--verdict-reified-refinement.html"
+    }
+    ,
+
+    {
+      "title": "A Sensible Intro to FRP",
+      "tags": ["Functional Reactive Programming (FRP)"],
+      "authors": ["Tikhon Jelvis"],
+      "categories": ["presentation"],
+      "libraries": ["reactive-banana","threepenny-gui","reflex"],
+      "url": "content/presentation/presentation-a-sensible-intro-to-frp.html"
+    }
+    ,
+
+    {
+      "title": "A Taste of Haskell - Part 1",
+      "tags": [],
+      "authors": ["Simon Peyton Jones"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-a-taste-of-haskell-part-1.html"
+    }
+    ,
+
+    {
+      "title": "A Taste of Haskell - Part 2",
+      "tags": [],
+      "authors": ["Simon Peyton Jones"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-a-taste-of-haskell-part-2.html"
+    }
+    ,
+
+    {
+      "title": "Add a type parameter! One 'simple' design change, a panoply of outcomes",
+      "tags": [],
+      "authors": ["Stephen Compall"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-add-a-type-parameter-one-simple-design-change-a-panoply-of-outcomes.html"
+    }
+    ,
+
+    {
+      "title": "Chaos Engineering at Jet",
+      "tags": [],
+      "authors": ["Rachel Reese"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-chaos-engineering-at-jet.html"
+    }
+    ,
+
+    {
+      "title": "Cryptography and verification with Cryptol",
+      "tags": ["Cryptography","DSL"],
+      "authors": ["Austin Seipp"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-cryptography-and-verification-with-cryptol.html"
+    }
+    ,
+
+    {
+      "title": "Dynamic Typing in GHC",
+      "tags": [],
+      "authors": ["Stephanie Weirich"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-dynamic-typing-in-ghc.html"
+    }
+    ,
+
+    {
+      "title": "Functional Programming at LumiGuide",
+      "tags": ["GHCJS","Machine Learning","Nix","Computer Vision"],
+      "authors": ["Bas van Dijk"],
+      "categories": ["presentation"],
+      "libraries": ["haskell-opencv","blaze-react","inline-c"],
+      "url": "content/presentation/presentation-functional-programming-at-lumiguide.html"
+    }
+    ,
+
+    {
+      "title": "How to Bake 'How to Bake Pi': Reflections on Making Abstract Math Palatable",
+      "tags": [],
+      "authors": ["Eugenia Cheng"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-how-to-bake-how-to-bake-pi-reflections-on-making-abstract-math-palatable.html"
+    }
+    ,
+
+    {
+      "title": "Languages We Love",
+      "tags": [],
+      "authors": ["Elise Huard"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-languages-we-love.html"
+    }
+    ,
+
+    {
+      "title": "LDN Functionals #1 Fil Mackay : Pure Data",
+      "tags": [],
+      "authors": ["Fil Mackay"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-ldn-functionals-1-fil-mackay-pure-data.html"
+    }
+    ,
+
+    {
+      "title": "LDN Functionals #7 Sebastian Funk: Why Functional Programming doesn't matter",
+      "tags": [],
+      "authors": ["Sebastian Funk"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-ldn-functionals-7-sebastian-funk-why-functional-programming-doesn-t-matter.html"
+    }
+    ,
+
+    {
+      "title": "Reflex: Practical Functional Reactive Programming (FRP) in Haskell",
+      "tags": ["Functional Reactive Programming (FRP)"],
+      "authors": ["Ryan Trinkle"],
+      "categories": ["presentation"],
+      "libraries": ["reflex","reflex-dom"],
+      "url": "content/presentation/presentation-reflex-practical-functional-reactive-programming-frp-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "Web Dev with Fn",
+      "tags": ["fn","wai"],
+      "authors": ["Libby Horacek"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/presentation-web-dev-with-fn.html"
+    }
+    ,
+
+    {
+      "title": "QuickFuzz: An Automatic Random Fuzzer for Common File Formats",
+      "tags": ["Fuzzing","Testing"],
+      "authors": ["Gustavo Grieco","Martín Ceresa","Pablo Buiras"],
+      "categories": ["presentation"],
+      "libraries": ["template-haskell"],
+      "url": "content/presentation/quickfuzz-an-automatic-random-fuzzer-for-common-file-formats.html"
+    }
+    ,
+
+    {
+      "title": "Revisiting Software Transactional Memory in Haskell",
+      "tags": ["Software Transactional Memory (STM)"],
+      "authors": ["Matthew Le","Ryan Yates","Matthew Fluet"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/reivisiting-stm-in-haskell.html"
+    }
+    ,
+
+    {
+      "title": "The Intersection of Machine Learning, Types and Testing",
+      "tags": ["statistics","ml"],
+      "authors": ["Leonid Rozenberg"],
+      "categories": ["presentation"],
+      "libraries": ["oml"],
+      "url": "content/presentation/the-intersection-of-machine-learning-types-and-testing.html"
+    }
+    ,
+
+    {
+      "title": "Writing Production Quality Code",
+      "tags": ["Performance","GHC","Core","Best Practices"],
+      "authors": ["Johan Tibell"],
+      "categories": ["presentation"],
+      "libraries": [],
+      "url": "content/presentation/writing-production-quality-code.html"
+    }
+    ,
+
+    {
+      "title": "reddit-post-t1_d2hru95.md",
+      "tags": ["game"],
+      "authors": ["torstengrust"],
+      "categories": ["reddit-post"],
+      "libraries": [],
+      "url": "content/reddit-post/reddit-post-t1_d2hru95.html"
+    }
+    ,
+
+    {
+      "title": "Adventure with Types in Haskell",
+      "tags": [],
+      "authors": [],
+      "categories": ["series"],
+      "libraries": [],
+      "url": "content/series/adventure-with-types-series.html"
+    }
+    ,
+
+    {
+      "title": "BOB 2015 Konferenz",
+      "tags": [],
+      "authors": [],
+      "categories": ["series"],
+      "libraries": [],
+      "url": "content/series/conference-bob-2015.html"
+    }
+    ,
+
+    {
+      "title": "BOB 2016 Konferenz",
+      "tags": [],
+      "authors": [],
+      "categories": ["series"],
+      "libraries": [],
+      "url": "content/series/conference-bob-2016.html"
+    }
+    ,
+
+    {
+      "title": "Compose Conference 2015",
+      "tags": [],
+      "authors": [],
+      "categories": ["series"],
+      "libraries": [],
+      "url": "content/series/conference-compose-2015.html"
+    }
+    ,
+
+    {
+      "title": "Compose Conference 2016",
+      "tags": [],
+      "authors": [],
+      "categories": ["series"],
+      "libraries": [],
+      "url": "content/series/conference-compose-2016.html"
+    }
+    ,
+
+    {
+      "title": "ICFP Haskell Symposium 2016",
+      "tags": [],
+      "authors": [],
+      "categories": ["series"],
+      "libraries": [],
+      "url": "content/series/conference-icfp-2016.html"
+    }
+    
+
+        ];
+
+    var item_template =
+     '<div class="item col-md-6 col-sm-12">' +
+         '<div class="item-header">' +
+         '<h4><a href="<%= obj.url %>"><%= obj.title %></a></h4>' +
+         '<span class="item-category"><% if (obj.categories) {  %><%= obj.categories %><% } %></span>' +
+         '</div>' +
+         '<% if (obj.authors && obj.authors.length) {  %><p class="tags">Author(s): <%= obj.authors %></p><% } %>' +
+         '<% if (obj.tags && obj.tags.length) {  %><p class="tags">Tags: <%= obj.tags %></p><% } %>' +
+         '<% if (obj.libraries && obj.libraries.length) {  %><p class="libraries">Libraries: <%= obj.libraries %></p><% } %>' +
+       '</div>';
+      var settings = {
+        items           : items,
+        facets          : {
+                            'categories'     : 'Categories',
+                            'tags'           : 'Tags',
+                            'libraries'      : 'Libraries',
+                            'authors'        : 'Authors'
+        },
+        resultSelector  : '#results',
+        facetSelector   : '#facets',
+        resultTemplate  : item_template,
+        showMoreTemplate: '<div class="col-sm-12"><a id=showmorebutton>Show more</a></div>',
+        paginationCount : 25,
+        orderByOptions  : {'title': 'Title', 'category': 'Categories', 'tags': 'Tags', 'libraries': 'Libraries', 'authors': 'Authors'}
+      };
+
+
+    // Add event handler
+    jQuery('#facets').on("facetuicreated", function(){
+
+      facetUICreatedCommon();
+
+      setTimeout( function() {
+        // Read querystring for data.
+        var facets = ['categories','tags','libraries','authors'];
+
+        var readQuerystring = function(elem) {
+          if( getParameterByName(elem) ) {
+            var es = getParameterByName(elem);
+            R.map( function(v) {
+              jQuery('.facetitem:contains("' + v + '")').click();
+            },es);
+          }
+        };
+
+        R.map( readQuerystring,facets);
+
+        jQuery('.facetlist').each( function() {
+          jQuery('input.facet-filter').trigger("keyup");
+          buildPager(jQuery(this));
+          switchPager( jQuery(this), 0);
+        } );
+
+      }, 25 );
+
+    });
+
+    jQuery('#results').on("facetedsearchresultupdate", function(){
+       updateFilterResultsHeader();
+     });
+
+
+    jQuery(function(){
+      // Turn on the faceting functionality.
+      jQuery.facetelize(settings);
+
+      // Add click handlers to each facet item.
+      jQuery('.facetlist .facetitem').on('click', function() {
+        var settings = jQuery.getFacetSettings();
+
+        var allFilters = [];
+
+        jQuery.each( settings.facets, function(facet) {
+          if (facet in settings.state.filters) {
+            var seperator = facet + '[]=';
+            var url = seperator + R.join( '&' + seperator, settings.state.filters[facet] );
+
+            allFilters.push( R.pair( facet, url ) );
+          }
+        } );
+
+        R.map( function(pair) {
+          var facet = pair[0];
+          var url = pair[1];
+
+          // TODO: FINISH THIS UP
+
+
+
+        }, allFilters);
+
+        // Convert settings.facet object to an array and flatten it.
+        var facets = R.map( function(facetArray) {
+          return facetArray[0];
+        }, R.toPairs( settings.facets ) );
+
+        // Map over the facets and get the
+        R.map( function(facet) {
+          return R.map( function(filter) {
+            return facet in settings.state.filters ? R.map( function(filter) {}, settings.state.filters[facet] ) : [];
+          }, facet);
+        }, facets );
+
+
+
+
+      });
+    });
+});
+</script>
+
+<h1>Filter by facets</h1>
+
+<div class="row col-md-12 col-sm-12">
+<div id="facets"></div>
+</div>
+
+<div class="row col-md-12 col-sm-12">
+    <h2 id="resultsHeader">Results</h2>
+    <div id="results"></div>
+</div>
+
+        </div>
+    </div>
+    </body>
+</html>

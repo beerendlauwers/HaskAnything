@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Hask Anything! - Introducing: Hask Anything!</title>
+        <!-- Open Sans -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet" />
+        <!-- Ubuntu font -->
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" type="text/css" rel="stylesheet" />
+        <!-- FontAwesome fonts -->
+        <link rel="stylesheet" href="../../vendor/fontawesome/css/font-awesome.min.css" />
+        <!-- Bootstrap CSS -->
+        <link href="../../vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+        <!-- jQuery -->
+        <script src="../../vendor/jquery/jquery.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="../../vendor/bootstrap/bootstrap.min.js"></script>
+        <!-- ReactJS -->
+        <script src="../../vendor/react/react.min.js"></script>
+        <script src="../../vendor/react/JSXTransformer.js"></script>
+        <!-- RamdaJS -->
+        <script src="../../vendor/ramdajs/ramda.js"></script>
+        <!-- Keys.css -->
+        <link rel="stylesheet" type="text/css" href="../../vendor/keys/keys.css" />
+        <!-- OAuth.io -->
+        <script src="../../vendor/oauth.io/oauth.js"></script>
+        <script src="../../js/github-login.js"></script>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="../../css/default.css" />
+        <!-- Custom JS -->
+        <script src="../../js/getbaseroot.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../../">Hask Anything!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="../../filter.html">Filter by facets</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add a new... <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            
+                <li><a href="../../ui/submit/article.html">article</a></li>
+            
+                <li><a href="../../ui/submit/package.html">package</a></li>
+            
+                <li><a href="../../ui/submit/paper.html">paper</a></li>
+            
+                <li><a href="../../ui/submit/presentation.html">presentation</a></li>
+            
+                <li><a href="../../ui/submit/reddit-post.html">reddit-post</a></li>
+            
+                <li><a href="../../ui/submit/series.html">series</a></li>
+            
+          </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="TODO: Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="login-avatar"></span><span id="login-username" < span>You're not logged in. </span><span class="caret"></a>
+          <ul class="dropdown-menu">
+            <li id="login-link"><a href="#" onclick="githubAuthorize();">Login</a></li>
+            <li id="logout-link"><a href="#" onclick="githubLogout();">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+</div>
+
+    <div class="container">
+        <div class="row col-md-12 col-sm-12">
+            <div class="container">
+<div class="row col-sm-12">
+    <div id="edit-on-github">
+    <a href="https://github.com/beerendlauwers/HaskAnything/edit/master/app/content/article/introducing-hask-anything.md" target="_blank"><i class="fa fa-pencil-square-o"></i> Edit on Github</a>
+    </div>
+</div>
+</div>
+
+<div class="col-md-12 col-sm-12 intro">
+        <h1>Introducing: Hask Anything!</h1>
+        <h2 class="authors">By  Beerend Lauwers on 2016-08-05</h2>
+        <div>
+            
+                <a href="../../permissions/article/beerend_lauwers.html" target="_blank">Permission was given by the author to reproduce this content here.</a>
+            
+        </div>
+</div>
+
+<div class="col-md-12 col-sm-12">
+    <div class="col-md-12 col-sm-12">
+        <h1 class="source"><a href="http://beerendlauwers.be/posts/2016-08-05-introducing-hask-anything.html" target="_blank">Source</a></h1>
+    </div>
+</div>
+
+<div class="col-md-12 col-sm-12">
+    <h1>Tagged with</h1>
+    
+</div>
+
+<div class="col-md-12 col-sm-12">
+        <p><em>(<a href="https://www.reddit.com/r/haskell/comments/4wb0n5/introducing_hask_anything/">As originally posted on Reddit</a>.)</em></p>
+<p>I am proud to announce the alpha<sup>alpha</sup>alpha release of <strong><a href="http://haskanything.com/">Hask Anything</a></strong>, a website aimed at collecting and organizing the collective knowledge of the Haskell community: papers, blog posts, code snippets, gists, StackOverflow answers, Reddit threads, presentations, videos, tutorials and so on.</p>
+<p>It’s based on Hakyll and hosted on Github, and my goal is to have it be entirely community-driven.</p>
+<h2 id="what-can-the-community-do">What can the community do?</h2>
+<p>Everything, really! We need people to:</p>
+<h3 id="test-the-site-functionality">Test the site functionality</h3>
+<p>I haven’t even tested this thing on mobile browsers yet. There’s probably a whole bunch of problems still lurking in the website content submission forms.</p>
+<h3 id="add-content">Add content</h3>
+<p>Yes, you can submit content straight from the website! For example: http://haskanything.com/ui/submit/presentation.html</p>
+<p>You can also submit content <a href="https://github.com/beerendlauwers/HaskAnything/">via Github</a> itself, of course.</p>
+<h3 id="contribute-code">Contribute code</h3>
+<p>The <a href="https://github.com/beerendlauwers/HaskAnything/issues">Github issue list</a> has bunch of issues tagged with <code>newcomer</code>. Be sure to have a look at the site <a href="http://haskanything.com/documentation.html">“documentation”</a>.</p>
+<h2 id="qa">Q&amp;A</h2>
+<h3 id="q-holy-crap-this-thing-looks-hacked-together.">Q: Holy <em>crap</em>, this thing looks hacked together.</h3>
+<p><strong>A:</strong> First off, that’s not a question. Secondly, yes. It is very much hacked together. I actually started work on it more than a year ago. Seeing other knowledge repositories pop up (shout-out to <a href="https://haskell-lang.org/documentation">haskell-lang’s documentation</a> and <a href="https://www.schoolofhaskell.com/">School of Haskell</a>) kept rekindling the fire, and real life kept stomping it out.</p>
+<p>I was never going to get this site to the standard that I wanted to uphold at this speed, so I made a decision: even in this alpha state, I would release it and build it out together with the Haskell community.</p>
+<h3 id="q-so-what-exactly-do-you-expect-this-site-to-become">Q: So, what <em>exactly</em> do you expect this site to become?</h3>
+<p><strong>A:</strong> The main problem I see in the Haskell community is knowledge <em>discoverability</em>. There are already excellent sources of knowledge: the Haskell wiki, excellent blogs, conference presentations on Youtube, Reddit and StackOverflow discussions… But we have no way of <em>traversing</em> that knowledge, no way of <em>filtering</em> it.</p>
+<p>That’s what Hask Anything! is about: collecting and organizing the collective knowledge of the Haskell community.</p>
+<h3 id="q-cant-i-just-post-a-tutorial-directly-on-here">Q: Can’t I just post a tutorial directly on here?</h3>
+<p><strong>A:</strong> Yes. I mean, not yet because there’s no tutorial category right now, but that’s on the to-do list.</p>
+<p>But yes, becoming a source of knowledge is also on the roadmap.</p>
+<h3 id="q-okay-so-what-can-i-do">Q: Okay, so what can I do?</h3>
+<p><strong>A:</strong> As I mentioned before, you can add content and contribute code. I’ve seeded the <a href="https://github.com/beerendlauwers/HaskAnything/issues">Github issue list</a> with a bunch of stuff that people can take on. There are a few relatively simple ones, which I have tagged with <code>newcomer</code>. Issues tagged with <code>Priority 1</code> are blockers for a bunch of other issues or just very important aspects of the site that still need to be implemented.</p>
+<h3 id="q-how-does-the-online-content-contribution-work">Q: How does the online content contribution work?</h3>
+<p><strong>A:</strong> You select a category, fill in the forms (or have some of them automatically filled in via an API lookup) and submit it as a pull request to Github. Oh, you need to log in via OAuth to do that first, of course.</p>
+<p>Then, the pull request is reviewed and merged by the review committee (Currently, me). We need to do manual reviews to:</p>
+<ol type="1">
+<li>prevent malicious stuff to be introduced, and</li>
+<li>ensure that we have the approval of authors to replicate their work on the site (if applicable).</li>
+</ol>
+<h3 id="q-where-did-you-get-the-name-from">Q: Where did you get the name from?</h3>
+<p><strong>A:</strong> /u/dagit had some threads with the same title: <a href="https://www.reddit.com/r/haskell/comments/3fnvsg/hask_anything_the_thread_where_you_ask_and_we_try/" class="uri">https://www.reddit.com/r/haskell/comments/3fnvsg/hask_anything_the_thread_where_you_ask_and_we_try/</a></p>
+</div>
+
+        </div>
+    </div>
+    </body>
+</html>

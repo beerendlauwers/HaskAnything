@@ -1,0 +1,254 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Hask Anything! - documentation</title>
+        <!-- Open Sans -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet" />
+        <!-- Ubuntu font -->
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" type="text/css" rel="stylesheet" />
+        <!-- FontAwesome fonts -->
+        <link rel="stylesheet" href="./vendor/fontawesome/css/font-awesome.min.css" />
+        <!-- Bootstrap CSS -->
+        <link href="./vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+        <!-- jQuery -->
+        <script src="./vendor/jquery/jquery.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="./vendor/bootstrap/bootstrap.min.js"></script>
+        <!-- ReactJS -->
+        <script src="./vendor/react/react.min.js"></script>
+        <script src="./vendor/react/JSXTransformer.js"></script>
+        <!-- RamdaJS -->
+        <script src="./vendor/ramdajs/ramda.js"></script>
+        <!-- Keys.css -->
+        <link rel="stylesheet" type="text/css" href="./vendor/keys/keys.css" />
+        <!-- OAuth.io -->
+        <script src="./vendor/oauth.io/oauth.js"></script>
+        <script src="./js/github-login.js"></script>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="./css/default.css" />
+        <!-- Custom JS -->
+        <script src="./js/getbaseroot.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="./">Hask Anything!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="./filter.html">Filter by facets</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add a new... <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            
+                <li><a href="./ui/submit/article.html">article</a></li>
+            
+                <li><a href="./ui/submit/package.html">package</a></li>
+            
+                <li><a href="./ui/submit/paper.html">paper</a></li>
+            
+                <li><a href="./ui/submit/presentation.html">presentation</a></li>
+            
+                <li><a href="./ui/submit/reddit-post.html">reddit-post</a></li>
+            
+                <li><a href="./ui/submit/series.html">series</a></li>
+            
+          </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="TODO: Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="login-avatar"></span><span id="login-username" < span>You're not logged in. </span><span class="caret"></a>
+          <ul class="dropdown-menu">
+            <li id="login-link"><a href="#" onclick="githubAuthorize();">Login</a></li>
+            <li id="logout-link"><a href="#" onclick="githubLogout();">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+</div>
+
+    <div class="container">
+        <div class="row col-md-12 col-sm-12">
+            <h1 id="hask-anything-app-documentation">Hask Anything App Documentation</h1>
+<p>This is an informal description of the system that generates the Hask Anything website.</p>
+<p>Hask Anything is a statically generated site that aims at being a knowledge repository for anything Haskell: papers, presentations, Reddit threads, StackOverflow posts, etc. You can submit new content from the website itself after logging in with your Github account. Submitting content generates a pull request in the HaskAnything Github repository, where further discussion can take place and where the PR can be manually approved.</p>
+<h2 id="overview">Overview</h2>
+<h3 id="hakyll">Hakyll</h3>
+<p>We use <a href="https://jaspervdj.be/hakyll/">Hakyll</a> as a base. Hakyll is a static site generator written in Haskell, and it’s <em>great</em>.</p>
+<h3 id="client-side-code">Client-side code</h3>
+<p>Just vanilla javascript with judicious use of jQuery. We could definitely use someone to convert this to PureScript or something. For communication with Github, we use <a href="https://github.com/michael/github">github.js</a>.</p>
+<h3 id="oauth">OAuth</h3>
+<p>To be able to use the content submission forms on the website, we need to authenticate with Github (needs permission “Access public repositories”). Currently, we use a free “bootstrap” account on <a href="https://oauth.io/home">oauth.io</a>.</p>
+<p>A good idea is to replace this with the open-source version of oauth.io, namely <a href="https://github.com/oauth-io/oauthd">oauthd</a>. Just run it on a DigitalOcean droplet or something - for a single domain, the bandwidth and cpu time should be fine.</p>
+<h3 id="buzzwords">Buzzwords</h3>
+<ul>
+<li>We use Bootstrap for a responsive layout, and vanilla CSS and JS.</li>
+<li>Both the CSS and JS should be rewritten to use SASS and PureScript or something.</li>
+<li>The current JavaScript uses jQuery and <a href="http://ramdajs.com/">ramdaJS</a> in some places.</li>
+<li>We use <a href="http://handlebarsjs.com/">handlebars.js</a> for generating file contents for the content submission forms.</li>
+<li>There’s some leftover code of a React attempt, couldn’t find a good use case for it.</li>
+</ul>
+<h2 id="architecturalarchitecture-overview">Architectural<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> overview</h2>
+<p>In the <code>app</code> directory, we have everything we need to generate the website.</p>
+<h3 id="content">Content</h3>
+<p>First and foremost is the <strong>content</strong>. In the <code>content</code> directory, each directory is a “category” (<code>presentation</code>,<code>package</code>,<code>reddit-post</code>,…). Content of a particular category may be given a special place in the website, like <code>how-do-i</code> content.</p>
+<p>In general, though, content is just a Markdown file with a bunch of metadata.</p>
+<h3 id="submission-ui">Submission UI</h3>
+<h4 id="html">HTML</h4>
+<p>This lives in the <code>ui</code> directory. There’s two subdirectories: <code>elements</code> and <code>submit</code>.</p>
+<p>The first one contains HTML snippets for a particular form element. In many cases, a form element can be reused across several submission interfaces. For example, here is the HTML snippet for a “title” form element:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">&lt;div</span><span class="ot"> class=</span><span class="st">&quot;row col-sm-12 web-submit-element&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb1-2" title="2">    <span class="kw">&lt;div</span><span class="ot"> class=</span><span class="st">&quot;col-sm-3&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb1-3" title="3">        <span class="kw">&lt;label</span><span class="ot"> for=</span><span class="st">&quot;title&quot;</span><span class="kw">&gt;</span>Title:<span class="kw">&lt;/label&gt;</span></a>
+<a class="sourceLine" id="cb1-4" title="4">    <span class="kw">&lt;/div&gt;</span></a>
+<a class="sourceLine" id="cb1-5" title="5">   <span class="kw">&lt;div</span><span class="ot"> class=</span><span class="st">&quot;col-sm-9&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb1-6" title="6">        <span class="kw">&lt;input</span><span class="ot"> type=</span><span class="st">&quot;text&quot;</span><span class="ot"> id=</span><span class="st">&quot;title&quot;</span><span class="kw">/&gt;</span></a>
+<a class="sourceLine" id="cb1-7" title="7">    <span class="kw">&lt;/div&gt;</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="kw">&lt;/div&gt;</span></a></code></pre></div>
+<p>In the <code>submit</code> directory, we glue together these HTML snippets to generate a single submission form, which has three tabs: <em>Content name</em>, <em>Metadata</em> and <em>Submit</em>. There’s some common HTML in each file that could also be factored out. The unique part is usually in the first tab. As another example, here is what the code for the first tab for the presentation submission form looks like:</p>
+<pre><code>&lt;div class=&quot;tab-pane&quot; id=&quot;tab1&quot;&gt;
+    $partial(&quot;ui/elements/title-presentation.html&quot;)$
+    $partial(&quot;ui/elements/url-video-presentation.html&quot;)$
+    $partial(&quot;ui/elements/url-slides-presentation.html&quot;)$
+    $partial(&quot;ui/elements/description-presentation.html&quot;)$
+    $partial(&quot;ui/elements/authors-presentation.html&quot;)$
+    $partial(&quot;ui/elements/conference-presentation.html&quot;)$
+&lt;/div&gt;</code></pre>
+<h4 id="submission-logic">Submission logic</h4>
+<p>To perform a submission, we also need some JavaScript that can do the following:</p>
+<ol type="1">
+<li>Get the values from the form fields.</li>
+<li>Put them in a <a href="http://handlebarsjs.com/">Handlebars</a> template.</li>
+<li>Select a value and use it to generate a unique name for the file.</li>
+<li>Submit the file to Github.</li>
+</ol>
+<p>Numbers <strong>1</strong> and <strong>2</strong> are done in <code>app/js/generate-file-preview.js</code>, by <code>generateFilePreview()</code>. <code>displayFilePreview()</code> calls ´generateFilePreview()`, and is used to put it in the preview textarea.</p>
+<p>Imagine number <strong>3</strong> as a type class: <code>(IsContentType a) =&gt; HasFileTitle a</code>, with a type class function <code>generateFileTitle :: a -&gt; String</code>.</p>
+<p>The “type class instances”, then, can be found in <code>app/js</code>: <code>github-lookup.js</code>, <code>paper-lookup.js</code>, <code>presentation-lookup.js</code>, and so on. Some of these files can also contain another “type class instance” for the data scraping logic, which is described in the next section.</p>
+<p>For number <strong>4</strong>, we have <code>app/js/pull-request.js</code>. The function used as an entry point is <code>collectDataAndSubmitPullRequest()</code>. The actual work is done in <code>submitHaskAnythingPullRequest()</code>, which really, <em>really</em>, <strong><em>really</em></strong> needs a rewrite to use Promises.</p>
+<h4 id="data-scraping-logic">Data scraping logic</h4>
+<p>In some cases, the ability to prefill some of the form fields with data is necessary, as well.</p>
+<p>In <code>app/js/ui/submit</code>, we have a JavaScript “class” <code>Lookup</code> which handles communication with a URI and data extraction from the response. Built with “dependency injection”, the fancy name for higher-order functions. Just think of it as another type class <code>HasLookup a</code> that has six functions:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">class</span> <span class="dt">HasLookup</span> a <span class="kw">where</span></a>
+<a class="sourceLine" id="cb3-2" title="2"></a>
+<a class="sourceLine" id="cb3-3" title="3">    <span class="co">-- From a URL, extract the parts (UrlInfo a) we need to inject into an API call.</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="ot">    urlInspector ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> (<span class="dt">UrlInfo</span> a) </a>
+<a class="sourceLine" id="cb3-5" title="5">    </a>
+<a class="sourceLine" id="cb3-6" title="6">    <span class="co">-- With the parts, construct a valid API call and executes it.</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="ot">    urlConstructor ::</span> (<span class="dt">UrlInfo</span> a) <span class="ot">-&gt;</span> <span class="dt">IO</span> <span class="dt">JSON</span></a>
+<a class="sourceLine" id="cb3-8" title="8">    </a>
+<a class="sourceLine" id="cb3-9" title="9">    <span class="co">-- Checks if the received JSON is valid.</span></a>
+<a class="sourceLine" id="cb3-10" title="10"><span class="ot">    messageValidator ::</span> <span class="dt">JSON</span> <span class="ot">-&gt;</span> <span class="dt">Bool</span></a>
+<a class="sourceLine" id="cb3-11" title="11">    </a>
+<a class="sourceLine" id="cb3-12" title="12">    <span class="co">-- Extract the useful information from the JSON.</span></a>
+<a class="sourceLine" id="cb3-13" title="13"><span class="ot">    messageAccessor ::</span> <span class="dt">JSON</span> <span class="ot">-&gt;</span> b</a>
+<a class="sourceLine" id="cb3-14" title="14">    </a>
+<a class="sourceLine" id="cb3-15" title="15">    <span class="co">-- Display the message somewhere (usually a textarea).</span></a>
+<a class="sourceLine" id="cb3-16" title="16"><span class="ot">    messageRenderer ::</span> b <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a>
+<a class="sourceLine" id="cb3-17" title="17">    </a>
+<a class="sourceLine" id="cb3-18" title="18">    <span class="co">-- Function that calls the above functions. Has a default implementation.</span></a>
+<a class="sourceLine" id="cb3-19" title="19"><span class="ot">    urlCaller ::</span> <span class="dt">String</span> <span class="ot">-&gt;</span> <span class="dt">IO</span> ()</a></code></pre></div>
+<p>The “instances” for this type class can also be found in <code>app/js</code>: <code>github-lookup.js</code>, etc. The <code>Lookup</code> class is also instantiated in these files, usually at the bottom:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode javascript"><code class="sourceCode javascript"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">var</span> githubLookup <span class="op">=</span> <span class="kw">new</span> <span class="at">Lookup</span>( inspectURL<span class="op">,</span> constructURL<span class="op">,</span> messageIsValid<span class="op">,</span> accessMessage<span class="op">,</span> <span class="kw">undefined</span><span class="op">,</span> renderMessage )<span class="op">;</span></a>
+<a class="sourceLine" id="cb4-2" title="2"></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="kw">function</span> <span class="at">lookupGithubRepository</span>() <span class="op">{</span></a>
+<a class="sourceLine" id="cb4-4" title="4">    <span class="va">githubLookup</span>.<span class="at">lookup</span>()<span class="op">;</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="op">}</span></a></code></pre></div>
+<p>These lookup functions are usually hooked up to a button in the submission form HTML. For example, here’s the HTML code for the button for a Github repository:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">&lt;button</span><span class="ot"> type=</span><span class="st">&quot;button&quot;</span><span class="ot"> class=</span><span class="st">&quot;preview&quot;</span><span class="ot"> onclick=</span><span class="st">&quot;lookupGithubRepository();return false;&quot;</span><span class="kw">&gt;</span>Fetch repository details<span class="kw">&lt;/button&gt;</span></a></code></pre></div>
+<h3 id="templates">Templates</h3>
+<p>Templates. <em>Boy</em>, do we have <em>templates</em>. There’s templates for a piece of content itself, templates for the categories, Handlebars templates, templates for tags, and a whole bunch more. They all live in <code>app/templates</code>.</p>
+<h4 id="categories">Categories</h4>
+<p>In the <code>categories</code> subdirectory, there’s one template for each category. These just contain a simple description of what the category is. For example:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb6-1" title="1">A <span class="kw">&lt;i&gt;</span>presentation<span class="kw">&lt;/i&gt;</span> is a video recording of a presentation along with a slide deck.</a>
+<a class="sourceLine" id="cb6-2" title="2"></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="kw">&lt;a</span><span class="ot"> href=</span><span class="st">&quot;/ui/submit/presentation.html&quot;</span><span class="kw">&gt;</span>Submit a new presentation<span class="kw">&lt;/a&gt;</span></a></code></pre></div>
+<p>It’s used on the <a href="./categories/presentation.html">category overview page</a>.</p>
+<h4 id="content-1">Content</h4>
+<p>In the <code>content</code> subdirectory, we have the templates for a single piece of content. For example, here’s the template for a “snippet”:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode html"><code class="sourceCode html"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">&lt;div</span><span class="ot"> class=</span><span class="st">&quot;col-md-12 col-sm-12 intro&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb7-2" title="2">        <span class="kw">&lt;h1&gt;</span>$title$<span class="kw">&lt;/h1&gt;</span></a>
+<a class="sourceLine" id="cb7-3" title="3">        <span class="kw">&lt;h2</span><span class="ot"> class=</span><span class="st">&quot;authors&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb7-4" title="4">        $if(author)$</a>
+<a class="sourceLine" id="cb7-5" title="5">            By $author$</a>
+<a class="sourceLine" id="cb7-6" title="6">        $endif$</a>
+<a class="sourceLine" id="cb7-7" title="7">        <span class="kw">&lt;/h2&gt;</span></a>
+<a class="sourceLine" id="cb7-8" title="8"><span class="kw">&lt;/div&gt;</span></a>
+<a class="sourceLine" id="cb7-9" title="9"></a>
+<a class="sourceLine" id="cb7-10" title="10"><span class="kw">&lt;div</span><span class="ot"> class=</span><span class="st">&quot;col-md-12 col-sm-12&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb7-11" title="11">        <span class="kw">&lt;h1&gt;</span>Contents<span class="kw">&lt;/h1&gt;</span></a>
+<a class="sourceLine" id="cb7-12" title="12">        $body$</a>
+<a class="sourceLine" id="cb7-13" title="13"><span class="kw">&lt;/div&gt;</span></a>
+<a class="sourceLine" id="cb7-14" title="14"></a>
+<a class="sourceLine" id="cb7-15" title="15"><span class="kw">&lt;div</span><span class="ot"> class=</span><span class="st">&quot;col-md-12 col-sm-12&quot;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb7-16" title="16">        <span class="kw">&lt;h1&gt;</span>Tagged with<span class="kw">&lt;/h1&gt;</span></a>
+<a class="sourceLine" id="cb7-17" title="17">        $tags$ $category$ $libraries$</a>
+<a class="sourceLine" id="cb7-18" title="18"><span class="kw">&lt;/div&gt;</span></a></code></pre></div>
+<h4 id="tags">Tags</h4>
+<p>Some experiments with rendering tags. <code>categorylist.html</code> and <code>navbarlist.html</code> are used in <code>app/templates/default.html</code>, with the first being a list of categories and the latter a list of facets.</p>
+<p>Facets are pretty much just filters of the content: you can view all content of the category “presentation”, or view all content with the tag “io”, or view all content related to the library “pandoc”.</p>
+<p>The tagging system is still a work in progress, but the general gist is the following:</p>
+<ul>
+<li>Category: automatically assigned based on which subdirectory the content is in.</li>
+<li>Tags: free-input tags.</li>
+<li>Libraries: I didn’t want to put libraries under tags as well, because there might be tutorials for older versions of a library (it’d be horrible to get tags like <code>hakyll-4.8.0.1</code>, <code>hakyll-4.8.3.2</code>), and it would be nice to be able to list all related to a particular library under the library page.</li>
+</ul>
+<h4 id="handlebars">Handlebars</h4>
+<p>These templates are used by the handlebars.js library to generate the contents of a file that is pushed to Github when submitting via the website.</p>
+<h4 id="various">Various</h4>
+<p>There are a few more templates in <code>app/templates</code> itself:</p>
+<ul>
+<li>categories.html, categories-overview.html, libraries.html and tags.html are currently unused.</li>
+<li>content.html is a snippet that is included on a content page, adding a link that links to the file in edit mode on Github.</li>
+<li>default.html is the main template.</li>
+<li>submit.html is a wrapper template used by the submission UI. It includes some JavaScript and CSS.</li>
+</ul>
+<h2 id="code">Code</h2>
+<p>Code is in two places: <code>app/site.hs</code> and the <code>src/HaskAnything</code> folder. In general, <code>site.hs</code> purely does the data transformation of the source files to the final website. That main function is 160 lines, so pretty small.</p>
+<p><code>src/HaskAnything</code> contains support functions that are specific for HaskAnything functionality. Some stuff could probably be generalized and put in <a href="https://github.com/beerendlauwers/hakyll-extra">hakyll-extra</a>.</p>
+<h2 id="getting-it-up-and-running">Getting it up and running</h2>
+<p>The project uses <a href="https://docs.haskellstack.org/en/stable/README/">Stack</a>, so it <em>should</em> just be:</p>
+<ol type="1">
+<li><code>stack build</code></li>
+<li>Copying the built executable into the <code>app</code> folder. (Help on doing this automatically is greatly appreciated)</li>
+<li>In <code>/app</code>, run <code>site build</code>, or <code>site watch</code>.</li>
+</ol>
+<p>If it’s not, please open an issue over at <a href="https://github.com/beerendlauwers/HaskAnything/issues">Github</a>!</p>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><strong>Disclaimer:</strong> May or may not resemble a proper architecture.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+</ol>
+</section>
+        </div>
+    </div>
+    </body>
+</html>

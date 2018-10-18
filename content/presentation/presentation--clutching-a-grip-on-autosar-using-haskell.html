@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>Hask Anything! - Clutching a grip on AUTOSAR using Haskell</title>
+        <!-- Open Sans -->
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" type="text/css" rel="stylesheet" />
+        <!-- Ubuntu font -->
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" type="text/css" rel="stylesheet" />
+        <!-- FontAwesome fonts -->
+        <link rel="stylesheet" href="../../vendor/fontawesome/css/font-awesome.min.css" />
+        <!-- Bootstrap CSS -->
+        <link href="../../vendor/bootstrap/bootstrap.min.css" rel="stylesheet" />
+        <!-- jQuery -->
+        <script src="../../vendor/jquery/jquery.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="../../vendor/bootstrap/bootstrap.min.js"></script>
+        <!-- ReactJS -->
+        <script src="../../vendor/react/react.min.js"></script>
+        <script src="../../vendor/react/JSXTransformer.js"></script>
+        <!-- RamdaJS -->
+        <script src="../../vendor/ramdajs/ramda.js"></script>
+        <!-- Keys.css -->
+        <link rel="stylesheet" type="text/css" href="../../vendor/keys/keys.css" />
+        <!-- OAuth.io -->
+        <script src="../../vendor/oauth.io/oauth.js"></script>
+        <script src="../../js/github-login.js"></script>
+        <!-- Custom CSS -->
+        <link rel="stylesheet" type="text/css" href="../../css/default.css" />
+        <!-- Custom JS -->
+        <script src="../../js/getbaseroot.js"></script>
+    </head>
+    <body>
+
+    <div class="container">
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../../">Hask Anything!</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li><a href="../../filter.html">Filter by facets</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Add a new... <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            
+                <li><a href="../../ui/submit/article.html">article</a></li>
+            
+                <li><a href="../../ui/submit/package.html">package</a></li>
+            
+                <li><a href="../../ui/submit/paper.html">paper</a></li>
+            
+                <li><a href="../../ui/submit/presentation.html">presentation</a></li>
+            
+                <li><a href="../../ui/submit/reddit-post.html">reddit-post</a></li>
+            
+                <li><a href="../../ui/submit/series.html">series</a></li>
+            
+          </ul>
+        </li>
+      </ul>
+
+      <form class="navbar-form navbar-left" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="TODO: Search">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="login-avatar"></span><span id="login-username" < span>You're not logged in. </span><span class="caret"></a>
+          <ul class="dropdown-menu">
+            <li id="login-link"><a href="#" onclick="githubAuthorize();">Login</a></li>
+            <li id="logout-link"><a href="#" onclick="githubLogout();">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+</div>
+
+    <div class="container">
+        <div class="row col-md-12 col-sm-12">
+            <div class="container">
+<div class="row col-sm-12">
+    <div id="edit-on-github">
+    <a href="https://github.com/beerendlauwers/HaskAnything/edit/master/app/content/presentation/presentation--clutching-a-grip-on-autosar-using-haskell.markdown" target="_blank"><i class="fa fa-pencil-square-o"></i> Edit on Github</a>
+    </div>
+</div>
+</div>
+
+<div class="col-md-12 col-sm-12 intro">
+        <h1>Clutching a grip on AUTOSAR using Haskell</h1>
+        <h2 class="authors">By  Johan Nordlander </h2>
+</div>
+
+<div class="col-md-12 col-sm-12">
+        <div class="youtube-fix"><iframe width="100%" src="https://www.youtube.com/embed/4OUwfQga2Jw" frameborder="0" class="video" allowfullscreen></iframe></div>
+</div>
+
+<div class="col-md-12 col-sm-12">
+    <div class="col-md-6 col-sm-6">
+        <h1><a href="http://bobkonf.de/2015/slides/nordlander.pdf" target="_blank">Slide Deck</a></h1>
+    </div>
+    <div class="col-md-6 col-sm-6">
+        <h1 class="source"><a href="http://bobkonf.de/2015/nordlander.html" target="_blank">Source</a></h1>
+    </div>
+</div>
+
+<div class="col-md-12 col-sm-12">
+        <h1>Tagged with</h1>
+        
+</div>
+
+<div class="col-md-12 col-sm-12">
+        <h1>Detailed description</h1>
+        <p>AUTOSAR is a software component standard for the automotive industry. It offers concurrency, communication, distribution and real-time facilities in a platform-neutral format, but notably lacks a specification rigorous enough to facilitate simulation and testing in a composable and platform-independent way.</p>
+<p>This talk will give an overview of the AUTOSAR semantic formalization carried out in the RAW FP project at Chalmers University of Technology, and show how it has been concretized as a Haskell DSL that is executable on any major platform under simulated real time. While the formalized semantics captures every possible direction an AUTOSAR system can evolve in, the embedded DSL defers scheduling decisions to a pluggable procedure that can select among all legal execution paths. This feature has been put to good use in an AUTOSAR simulator with random scheduling, that has the ability to reveal race conditions much faster than the partially deterministic scheduler found on typical AUTOSAR platforms.</p>
+<p>A non-trivial automotive system in the form of an ABS implementation will be used as a running DSL example, and a comparison against real AUTOSAR code will illustrate the amount of AUTOSAR validation checks that can be captured using the Haskell type system alone. Some ambiguities and dubious features of the AUTOSAR specification will also be emphasized, together with suggested paths forward – for the standard as well as for the use of Haskell in resource-constrained industrial settings.</p>
+</div>
+
+        </div>
+    </div>
+    </body>
+</html>
