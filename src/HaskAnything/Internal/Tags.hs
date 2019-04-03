@@ -3,7 +3,7 @@
 module HaskAnything.Internal.Tags where
 
 import           Hakyll
-import           Data.Monoid (mconcat,mappend)
+import           Data.Monoid ((<>), mconcat,mappend)
 
 -- For the custom tag / category stuff
 import           Text.Blaze.Html                 (toHtml, toValue, (!))
@@ -11,6 +11,7 @@ import           Text.Blaze.Html.Renderer.String (renderHtml)
 import qualified Text.Blaze.Html5                as H
 import qualified Text.Blaze.Html5.Attributes     as A
 import           System.FilePath                 (dropExtension)
+import qualified Data.Text as T
 
 -- For the library stuff
 import qualified Data.Map                        as M
@@ -21,27 +22,27 @@ import           Data.List                       (nub,intersect)
 import           Data.Maybe                      (fromMaybe,catMaybes,fromJust)
 
 -- The default tagsRules function doesn't allow me to set an extension on the created tag identifier, which is what I need.
-tagsRules' :: Tags -> (String -> Pattern -> Rules ()) -> Rules ()
+tagsRules' :: Tags -> (T.Text -> Pattern -> Rules ()) -> Rules ()
 tagsRules' tags rules =
     forM_ (tagsMap tags) $ \(tag, identifiers) ->
         rulesExtraDependencies [tagsDependency tags] $
-            create [tagsMakeId tags (tag ++ ".html")] $ do
+            create [tagsMakeId tags (tag <> ".html")] $ do
                 rules tag $ fromList identifiers
 
 -- |Adds the categories of a piece of content to the context.
-addCategories :: Tags -> Context String -> Context String
+addCategories :: Tags -> Context T.Text -> Context T.Text
 addCategories = extend "category"
 
 -- |Adds the tags of a piece of content to the context.
-addTags :: Tags -> Context String -> Context String
+addTags :: Tags -> Context T.Text -> Context T.Text
 addTags = extend "tags"
 
 -- |Adds the libraries of a piece of content to the context.
-addLibraries :: Tags -> Context String -> Context String
+addLibraries :: Tags -> Context T.Text -> Context T.Text
 addLibraries = extend "libraries"
 
 -- |Helper function for extending a context with some tags.
-extend :: String -> Tags -> Context String -> Context String
+extend :: T.Text -> Tags -> Context T.Text -> Context T.Text
 extend s tags = mappend (contentTagsField s tags)
 
 -- |Helper function for extending a context with some tags.
@@ -51,21 +52,21 @@ extendWith f s tags = mappend (f s tags)
 contentTagsField =
     tagsFieldWith getTags simpleRenderLink mconcat
 
-simpleRenderLink :: String -> (Maybe FilePath) -> Maybe H.Html
+simpleRenderLink :: T.Text -> (Maybe FilePath) -> Maybe H.Html
 simpleRenderLink _   Nothing         = Nothing
 simpleRenderLink tag (Just filePath) =
   Just $ H.a ! A.href (toValue $ toUrl filePath) ! A.class_ "tag" $ toHtml tag
 
 -- |Gives you a list of unique tags.
-getUniqueTags' :: Tags -> [String]
+getUniqueTags' :: Tags -> [T.Text]
 getUniqueTags' (Tags m _ _) = nub $ map fst m
 
 
-matchTagsWithCategories' :: Tags -> Tags -> [(String, [String])]
+matchTagsWithCategories' :: Tags -> Tags -> [(T.Text, [T.Text])]
 matchTagsWithCategories' (Tags tags _ _) (Tags cats _ _) = matchTagsWithCategories tags cats
 
 -- |Given a list of tags and a list of categories, searches for common 'Identifier's in both and zips it up wih the category.
-matchTagsWithCategories :: [(String, [Identifier])] -> [(String, [Identifier])] -> [(String, [String])]
+matchTagsWithCategories :: [(T.Text, [Identifier])] -> [(T.Text, [Identifier])] -> [(T.Text, [T.Text])]
 matchTagsWithCategories tags cats =
  map f cats
   where
@@ -75,32 +76,31 @@ matchTagsWithCategories tags cats =
     then Just tag
     else Nothing
 
-getListMetadata :: MonadMetadata m => String -> Identifier ->  m [String]
+getListMetadata :: MonadMetadata m => T.Text -> Identifier ->  m [T.Text]
 getListMetadata key identifier = do
     metadata <- getMetadata identifier
     return $ fromMaybe [] $
-        (lookupStringList key metadata) `mplus`
-        (map trim . splitAll "," <$> lookupString key metadata)
+        (lookupStringList key metadata)
 
-buildLibraries :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
+buildLibraries :: MonadMetadata m => Pattern -> (T.Text -> Identifier) -> m Tags
 buildLibraries = buildTagsWith (getListMetadata "libraries")
 
-getCategoryType :: MonadMetadata m => Identifier -> m [String]
+getCategoryType :: MonadMetadata m => Identifier -> m [T.Text]
 getCategoryType identifier = do
     metadata <- getMetadata identifier
-    return $ [ fromMaybe [] $ lookupString "type" metadata ]
+    return $ maybe [] (:[]) $ lookupString "type" metadata
 
-buildCategoryTypes :: MonadMetadata m => Pattern -> (String -> Identifier) -> m Tags
+buildCategoryTypes :: MonadMetadata m => Pattern -> (T.Text -> Identifier) -> m Tags
 buildCategoryTypes = buildTagsWith getCategoryType
 
-getTitle :: MonadMetadata m => Identifier -> m [String]
+getTitle :: MonadMetadata m => Identifier -> m [T.Text]
 getTitle identifier = do
-   (return . (:[]) . dropExtension . toFilePath) identifier
+   (return . (:[]) . T.pack . dropExtension . toFilePath) identifier
 
-buildPermissionFiles :: MonadMetadata m => Pattern -> (String-> Identifier) -> m Tags
+buildPermissionFiles :: MonadMetadata m => Pattern -> (T.Text-> Identifier) -> m Tags
 buildPermissionFiles = buildTagsWith getTitle
 
-buildAuthors  :: MonadMetadata m => Pattern -> (String-> Identifier) -> m Tags
+buildAuthors  :: MonadMetadata m => Pattern -> (T.Text -> Identifier) -> m Tags
 buildAuthors = buildTagsWith getAuthors
  where getAuthors i = do
         as <- getListMetadata "authors" i

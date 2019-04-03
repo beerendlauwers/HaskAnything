@@ -1,17 +1,19 @@
+{-# LANGUAGE OverloadedStrings          #-}
 module HaskAnything.Internal.Field.Video where
 
 import           Hakyll
 import           Data.List.Split               (splitOn)
 import           Data.List                     (isInfixOf)
-
+import qualified Data.Text as T
+import           Data.Monoid ((<>))
 import           Data.Maybe                    (listToMaybe,fromMaybe,catMaybes)
 
 -- Supported video URLs.
-data SupportedVideoURL = Youtube String | Vimeo String | VimeoPlayer String deriving (Eq,Show)
+data SupportedVideoURL = Youtube T.Text | Vimeo T.Text | VimeoPlayer T.Text deriving (Eq,Show)
 
 -- Guesses a supported video URL from a part of the URL.
-toSupportedVideoURL :: String -> Maybe SupportedVideoURL
-toSupportedVideoURL url = (listToMaybe . catMaybes) $ map (\v -> if isInfixOf (fst v) url then Just (snd v $ url) else Nothing) mapping
+toSupportedVideoURL :: T.Text -> Maybe SupportedVideoURL
+toSupportedVideoURL url = (listToMaybe . catMaybes) $ map (\v -> if T.isInfixOf (fst v) url then Just (snd v $ url) else Nothing) mapping
  where
   mapping =
    [("youtube",Youtube)
@@ -20,35 +22,35 @@ toSupportedVideoURL url = (listToMaybe . catMaybes) $ map (\v -> if isInfixOf (f
    ]
 
 -- Generates some HTML to embed the video in the page.
-generateEmbedding :: SupportedVideoURL -> String
+generateEmbedding :: SupportedVideoURL -> T.Text
 generateEmbedding supVidUrl = generateEmbeddingWidthHeight (Just "100%") Nothing supVidUrl
 
-getVideoId :: SupportedVideoURL -> String
-getVideoId (Youtube url) = (head . drop 1 . splitOn "?v=") url
-getVideoId (VimeoPlayer url) =  (last . splitOn "/") url
-getVideoId (Vimeo url) = (last . splitOn "/") url
+getVideoId :: SupportedVideoURL -> T.Text
+getVideoId (Youtube url) = (head . drop 1 . T.splitOn "?v=") url
+getVideoId (VimeoPlayer url) =  (last . T.splitOn "/") url
+getVideoId (Vimeo url) = (last . T.splitOn "/") url
 
 -- Function that actually generates the HTML. Youtube videos don't need a width and height.
 -- The other videos (currently just Vimeo) do.
-generateEmbeddingWidthHeight :: Maybe String -> Maybe String -> SupportedVideoURL -> String
+generateEmbeddingWidthHeight :: Maybe T.Text -> Maybe T.Text -> SupportedVideoURL -> T.Text
 generateEmbeddingWidthHeight w h v = case v of
- (Youtube url) -> "<div class=\"youtube-fix\"><iframe " ++ genWidth w ++  genHeight h ++ "src=\"" ++ youtubeEmbedUrl v ++ "\" frameborder=\"0\" class=\"video\" allowfullscreen></iframe></div>"
- (VimeoPlayer url) -> "<div class=\"youtube-fix\"><iframe " ++ genWidth w ++  genHeight h ++ "src=\"" ++ url ++ "\" autoplay=\"false\" frameborder=\"0\" class=\"video\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>"
- (Vimeo url) -> "<div class=\"youtube-fix\"><iframe " ++ genWidth w ++  genHeight h ++ "src=\"" ++ vimeoEmbedUrl v ++ "\" autoplay=\"false\" frameborder=\"0\" class=\"video\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>"
+ (Youtube url) -> "<div class=\"youtube-fix\"><iframe " <> genWidth w <>  genHeight h <> "src=\"" <> youtubeEmbedUrl v <> "\" frameborder=\"0\" class=\"video\" allowfullscreen></iframe></div>"
+ (VimeoPlayer url) -> "<div class=\"youtube-fix\"><iframe " <> genWidth w <>  genHeight h <> "src=\"" <> url <> "\" autoplay=\"false\" frameborder=\"0\" class=\"video\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>"
+ (Vimeo url) -> "<div class=\"youtube-fix\"><iframe " <> genWidth w <>  genHeight h <> "src=\"" <> vimeoEmbedUrl v <> "\" autoplay=\"false\" frameborder=\"0\" class=\"video\" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe></div>"
  where
-  genHeight, genWidth :: Maybe String -> String
-  genHeight = maybe "" (\height -> "height=\"" ++ height ++ "\" ")
-  genWidth = maybe "" (\width -> "width=\"" ++ width ++ "\" ")
+  genHeight, genWidth :: Maybe T.Text -> T.Text
+  genHeight = maybe "" (\height -> "height=\"" `T.append` height `T.append` "\" ")
+  genWidth = maybe "" (\width -> "width=\"" `T.append` width `T.append` "\" ")
 
 -- Takes a Youtube uRL and extracts the video ID from it to create an embeddable URL.
-youtubeEmbedUrl :: SupportedVideoURL -> String
-youtubeEmbedUrl = ("https://www.youtube.com/embed/" ++) . getVideoId
+youtubeEmbedUrl :: SupportedVideoURL -> T.Text
+youtubeEmbedUrl = ("https://www.youtube.com/embed/" `T.append`) . getVideoId
 
 -- Takes a Vimeo uRL and extracts the video ID from it to create an embeddable URL.
-vimeoEmbedUrl :: SupportedVideoURL -> String
-vimeoEmbedUrl = ("https://player.vimeo.com/video/" ++) . getVideoId
+vimeoEmbedUrl :: SupportedVideoURL -> T.Text
+vimeoEmbedUrl = ("https://player.vimeo.com/video/" `T.append`) . getVideoId
 
-generateVideoEmbed :: Context String
+generateVideoEmbed :: Context T.Text
 generateVideoEmbed = functionField "generateVideoEmbed" $ \args item ->
   case args of
     [url] -> do return (selectType url)
@@ -61,7 +63,7 @@ generateVideoEmbed = functionField "generateVideoEmbed" $ \args item ->
     Just v -> generateEmbeddingWidthHeight (Just width) (Just height) v
     Nothing -> ""
 
-generateVideoPreviewImage :: Context String
+generateVideoPreviewImage :: Context T.Text
 generateVideoPreviewImage = functionField "generateVideoPreviewImage" $ \args item ->
   case args of
     [url] -> do return (generatePreviewImage url)
@@ -73,4 +75,4 @@ generateVideoPreviewImage = functionField "generateVideoPreviewImage" $ \args it
        Nothing -> ""
    generatePreviewImage' v@(Youtube url) =
      let id = getVideoId v
-     in "https://i1.ytimg.com/vi/" ++ id ++ "/mqdefault.jpg"
+     in "https://i1.ytimg.com/vi/" `T.append` id `T.append` "/mqdefault.jpg"

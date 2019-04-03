@@ -1,12 +1,14 @@
+{-# LANGUAGE OverloadedStrings          #-}
 module HaskAnything.Internal.Context where
 
 import           Hakyll
 import           Data.Monoid (mappend,(<>))
+import qualified Data.Text as T
 import           HaskAnything.Internal.Field     (urlReplaceField, extractMetadata, getManyFieldsFromMetaData, loadSeriesList, relativizeUrl, ifField, appendStrings, pathToHTML, fieldEquals, fieldAsList, metadataListField)
 import           HaskAnything.Internal.Field.Video (generateVideoEmbed,generateVideoPreviewImage)
 import           HaskAnything.Internal.Facet
 
-postCtx :: Tags -> Tags -> Tags -> Context String
+postCtx :: Tags -> Tags -> Tags -> Context T.Text
 postCtx t c l =
     urlReplaceField "url-to-advanced" ("simple","advanced") `mappend`
     urlReplaceField "url-to-simple"   ("advanced","simple") `mappend`
@@ -21,10 +23,10 @@ postCtx t c l =
     metadataListField `mappend`
     defaultContext' t c l
 
-defaultContext' :: Tags -> Tags -> Tags -> Context String
+defaultContext' :: Tags -> Tags -> Tags -> Context T.Text
 defaultContext' t c l = facetCtx  t c l <> categoryContext c <> defaultContext
 
-categoryContext :: Tags -> Context String
+categoryContext :: Tags -> Context T.Text
 categoryContext ts =
  listField "categoryContext"
  (
@@ -33,7 +35,7 @@ categoryContext ts =
  (sequence $ map makeItem (map fst $ tagsMap ts))
 
 
-facetCtx :: Tags -> Tags -> Tags -> Context String
+facetCtx :: Tags -> Tags -> Tags -> Context T.Text
 facetCtx tags categories libraries =
  listField "facetList"
  (
@@ -46,7 +48,7 @@ facetCtx tags categories libraries =
 
 
 
-seriesCtx :: Tags -> Tags -> Tags -> Context String
+seriesCtx :: Tags -> Tags -> Tags -> Context T.Text
 seriesCtx t c l = loadSeriesList contexts <> getManyFieldsFromMetaData ["dates"] <> ctx
  where
    ctx = postCtx t c l
@@ -62,14 +64,14 @@ seriesCtx t c l = loadSeriesList contexts <> getManyFieldsFromMetaData ["dates"]
      ]
 
 
-articleCtx :: Tags -> Tags -> Tags -> Context String
+articleCtx :: Tags -> Tags -> Tags -> Context T.Text
 articleCtx t c l = ifField "has-permission" (extractMetadata "permission-file") <> getManyFieldsFromMetaData ["date","url","permission-file"]  <> postCtx t c l
 
-packageCtx :: Tags -> Tags -> Tags -> Context String
+packageCtx :: Tags -> Tags -> Tags -> Context T.Text
 packageCtx t c l = getManyFieldsFromMetaData ["name","authors","source","hackage","stackage","synopsis"]  <> postCtx t c l
 
-videoCtx :: Tags -> Tags -> Tags -> Context String
+videoCtx :: Tags -> Tags -> Tags -> Context T.Text
 videoCtx t c l = getManyFieldsFromMetaData ["url-video","url-slides","authors","source"]  <> postCtx t c l
 
-githubUrl :: Context String
-githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" ++) . toFilePath  . itemIdentifier
+githubUrl :: Context T.Text
+githubUrl = field "githubUrl" $ return . ("https://github.com/beerendlauwers/HaskAnything/edit/master/app/" `T.append`) . T.pack . toFilePath  . itemIdentifier
